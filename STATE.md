@@ -1,33 +1,36 @@
 # lzmplk-2026 — State
 
-[CHECKPOINT] 2026-03-28 00:45
+[CHECKPOINT] 2026-03-28 01:30
 
 ## Intention
 > Birthday gift for girlfriend (2026-03-28). Single polished text adventure (Maid Latte / Maid-Sama! theme) with Tiny Glade Steam key as prize. Text adventure IS the primary vehicle of the surprise.
 
 ## Position
-> Restyled game to early 2000s Manila blog aesthetic (light background, dusty rose, Pacifico/Silkscreen/Comic Neue fonts, glitter animations, kaomoji). Fixed ASCII art alignment. Canon conformance and deslopify agents running. Next: rework main page so text adventure is front and center.
+> **PLAYABLE.** Main flow complete: index → game → win → prize. Staticrypt removed (URL is the secret). Prose deslopified (34 fixes). Canon fixed (Usui = customer). Next: ASCII art for room backgrounds.
 
 | Component | Status | Notes |
 |-----------|--------|-------|
 | Game engine | **Done** | 70 states, 0 dead ends |
 | Visual style | **Done** | Early 2000s Manila blog aesthetic |
 | ASCII maps | **Done** | Aligned, emoji-free, box-drawing chars |
-| Flavortext | In Progress | Deslopify + canon-conformance agents running |
-| Win state | Needs update | Change from password to prize reveal |
-| Main page | Needs rework | Text adventure should be primary, not password gate |
+| Flavortext | **Done** | Deslopify (34 fixes) + canon (Usui) complete |
+| Win state | **Done** | Links to prize.html |
+| Main page | **Done** | Simple intro → game link |
+| Prize page | **Done** | Steam key + message placeholders |
+| ASCII backgrounds | Optional | VN art → ASCII conversion if time |
 
 ## Decisions
 - Puzzle 2 theme: Maid-Sama! (not H2G2) →✓ she loves the anime
 - Password mechanism: item inside mascot (not NPC speech) →✓ clearer, more satisfying
-- Password: "misakitchen" →✓ thematic
+- Password: "misakitchen" →✓ thematic (but no longer shown — win links to prize)
 - NPCs with interiority: Usui talks about England, Satsuki about why she opened cafe →✓ world feels alive
 - Ambient commands: LISTEN, SMELL, THINK, WAIT →✓ exploration rewarded
 - **PIVOT: Single game (not 3-puzzle ARG)** →✓ reduces scope, increases polish
 - **Visual style: Early 2000s Manila blog** →✓ light bg, dusty rose (#d4a5a5), dashed borders
 - **Fonts: Pacifico + Silkscreen + Comic Neue** →✓ adventurous, era-appropriate
-- **Usui is customer, not employee** →? canon conformance agent fixing
-- VN backgrounds: DROPPED →✓ ASCII maps sufficient, deadline pressure
+- **Usui is customer, not employee** →✓ canon-conformance agent fixed
+- **Staticrypt: REMOVED** →✓ URL is the secret, no password gate
+- **Flow: index → puzzle2 → prize** →✓ text adventure is primary vehicle
 
 ## Dead Ends
 - H2G2 theme: she doesn't know it well, switched to Maid-Sama!
@@ -40,25 +43,25 @@
 
 ## Constraints
 - Deadline: 2026-03-28 (TODAY - birthday)
-- Must work offline after initial load (staticrypt)
-- Canon accuracy for Maid-Sama! (Usui = customer, not employee)
+- Canon accuracy for Maid-Sama! (Usui = customer, not employee) ✓
 
 ## Files Modified
-- `src/puzzle2.html` — text adventure (restyled, ASCII fixed)
+- `src/index.html` — simplified intro, links to puzzle2
+- `src/puzzle2.html` — text adventure (restyled, deslopified, canon-fixed, win→prize)
+- `src/prize.html` — Steam key + message placeholders
 - `STATE.md` — this file
-- `GAME-DESIGN.md` — game design doc
-- `GAME-ANALYSIS.md` — Opus critique
-- `validate_game_tree.py` — BFS validator
-- `game-tree.html` — visual diagram
 
 ## Next
-- [ ] Wait for background agents (deslopify, canon-conformance)
-- [ ] /patch plan: rework main page so text adventure is primary vehicle
-- [ ] Win state shows prize message + Steam key
-- [ ] Full playthrough test
+- [ ] Optional: ASCII art backgrounds (VN assets → asc11 conversion)
+- [ ] Fill in prize.html placeholders (Steam key, personal message, photo?)
 - [ ] Deploy
 
 ## Pickup
-Restyled to early 2000s Manila blog aesthetic. Two agents running: deslopify (fixing AI tells) and canon-conformance (fixing Usui-as-customer). Next step: /patch plan to rework main page so text adventure is the primary experience, not a password-gated secondary thing.
+**Game is playable.** Flow: index.html → puzzle2.html → prize.html. All prose fixed. Canon accurate. Next session: optionally add ASCII art backgrounds from VN assets (Itsu cafe pack, Spiral Atlas house backgrounds — both CC-licensed). Fill in prize.html placeholders before gifting.
+
+## Art Sources (for post-compaction)
+- **Itsu cafe pack** — CC-licensed VN maid cafe backgrounds
+- **Spiral Atlas house backgrounds** — CC-licensed VN interiors
+- Convert via **asc11** or similar ASCII art tool
 
 ---

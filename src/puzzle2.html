@@ -828,7 +828,7 @@
                     ];
                     const customer = customers[parseInt(table) - 1] || customers[0];
                     if (hasMascot) {
-                        return `Table ${table}. ${customer}<br><br>Under the table... <span style="color:#ff0">Uchūjin-kun!</span><br>It stares back at you defiantly, daring you to try something.`;
+                        return `Table ${table}. ${customer}<br><br>Under the table... <span style="color:#ff0">Uchūjin-kun!</span><br>It stares back at you, daring you to try something.`;
                     }
                     return `Table ${table}. ${customer}<br><br>Nothing unusual underneath.`;
                 }
@@ -837,14 +837,14 @@
 
             if (target.includes('customer')) {
                 if (state.location === 'DINING') {
-                    return `The regulars are here today.<br><br>Table 1: A couple. Cute.<br>Table 2: A tired-looking salaryman. Relatable.<br>Table 3: High schoolers. One keeps staring at Usui.<br><br>You fight down an irrational surge of... something. It's not jealousy. Definitely not.`;
+                    return `The regulars are here today.<br><br>Table 1: A couple. Cute.<br>Table 2: A tired-looking salaryman. Relatable.<br>Table 3: High schoolers. One keeps staring at Usui.<br><br>You fight down an irrational surge of something. You're not going to name it.`;
                 }
                 return `No customers back here. Just staff.`;
             }
 
             if (target.includes('register') || target.includes('counter')) {
                 if (state.location === 'COUNTER') {
-                    return `The cash register sits unused. A small tip jar next to it is stuffed with bills.<br><br>There's a photo taped to the side — the whole Maid Latte staff. You're in it, smiling despite yourself.<br><br>Usui is somehow in the background of the photo too. You don't remember him being there when it was taken.`;
+                    return `The cash register sits unused. A small tip jar next to it is stuffed with bills.<br><br>There's a photo taped to the side: the whole Maid Latte staff. You're in it, smiling despite yourself.<br><br>Usui is somehow in the background of the photo too. You don't remember him being there when it was taken.`;
                 }
                 return `You can't see the register from here.`;
             }
@@ -861,11 +861,11 @@
             }
 
             if (target.includes('menu') || target.includes('food')) {
-                return `The cafe menu: parfaits, omurice, coffee, cake.<br>Everything comes with a smile and "Welcome home, Master~"<br><br>You've said those words thousands of times. They still make you cringe internally.`;
+                return `The cafe menu: parfaits, omurice, coffee, cake.<br>Everything comes with a smile and "Welcome home, Master~"<br><br>You've said those words thousands of times. They still make you cringe.`;
             }
 
             if (target.includes('self') || target.includes('myself') || target.includes('me')) {
-                return `Ayuzawa Misaki. Student Council President. Secret maid cafe employee.<br><br>Currently: slightly panicked, very determined, unreasonably flustered by a certain blond idiot.<br><br>Your maid uniform is slightly disheveled from chasing a plushie around. Great.`;
+                return `Ayuzawa Misaki. Student Council President. Secret maid cafe employee.<br><br>Currently: panicked, determined, flustered by a certain blond idiot.<br><br>Your maid uniform is dishevelled from chasing a plushie around. Great.`;
             }
 
             return `You don't see anything special about that.`;
@@ -944,7 +944,7 @@
                 const responses = [
                     `It doesn't respond.<br>Unlike some perverted outer-space aliens you know.`,
                     `<em>"Hey."</em><br>...<br>It just stares at you.<br>Great. You're talking to a plushie. In public. At work.`,
-                    `You whisper urgently: <em>"Please just let me catch you."</em><br>Uchūjin-kun's expression seems to say: "No."`,
+                    `You whisper: <em>"Please just let me catch you."</em><br>Uchūjin-kun's expression seems to say: "No."`,
                     `It blinks at you. Wait, can plushies blink?<br>You're losing your mind.`
                 ];
                 return responses[state.commandCount % responses.length];
@@ -1076,27 +1076,22 @@
         function triggerWin() {
             state.won = true;
 
-            const response = `You sweep the apron over the mascot in one smooth motion.<br><br>` +
-                `<strong>Got it!</strong><br><br>` +
+            const response = `You sweep the apron over the mascot.<br><br>` +
+                `<span class="success">Got it!</span><br><br>` +
                 `Uchūjin-kun squirms under the fabric, then settles into your arms.<br><br>` +
-                `Wait—there's something tucked inside its back pocket. A tiny zipper you never noticed before.<br><br>` +
-                `You pull out a small folded note. Your own handwriting stares back at you:<br><br>` +
-                `<div style="background:#1a1a2e; border:2px solid #ff66aa; padding:1rem; margin:1rem 0; text-align:center;">` +
-                `<em>"For when you need to remember what matters."</em><br><br>` +
-                `<span style="font-size:1.4em; color:#00ffff; letter-spacing:3px;"><strong>misakitchen</strong></span><br><br>` +
-                `<small style="color:#888;">— past you, apparently</small>` +
-                `</div><br>` +
-                `You don't remember writing this. But it's definitely your handwriting.<br><br>` +
-                `<span class="npc-usui">A familiar presence appears beside you. How does he move so quietly?</span><br><br>` +
-                `<span class="npc-usui">"Found something?"</span><br>` +
-                `He's not looking at the note. He's looking at you holding the mascot.<br>` +
+                `A familiar presence appears beside you.<br><br>` +
+                `<span class="npc-usui">"Nice catch."</span><br>` +
+                `He's looking at you holding the mascot.<br>` +
                 `<span class="npc-usui">"Green. Alien. Vaguely familiar somehow..."</span><br><br>` +
                 `Your face burns. He KNOWS.<br><br>` +
                 `<span class="npc-usui">"I like it."</span><br>` +
-                `A pause. His voice is softer.<br>` +
+                `His voice is softer.<br>` +
                 `<span class="npc-usui">"Keep it close, Misa-chan."</span><br><br>` +
-                `The password is: <span class="success" style="font-size:1.3em; background:#001a00; padding:0.3em 0.6em; border-radius:4px;">misakitchen</span><br><br>` +
-                `<a href="puzzle3.html" class="win-link">CONTINUE →</a>`;
+                `Satsuki appears from the kitchen, beaming.<br>` +
+                `<span class="npc-satsuki">"You did it! And just in time for—"</span><br>` +
+                `She stops herself, grinning.<br>` +
+                `<span class="npc-satsuki">"Well. You'll see~"</span><br><br>` +
+                `<a href="prize.html" class="win-link">✨ claim your prize ✨</a>`;
 
             document.getElementById('inputArea').style.display = 'none';
             document.getElementById('hints').innerHTML = '';
@@ -1200,7 +1195,7 @@
 
         function init() {
             updateDisplay();
-            addOutput('', `Welcome to THE SHIFT.<br><br>Your shift at Maid Latte was going fine until...<br><br>Your secret mascot — <strong>Uchūjin-kun</strong> — fell out of your bag and is now bouncing around the cafe.<br><br>Catch it before Usui sees it!<br><br>(Type HELP for commands)`);
+            addOutput('', `Welcome to THE SHIFT.<br><br>Your shift at Maid Latte was going fine until...<br><br>Your secret mascot, <strong>Uchūjin-kun</strong>, fell out of your bag and is now bouncing around the cafe.<br><br>Catch it before Usui sees it!<br><br>(Type HELP for commands)`);
         }
 
         init();
