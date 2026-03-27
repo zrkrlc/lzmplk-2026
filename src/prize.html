@@ -8,7 +8,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
 
         * {
-            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath fill='%23d4a5a5' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") 10 10, auto;
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23d4a5a5' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3Cpath fill='%23c49393' d='M1 1 L1 7 L5 4 Z'/%3E%3C/svg%3E") 1 1, auto;
         }
 
         ::-webkit-scrollbar { width: 10px; }
@@ -173,6 +173,21 @@
             margin-top: 0.8rem;
             font-style: italic;
         }
+
+        /* cursor trail */
+        .trail {
+            position: fixed;
+            pointer-events: none;
+            font-size: 10px;
+            color: #d4a5a5;
+            opacity: 0.6;
+            animation: trail-fade 0.8s ease-out forwards;
+            z-index: 9999;
+        }
+        @keyframes trail-fade {
+            0% { opacity: 0.5; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.3); }
+        }
     </style>
 </head>
 <body>
@@ -226,6 +241,21 @@
             sessionStorage.clear();
             window.location.href = "./" + "?" + Date.now();
         }
+
+        // cursor trail
+        let lastTrail = 0;
+        document.addEventListener('mousemove', (e) => {
+            const now = Date.now();
+            if (now - lastTrail < 50) return;
+            lastTrail = now;
+            const trail = document.createElement('div');
+            trail.className = 'trail';
+            trail.textContent = '♡';
+            trail.style.left = (e.clientX + 5) + 'px';
+            trail.style.top = (e.clientY + 5) + 'px';
+            document.body.appendChild(trail);
+            setTimeout(() => trail.remove(), 800);
+        });
     </script>
 </body>
 </html>
