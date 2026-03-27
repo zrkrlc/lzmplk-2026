@@ -377,14 +377,25 @@
         const SAVE_KEY = 'afterclass-save';
 
         function saveGame() {
-            localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+            const data = {
+                state: state,
+                transcript: document.getElementById('output').innerHTML
+            };
+            localStorage.setItem(SAVE_KEY, JSON.stringify(data));
         }
 
         function loadGame() {
             const saved = localStorage.getItem(SAVE_KEY);
             if (saved) {
-                const loaded = JSON.parse(saved);
-                Object.assign(state, loaded);
+                const data = JSON.parse(saved);
+                // Handle old saves (just state) vs new saves (state + transcript)
+                if (data.state) {
+                    Object.assign(state, data.state);
+                    document.getElementById('output').innerHTML = data.transcript || '';
+                } else {
+                    // Old format: data IS the state
+                    Object.assign(state, data);
+                }
                 return true;
             }
             return false;
@@ -1379,7 +1390,12 @@
             const resumed = loadGame();
             updateDisplay();
             if (resumed) {
-                addOutput('', `<em>Game resumed...</em>`);
+                // Transcript already restored by loadGame
+                // Handle win state
+                if (state.won) {
+                    document.getElementById('inputArea').style.display = 'none';
+                    document.getElementById('hints').innerHTML = '';
+                }
             } else {
                 addOutput('', `Welcome to ★ AFTER CLASS ★<br><br>Your shift at Maid Latte was going fine until...<br><br>Your tiny plushie mascot, <strong>Uchūjin-kun</strong>, fell out of your bag. Now it's bouncing from room to room — dining area, counter, kitchen — like it has somewhere to be.<br><br>Catch it before Usui sees it!<br><br>(Type HELP for commands)`);
             }
