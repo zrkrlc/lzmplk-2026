@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>★ 🎂 ★</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+
+        * {
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath fill='%23d4a5a5' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") 10 10, auto;
+        }
+
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f5e6d3; }
+        ::-webkit-scrollbar-thumb {
+            background: #d4a5a5;
+            border-radius: 5px;
+            border: 2px solid #f5e6d3;
+        }
+
+        body {
+            font-family: Georgia, serif;
+            background: #faf8f5;
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(212, 165, 165, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(180, 165, 212, 0.1) 0%, transparent 50%);
+            color: #4a4a4a;
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 1rem;
+            line-height: 1.7;
+            text-align: center;
+            min-height: calc(100vh - 4rem);
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            font-family: 'Comic Neue', cursive;
+            color: #6b5b6b;
+            letter-spacing: 2px;
+            font-size: 2rem;
+        }
+
+        .content {
+            flex: 1;
+            background: #fff;
+            border: 2px dashed #d4a5a5;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .content::before {
+            content: "♡ ♡ ♡";
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #faf8f5;
+            padding: 0 1rem;
+            color: #d4a5a5;
+            font-size: 0.8rem;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px dashed #e0d0d0;
+            margin: 1.5rem 0;
+        }
+
+        .blink {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .celebration {
+            font-size: 2.5rem;
+            margin: 1rem 0;
+            animation: bounce 0.5s ease infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+
+        .message {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin: 1.5rem 0;
+        }
+
+        .photo-area {
+            background: #f5e6d3;
+            border: 3px solid #d4a5a5;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-area img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .audio-player {
+            margin: 1.5rem 0;
+        }
+
+        .gift-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            letter-spacing: 2px;
+            font-size: 1rem;
+        }
+
+        .gift-box small {
+            display: block;
+            margin-top: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .blog-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #aaa;
+        }
+
+        .blog-footer .divider {
+            color: #d4a5a5;
+            margin: 0.5rem 0;
+        }
+
+        .visitor-counter {
+            font-family: 'Courier New', monospace;
+            background: #333;
+            color: #0f0;
+            padding: 0.2rem 0.5rem;
+            display: inline-block;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+        }
+
+        .blogroll {
+            margin-top: 0.8rem;
+        }
+
+        .blogroll a {
+            color: #b4a5b4;
+            text-decoration: none;
+            margin: 0 0.3rem;
+        }
+
+        .blogroll a:hover {
+            color: #d4a5a5;
+            text-decoration: underline;
+        }
+
+        .hashtag {
+            margin-top: 0.8rem;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>★ HAPPY BIRTHDAY ★</h1>
+
+    <div class="content">
+        <div class="celebration">🎂🎉✨🎊🎁</div>
+
+        <p class="message">
+            (birthday message goes here)
+        </p>
+
+        <hr>
+
+        <div class="photo-area">
+            <p>(photo goes here)</p>
+        </div>
+
+        <div class="audio-player">
+            <p><em>♪ now playing: With or Without You - U2 ♪</em></p>
+            <!-- <audio controls autoplay loop>
+                <source src="assets/u2.mp3" type="audio/mpeg">
+            </audio> -->
+        </div>
+
+        <hr>
+
+        <p><strong>your gift:</strong></p>
+        <div class="gift-box">
+            XXXXX-XXXXX-XXXXX<br>
+            <small>Tiny Glade (Steam Key)</small>
+        </div>
+
+        <p><em>i love u <span class="blink">♡</span></em></p>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="blog-footer">
+        <div class="divider">─ ･ ｡ﾟ☆: *.☽ .* :☆ﾟ. ─</div>
+        <div class="visitor-counter">visitors: 000005</div>
+        <div class="blogroll">
+            <a href="index.html">← start</a> |
+            <a href="#" onclick="restartAll(); return false;">restart?</a>
+        </div>
+        <div class="hashtag">#fvckinerd</div>
+    </div>
+
+    <script>
+        function restartAll() {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = "./" + "?" + Date.now();
+        }
+    </script>
+</body>
+</html>

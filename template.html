@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html class="staticrypt-html">
+    <head>
+        <meta charset="utf-8" />
+        <title>/*[|template_title|]*/0</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <!-- do not cache this page -->
+        <meta http-equiv="cache-control" content="max-age=0" />
+        <meta http-equiv="cache-control" content="no-cache" />
+        <meta http-equiv="expires" content="0" />
+        <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+        <meta http-equiv="pragma" content="no-cache" />
+
+        <style>
+            /* ═══════════════════════════════════════════════════════════
+               EARLY 2000s MANILA BLOG AESTHETIC
+               #fvckinerd energy — not glittery, but warm
+               ═══════════════════════════════════════════════════════════ */
+
+            @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+
+            * {
+                cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath fill='%23d4a5a5' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") 10 10, auto;
+            }
+
+            /* custom scrollbar */
+            ::-webkit-scrollbar { width: 10px; }
+            ::-webkit-scrollbar-track { background: #f5e6d3; }
+            ::-webkit-scrollbar-thumb {
+                background: #d4a5a5;
+                border-radius: 5px;
+                border: 2px solid #f5e6d3;
+            }
+            ::-webkit-scrollbar-thumb:hover { background: #c49393; }
+
+            .staticrypt-html {
+                height: 100%;
+            }
+
+            .staticrypt-body {
+                height: 100%;
+                margin: 0;
+                background: #faf8f5;
+                background-image:
+                    radial-gradient(circle at 20% 80%, rgba(212, 165, 165, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(180, 165, 212, 0.1) 0%, transparent 50%);
+            }
+
+            .staticrypt-content {
+                height: 100%;
+                font-family: Georgia, 'Times New Roman', serif;
+                color: #4a4a4a;
+                -webkit-font-smoothing: antialiased;
+            }
+
+            .staticrypt-page {
+                max-width: 500px;
+                padding: 2rem 1rem;
+                margin: auto;
+                box-sizing: border-box;
+            }
+
+            /* ═══ HEADER ═══ */
+            .blog-header {
+                text-align: center;
+                margin-bottom: 1.5rem;
+            }
+
+            .blog-header h1 {
+                font-family: 'Comic Neue', cursive;
+                font-size: 1.8rem;
+                color: #6b5b6b;
+                margin: 0;
+                letter-spacing: 2px;
+            }
+
+            .marquee-container {
+                overflow: hidden;
+                background: linear-gradient(90deg, transparent, rgba(212, 165, 165, 0.2), transparent);
+                padding: 0.3rem 0;
+                margin: 0.5rem 0;
+            }
+
+            .marquee {
+                display: inline-block;
+                white-space: nowrap;
+                animation: marquee 15s linear infinite;
+                font-size: 0.85rem;
+                color: #8b7b8b;
+            }
+
+            @keyframes marquee {
+                0% { transform: translateX(100%); }
+                100% { transform: translateX(-100%); }
+            }
+
+            /* ═══ MAIN FORM BOX ═══ */
+            .staticrypt-form {
+                background: #fff;
+                border: 2px dashed #d4a5a5;
+                padding: 2rem;
+                text-align: center;
+                position: relative;
+            }
+
+            .staticrypt-form::before {
+                content: "҉ ҉ ҉";
+                position: absolute;
+                top: -12px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #faf8f5;
+                padding: 0 1rem;
+                color: #d4a5a5;
+                font-size: 0.8rem;
+            }
+
+            .staticrypt-title {
+                font-family: 'Comic Neue', cursive;
+                font-size: 1.3rem;
+                color: #6b5b6b;
+                margin: 0 0 0.5rem 0;
+            }
+
+            .staticrypt-instructions {
+                font-size: 0.9rem;
+                color: #8b7b8b;
+                line-height: 1.6;
+            }
+
+            .staticrypt-instructions p {
+                margin: 0.5rem 0;
+            }
+
+            .staticrypt-hr {
+                border: none;
+                border-top: 1px dashed #e0d0d0;
+                margin: 1.5rem 0;
+            }
+
+            /* ═══ PASSWORD INPUT ═══ */
+            .staticrypt-password-container {
+                position: relative;
+                background: #faf8f5;
+                border: 1px dashed #ccc;
+                margin: 0 0 1rem;
+            }
+
+            .staticrypt-form input[type="password"],
+            .staticrypt-form input[type="text"] {
+                background: transparent;
+                border: 0;
+                font-family: 'Courier New', monospace;
+                font-size: 1rem;
+                padding: 0.8rem 2.5rem 0.8rem 0.8rem;
+                width: 100%;
+                box-sizing: border-box;
+                outline: none;
+                color: #4a4a4a;
+            }
+
+            .staticrypt-form input::placeholder {
+                color: #aaa;
+                font-style: italic;
+            }
+
+            .staticrypt-toggle-password-visibility {
+                cursor: pointer;
+                height: 18px;
+                width: 18px;
+                opacity: 0.5;
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            .staticrypt-toggle-password-visibility:hover {
+                opacity: 0.8;
+            }
+
+            /* ═══ DECRYPT BUTTON ═══ */
+            .staticrypt-decrypt-button {
+                font-family: 'Comic Neue', cursive;
+                font-size: 1rem;
+                font-weight: bold;
+                background: #d4a5a5;
+                color: #fff;
+                border: none;
+                padding: 0.8rem 2rem;
+                cursor: pointer;
+                letter-spacing: 1px;
+                transition: all 0.2s ease;
+            }
+
+            .staticrypt-decrypt-button:hover {
+                background: #c49393;
+                transform: scale(1.02);
+            }
+
+            .staticrypt-decrypt-button:active {
+                transform: scale(0.98);
+            }
+
+            /* ═══ REMEMBER ME ═══ */
+            label.staticrypt-remember {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 1rem;
+                font-size: 0.85rem;
+                color: #8b7b8b;
+            }
+
+            .staticrypt-remember input[type="checkbox"] {
+                margin-right: 0.5rem;
+                accent-color: #d4a5a5;
+            }
+
+            /* ═══ FOOTER ═══ */
+            .blog-footer {
+                margin-top: 1.5rem;
+                text-align: center;
+                font-size: 0.75rem;
+                color: #aaa;
+            }
+
+            .blog-footer .divider {
+                color: #d4a5a5;
+                margin: 0.5rem 0;
+            }
+
+            .visitor-counter {
+                font-family: 'Courier New', monospace;
+                background: #333;
+                color: #0f0;
+                padding: 0.2rem 0.5rem;
+                display: inline-block;
+                font-size: 0.7rem;
+                letter-spacing: 2px;
+            }
+
+            .blogroll {
+                margin-top: 0.8rem;
+            }
+
+            .blogroll a {
+                color: #b4a5b4;
+                text-decoration: none;
+                margin: 0 0.3rem;
+            }
+
+            .blogroll a:hover {
+                color: #d4a5a5;
+                text-decoration: underline;
+            }
+
+            .hashtag {
+                margin-top: 0.8rem;
+                font-style: italic;
+            }
+
+            /* ═══ ASCII ART ═══ */
+            .ascii-art {
+                font-family: monospace;
+                font-size: 0.6rem;
+                color: #d4a5a5;
+                line-height: 1;
+                margin: 1rem 0;
+                white-space: pre;
+            }
+
+            /* ═══ LOADING SPINNER ═══ */
+            .staticrypt-spinner-container {
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                background: #faf8f5;
+            }
+
+            .staticrypt-spinner {
+                width: 2rem;
+                height: 2rem;
+                border: 3px solid #f5e6d3;
+                border-top-color: #d4a5a5;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+
+            @keyframes spin {
+                100% { transform: rotate(360deg); }
+            }
+
+            .loading-text {
+                margin-top: 1rem;
+                font-family: 'Comic Neue', cursive;
+                color: #8b7b8b;
+                font-size: 0.9rem;
+            }
+
+            /* ═══ BLINK ═══ */
+            .blink {
+                animation: blink 1.2s step-end infinite;
+            }
+
+            @keyframes blink {
+                50% { opacity: 0; }
+            }
+
+            .hidden {
+                display: none !important;
+            }
+
+            /* ═══ RESPONSIVE ═══ */
+            @media (max-width: 540px) {
+                .staticrypt-page {
+                    padding: 1rem;
+                }
+                .staticrypt-form {
+                    padding: 1.5rem 1rem;
+                }
+                .blog-header h1 {
+                    font-size: 1.4rem;
+                }
+            }
+        </style>
+    </head>
+
+    <body class="staticrypt-body">
+        <div id="staticrypt_loading" class="staticrypt-spinner-container">
+            <div class="staticrypt-spinner"></div>
+            <div class="loading-text">loading<span class="blink">...</span></div>
+        </div>
+
+        <div id="staticrypt_content" class="staticrypt-content hidden">
+            <div class="staticrypt-page">
+
+                <!-- HEADER -->
+                <div class="blog-header">
+                    <h1>★ /*[|template_title|]*/0 ★</h1>
+                    <div class="marquee-container">
+                        <span class="marquee">♡ welcome to my secret page ♡ u found it ♡ now enter the password ♡ welcome to my secret page ♡</span>
+                    </div>
+                </div>
+
+                <!-- MAIN FORM -->
+                <div class="staticrypt-form">
+                    <div class="staticrypt-instructions">
+                        <p class="staticrypt-title">this page is <span class="blink">protected</span></p>
+                        <p>/*[|template_instructions|]*/0</p>
+                    </div>
+
+                    <hr class="staticrypt-hr" />
+
+                    <form id="staticrypt-form" action="#" method="post">
+                        <div class="staticrypt-password-container">
+                            <input
+                                id="staticrypt-password"
+                                type="password"
+                                name="password"
+                                placeholder="/*[|template_placeholder|]*/0"
+                                autofocus
+                            />
+                            <img
+                                class="staticrypt-toggle-password-visibility"
+                                alt="/*[|template_toggle_show|]*/0"
+                                title="/*[|template_toggle_show|]*/0"
+                                src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iIzhiN2I4YiIgZD0iTTM4LjggNS4xQzI4LjQtMy4xIDEzLjMtMS4yIDUuMSA5LjJTLTEuMiAzNC43IDkuMiA0Mi45bDU5MiA0NjRjMTAuNCA4LjIgMjUuNSA2LjMgMzMuNy00LjFzNi4zLTI1LjUtNC4xLTMzLjdMNTI1LjYgMzg2LjdjMzkuNi00MC42IDY2LjQtODYuMSA3OS45LTExOC40YzMuMy03LjkgMy4zLTE2LjcgMC0yNC42Yy0xNC45LTM1LjctNDYuMi04Ny43LTkzLTEzMS4xQzQ2NS41IDY4LjggNDAwLjggMzIgMzIwIDMyYy02OC4yIDAtMTI1IDI2LjMtMTY5LjMgNjAuOEwzOC44IDUuMXpNMjIzLjEgMTQ5LjVDMjQ4LjYgMTI2LjIgMjgyLjcgMTEyIDMyMCAxMTJjNzkuNSAwIDE0NCA2NC41IDE0NCAxNDRjMCAyNC45LTYuMyA0OC4zLTE3LjQgNjguN0w0MDggMjk0LjVjOC40LTE5LjMgMTAuNi00MS40IDQuOC02My4zYy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM2MwIDEwLjItMi40IDE5LjgtNi42IDI4LjNsLTkwLjMtNzAuOHpNMzczIDM4OS45Yy0xNi40IDYuNS0zNC4zIDEwLjEtNTMgMTAuMWMtNzkuNSAwLTE0NC02NC41LTE0NC0xNDRjMC02LjkgLjUtMTMuNiAxLjQtMjAuMkw4My4xIDE2MS41QzYwLjMgMTkxLjIgNDQgMjIwLjggMzQuNSAyNDMuN2MtMy4zIDcuOS0zLjMgMTYuNyAwIDI0LjZjMTQuOSAzNS43IDQ2LjIgODcuNyA5MyAxMzEuMUMxNzQuNSA0NDMuMiAyMzkuMiA0ODAgMzIwIDQ4MGM0Ny44IDAgODkuOS0xMi45IDEyNi4yLTMyLjVMMzczIDM4OS45eiIvPjwvc3ZnPg=="
+                            />
+                        </div>
+
+                        <label id="staticrypt-remember-label" class="staticrypt-remember hidden">
+                            <input id="staticrypt-remember" type="checkbox" name="remember" />
+                            /*[|template_remember|]*/0
+                        </label>
+
+                        <input type="submit" class="staticrypt-decrypt-button" value="/*[|template_button|]*/0" />
+                    </form>
+
+                    <div class="ascii-art">
+    (\(\
+    ( -.- )
+    o_(")(")
+                    </div>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="blog-footer">
+                    <div class="divider">─ ･ ｡ﾟ☆: *.☽ .* :☆ﾟ. ─</div>
+                    <div class="visitor-counter">visitors: 000001</div>
+                    <div class="blogroll">
+                        <a href="#">about</a> |
+                        <a href="#">links</a> |
+                        <a href="#" onclick="clearAndReload(); return false;">restart?</a>
+                    </div>
+                    <div class="hashtag">#fvckinerd</div>
+                </div>
+
+            </div>
+        </div>
+
+        <script>
+            // clear localStorage and reload (for testing / restart)
+            function clearAndReload() {
+                localStorage.removeItem("staticrypt_expiration");
+                localStorage.removeItem("staticrypt_passphrase");
+                location.reload();
+            }
+
+            // these variables will be filled when generating the file - the template format is '/*[|variable_name|]*/0'
+            const staticryptInitiator = /*[|js_staticrypt|]*/ 0;
+            const templateError = "/*[|template_error|]*/0",
+                templateToggleAltShow = "/*[|template_toggle_show|]*/0",
+                templateToggleAltHide = "/*[|template_toggle_hide|]*/0",
+                isRememberEnabled = /*[|is_remember_enabled|]*/ 0,
+                staticryptConfig = /*[|staticrypt_config|]*/ 0;
+
+            // you can edit these values to customize some of the behavior of StatiCrypt
+            const templateConfig = {
+                rememberExpirationKey: "staticrypt_expiration",
+                rememberPassphraseKey: "staticrypt_passphrase",
+                replaceHtmlCallback: null,
+                clearLocalStorageCallback: null,
+            };
+
+            // init the staticrypt engine
+            const staticrypt = staticryptInitiator.init(staticryptConfig, templateConfig);
+
+            // try to automatically decrypt on load if there is a saved password
+            window.onload = async function () {
+                const { isSuccessful } = await staticrypt.handleDecryptOnLoad();
+
+                // if we didn't decrypt anything on load, show the password prompt. Otherwise the content has already been
+                // replaced, no need to do anything
+                if (!isSuccessful) {
+                    // hide loading screen
+                    document.getElementById("staticrypt_loading").classList.add("hidden");
+                    document.getElementById("staticrypt_content").classList.remove("hidden");
+                    document.getElementById("staticrypt-password").focus();
+
+                    // show the remember me checkbox
+                    if (isRememberEnabled) {
+                        document.getElementById("staticrypt-remember-label").classList.remove("hidden");
+                    }
+                }
+            };
+
+            // toggle password visibility
+            const toggleIcon = document.querySelector(".staticrypt-toggle-password-visibility");
+            const imgSrcEyeClosed =
+                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iIzhiN2I4YiIgZD0iTTM4LjggNS4xQzI4LjQtMy4xIDEzLjMtMS4yIDUuMSA5LjJTLTEuMiAzNC43IDkuMiA0Mi45bDU5MiA0NjRjMTAuNCA4LjIgMjUuNSA2LjMgMzMuNy00LjFzNi4zLTI1LjUtNC4xLTMzLjdMNTI1LjYgMzg2LjdjMzkuNi00MC42IDY2LjQtODYuMSA3OS45LTExOC40YzMuMy03LjkgMy4zLTE2LjcgMC0yNC42Yy0xNC45LTM1LjctNDYuMi04Ny43LTkzLTEzMS4xQzQ2NS41IDY4LjggNDAwLjggMzIgMzIwIDMyYy02OC4yIDAtMTI1IDI2LjMtMTY5LjMgNjAuOEwzOC44IDUuMXpNMjIzLjEgMTQ5LjVDMjQ4LjYgMTI2LjIgMjgyLjcgMTEyIDMyMCAxMTJjNzkuNSAwIDE0NCA2NC41IDE0NCAxNDRjMCAyNC45LTYuMyA0OC4zLTE3LjQgNjguN0w0MDggMjk0LjVjOC40LTE5LjMgMTAuNi00MS40IDQuOC02My4zYy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM2MwIDEwLjItMi40IDE5LjgtNi42IDI4LjNsLTkwLjMtNzAuOHpNMzczIDM4OS45Yy0xNi40IDYuNS0zNC4zIDEwLjEtNTMgMTAuMWMtNzkuNSAwLTE0NC02NC41LTE0NC0xNDRjMC02LjkgLjUtMTMuNiAxLjQtMjAuMkw4My4xIDE2MS41QzYwLjMgMTkxLjIgNDQgMjIwLjggMzQuNSAyNDMuN2MtMy4zIDcuOS0zLjMgMTYuNyAwIDI0LjZjMTQuOSAzNS43IDQ2LjIgODcuNyA5MyAxMzEuMUMxNzQuNSA0NDMuMiAyMzkuMiA0ODAgMzIwIDQ4MGM0Ny44IDAgODkuOS0xMi45IDEyNi4yLTMyLjVMMzczIDM4OS45eiIvPjwvc3ZnPg==";
+            const imgSrcEyeOpened =
+                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NzYgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iIzhiN2I4YiIgZD0iTTI4OCAzMmMtODAuOCAwLTE0NS41IDM2LjgtMTkyLjYgODAuNkM0OC42IDE1NiAxNy4zIDIwOCAyLjUgMjQzLjdjLTMuMyA3LjktMy4zIDE2LjcgMCAyNC42QzE3LjMgMzA0IDQ4LjYgMzU2IDk1LjQgMzk5LjRDMTQyLjUgNDQzLjIgMjA3LjIgNDgwIDI4OCA0ODBzMTQ1LjUtMzYuOCAxOTIuNi04MC42YzQ2LjgtNDMuNSA3OC4xLTk1LjQgOTMtMTMxLjFjMy4zLTcuOSAzLjMtMTYuNyAwLTI0LjZjLTE0LjktMzUuNy00Ni4yLTg3LjctOTMtMTMxLjFDNDMzLjUgNjguOCAzNjguOCAzMiAyODggMzJ6TTE0NCAyNTZhMTQ0IDE0NCAwIDEgMSAyODggMCAxNDQgMTQ0IDAgMSAxIC0yODggMHptMTQ0LTY0YzAgMzUuMy0yOC43IDY0LTY0IDY0Yy03LjEgMC0xMy45LTEuMi0yMC4zLTMuM2MtNS41LTEuOC0xMS45IDEuNi0xMS43IDcuNGMuMyA2LjkgMS4zIDEzLjggMy4yIDIwLjdjMTMuNyA1MS4yIDY2LjQgODEuNiAxMTcuNiA2Ny45czgxLjYtNjYuNCA2Ny45LTExNy42Yy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM3oiLz48L3N2Zz4=";
+            toggleIcon.addEventListener("click", function () {
+                const passwordInput = document.getElementById("staticrypt-password");
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    toggleIcon.src = imgSrcEyeOpened;
+                    toggleIcon.alt = templateToggleAltHide;
+                    toggleIcon.title = templateToggleAltHide;
+                } else {
+                    passwordInput.type = "password";
+                    toggleIcon.src = imgSrcEyeClosed;
+                    toggleIcon.alt = templateToggleAltShow;
+                    toggleIcon.title = templateToggleAltShow;
+                }
+            });
+
+            // handle password form submission
+            document.getElementById("staticrypt-form").addEventListener("submit", async function (e) {
+                e.preventDefault();
+
+                const password = document.getElementById("staticrypt-password").value,
+                    isRememberChecked = document.getElementById("staticrypt-remember").checked;
+
+                const { isSuccessful } = await staticrypt.handleDecryptionOfPage(password, isRememberChecked);
+
+                if (!isSuccessful) {
+                    alert(templateError);
+                }
+            });
+        </script>
+    </body>
+</html>

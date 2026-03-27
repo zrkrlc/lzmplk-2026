@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>resetting...</title>
+    <style>
+        body {
+            font-family: Georgia, serif;
+            background: #faf8f5;
+            color: #6b5b6b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <p>clearing memory...</p>
+        <p><small>redirecting in a sec~</small></p>
+    </div>
+    <script>
+        // nuke everything
+        localStorage.clear();
+        sessionStorage.clear();
+
+        // clear all cookies for this path
+        document.cookie.split(";").forEach(c => {
+            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+        });
+
+        setTimeout(() => {
+            window.location.href = "./index.html?" + Date.now();  // cache bust
+        }, 1000);
+    </script>
+</body>
+</html>

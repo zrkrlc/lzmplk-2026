@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>★ ??? ★</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+
+        * {
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath fill='%23d4a5a5' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") 10 10, auto;
+        }
+
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f5e6d3; }
+        ::-webkit-scrollbar-thumb {
+            background: #d4a5a5;
+            border-radius: 5px;
+            border: 2px solid #f5e6d3;
+        }
+
+        body {
+            font-family: Georgia, serif;
+            background: #faf8f5;
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(212, 165, 165, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(180, 165, 212, 0.1) 0%, transparent 50%);
+            color: #4a4a4a;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 1rem;
+            line-height: 1.7;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h1 {
+            font-family: 'Comic Neue', cursive;
+            color: #6b5b6b;
+            letter-spacing: 2px;
+            font-size: 3rem;
+            margin: 0;
+        }
+
+        .content {
+            background: #fff;
+            border: 2px dashed #d4a5a5;
+            padding: 2rem;
+            position: relative;
+            margin: 1rem 0;
+        }
+
+        .content::before {
+            content: "҉ ҉ ҉";
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #faf8f5;
+            padding: 0 1rem;
+            color: #d4a5a5;
+            font-size: 0.8rem;
+        }
+
+        .ascii-shrug {
+            font-family: monospace;
+            font-size: 1.2rem;
+            color: #8b7b8b;
+            margin: 1rem 0;
+        }
+
+        .tease {
+            font-style: italic;
+            color: #8b7b8b;
+            font-size: 0.9rem;
+        }
+
+        .blink {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .home-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.8rem 2rem;
+            background: #d4a5a5;
+            color: #fff;
+            text-decoration: none;
+            font-family: 'Comic Neue', cursive;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+        }
+
+        .home-link:hover {
+            background: #c49393;
+            transform: scale(1.02);
+        }
+
+        .blog-footer {
+            margin-top: 1.5rem;
+            font-size: 0.75rem;
+            color: #aaa;
+        }
+
+        .blog-footer .divider {
+            color: #d4a5a5;
+            margin: 0.5rem 0;
+        }
+
+        .hashtag {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>4<span class="blink">0</span>4</h1>
+
+    <div class="content">
+        <div class="ascii-shrug">¯\_(ツ)_/¯</div>
+
+        <p>there's nothing here<span class="blink">...</span></p>
+
+        <p class="tease">or is there? 👀</p>
+
+        <p class="tease">(hint: no cheating! go back to the start~)</p>
+
+        <a href="./" class="home-link">← go back</a>
+    </div>
+
+    <div class="blog-footer">
+        <div class="divider">─ ･ ｡ﾟ☆: *.☽ .* :☆ﾟ. ─</div>
+        <div class="hashtag">#fvckinerd</div>
+    </div>
+</body>
+</html>

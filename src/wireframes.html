@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maid Latte — Room Wireframes</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            background: #1a1a2e;
+            color: #eee;
+            font-family: 'Courier New', monospace;
+            padding: 2rem;
+            line-height: 1.4;
+        }
+        h1 { color: #ff6b9d; text-align: center; }
+        h2 { color: #ffd93d; margin-top: 3rem; }
+        .room {
+            background: #0f0f1a;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+        pre {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.3;
+            white-space: pre;
+        }
+        .note {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        .current {
+            border-color: #666;
+        }
+        .proposed {
+            border-color: #ff6b9d;
+        }
+        .label {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .label.current { background: #333; }
+        .label.proposed { background: #ff6b9d33; color: #ff6b9d; }
+    </style>
+</head>
+<body>
+    <h1>🎀 Maid Latte — Room Wireframes</h1>
+
+    <!-- DINING -->
+    <h2>DINING AREA</h2>
+
+    <span class="label current">CURRENT</span>
+    <div class="room current">
+<pre>
+  ╔══════════════════════════════════════╗
+  ║           MAID LATTE CAFE            ║
+  ╠══════════════════════════════════════╣
+  ║  ┌─────┐   ┌─────┐   ┌─────┐        ║
+  ║  │ T1  │   │ T2  │   │ T3  │        ║
+  ║  └─────┘   └─────┘   └─────┘        ║
+  ║                    ★ mascot          ║
+  ║         [ COUNTER → ]                ║
+  ║         ═══════════════              ║
+  ║                                      ║
+  ║             [YOU]                    ║
+  ╚══════════════════════════════════════╝
+</pre>
+    </div>
+
+    <span class="label proposed">PROPOSED</span>
+    <div class="room proposed">
+<pre>
+  ╔═════════════════════════════════════════════════════════════╗
+  ║            ✿  M A I D   L A T T E   C A F E  ✿              ║
+  ╠═════════════════════════════════════════════════════════════╣
+  ║                                              ┌────────────┐ ║
+  ║   ┌────────┐    ┌────────┐    ┌────────┐    │░░░░░░░░░░░░│ ║
+  ║   │ ♡    ♡ │    │   ☕   │    │  📱    │    │░░ window ░░│ ║
+  ║   │   T1   │    │   T2   │    │   T3   │    │░░░░░░░░░░░░│ ║
+  ║   │ couple │    │ salary │    │ girls  │    └────────────┘ ║
+  ║   └────────┘    └────────┘    └────────┘                   ║
+  ║      🌸             🌸            🌸           ☕ menu      ║
+  ║                                               board        ║
+  ║   ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─    ║
+  ║                                                             ║
+  ║                  ══════════════════════                     ║
+  ║                  ║    [ COUNTER → ]   ║                     ║
+  ║                  ══════════════════════                     ║
+  ║                                                             ║
+  ║                         [YOU]                               ║
+  ║                           ▲                                 ║
+  ╚═════════════════════════════════════════════════════════════╝
+
+  Mascot visible: ★ under T2
+</pre>
+    </div>
+    <p class="note">Added: window, plants, customer hints, clearer navigation. Mascot indicator separate line.</p>
+
+    <!-- COUNTER -->
+    <h2>COUNTER</h2>
+
+    <span class="label current">CURRENT</span>
+    <div class="room current">
+<pre>
+  ╔══════════════════════════════════════╗
+  ║              COUNTER                 ║
+  ╠══════════════════════════════════════╣
+  ║                                      ║
+  ║    ┌────────────────────────┐        ║
+  ║    │   ☕  REGISTER  ☕     │        ║
+  ║    │                        │        ║
+  ║    └────────────────────────┘        ║
+  ║                                      ║
+  ║  ← DINING          KITCHEN →         ║
+  ║                                      ║
+  ║             [YOU]                    ║
+  ╚══════════════════════════════════════╝
+</pre>
+    </div>
+
+    <span class="label proposed">PROPOSED</span>
+    <div class="room proposed">
+<pre>
+  ╔═════════════════════════════════════════════════════════════╗
+  ║                    ✿  C O U N T E R  ✿                      ║
+  ╠═════════════════════════════════════════════════════════════╣
+  ║                                                             ║
+  ║     ┌─────────────────────────────────────────────────┐     ║
+  ║     │  ┌──────┐                           ┌───────┐   │     ║
+  ║     │  │ MENU │    ☕  ☕  ☕              │ TIPS  │   │     ║
+  ║     │  │parfat│                           │ $$$   │   │     ║
+  ║     │  │coffee│     [ REGISTER ]          └───────┘   │     ║
+  ║     │  │cake  │                                       │     ║
+  ║     │  └──────┘                                       │     ║
+  ║     └─────────────────────────────────────────────────┘     ║
+  ║                                                             ║
+  ║                          ┌─────┐                            ║
+  ║                          │ 😏  │  ← Usui                    ║
+  ║                          │     │    (leaning)               ║
+  ║                          └─────┘                            ║
+  ║                                                             ║
+  ║      ← DINING                              KITCHEN →        ║
+  ║                                            (through back)   ║
+  ║                                                             ║
+  ║                         [YOU]                               ║
+  ╚═════════════════════════════════════════════════════════════╝
+
+  Mascot visible: ★ on counter (Usui pokes it)
+</pre>
+    </div>
+    <p class="note">Added: Usui silhouette, menu board, tip jar, spatial clarity.</p>
+
+    <!-- KITCHEN -->
+    <h2>KITCHEN</h2>
+
+    <span class="label current">CURRENT</span>
+    <div class="room current">
+<pre>
+  ╔══════════════════════════════════════╗
+  ║              KITCHEN                 ║
+  ╠══════════════════════════════════════╣
+  ║                                      ║
+  ║    🍳 pots    📦 supplies            ║
+  ║                                      ║
+  ║    ┌────┐   ┌────┐                   ║
+  ║    │OVEN│   │ 🧤 │ ← apron           ║
+  ║    └────┘   └────┘                   ║
+  ║                    tray →  ▭         ║
+  ║         ← COUNTER                    ║
+  ║             [YOU]                    ║
+  ╚══════════════════════════════════════╝
+</pre>
+    </div>
+
+    <span class="label proposed">PROPOSED</span>
+    <div class="room proposed">
+<pre>
+  ╔═════════════════════════════════════════════════════════════╗
+  ║                    ✿  K I T C H E N  ✿                      ║
+  ╠═════════════════════════════════════════════════════════════╣
+  ║                                                             ║
+  ║   ┌──────────┐  ┌──────────┐  ┌──────────┐                  ║
+  ║   │ ~~~  ~~~ │  │  📦 📦   │  │  👗 👗   │  costumes       ║
+  ║   │   🍳     │  │ supplies │  │  🎀 🐱   │  (theme days)   ║
+  ║   │  pots    │  │          │  │ costumes │                  ║
+  ║   └──────────┘  └──────────┘  └──────────┘                  ║
+  ║        ~~~~ steam ~~~~                                      ║
+  ║                                                             ║
+  ║   ┌──────────────────┐         ┌─────┐                      ║
+  ║   │ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ │         │     │  ← apron (hook)     ║
+  ║   │      OVEN        │         │ 🧤  │                      ║
+  ║   │     [warm]       │         │     │     ▭ tray          ║
+  ║   └──────────────────┘         └─────┘                      ║
+  ║                                                             ║
+  ║                    ┌─────┐                                  ║
+  ║                    │ 🎀  │  ← Satsuki                       ║
+  ║                    │ ^^  │    (bouncing)                    ║
+  ║                    └─────┘                                  ║
+  ║                                                             ║
+  ║                    ← COUNTER                                ║
+  ║                      (back)                                 ║
+  ║                                                             ║
+  ║                         [YOU]                               ║
+  ╚═════════════════════════════════════════════════════════════╝
+
+  Mascot visible: ★ in treat cabinet!
+</pre>
+    </div>
+    <p class="note">Added: Satsuki, steam effect, costume rack (foreshadowing), clearer item locations.</p>
+
+    <hr style="margin: 3rem 0; border-color: #333;">
+
+    <h2>Notes</h2>
+    <ul>
+        <li>All proposed wireframes are wider — need to check mobile rendering</li>
+        <li>Emoji render differently across systems — may need fallback ASCII versions</li>
+        <li>Mascot indicator is now a separate line below the frame</li>
+        <li>Characters (Usui, Satsuki) have position in space now</li>
+    </ul>
+
+</body>
+</html>

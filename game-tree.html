@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE SHIFT — Game Tree</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            background: #0d1117;
+            color: #c9d1d9;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #58a6ff;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 1rem;
+        }
+        h2 {
+            color: #7ee787;
+            margin-top: 2rem;
+        }
+        .tree {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-size: 14px;
+            white-space: pre;
+        }
+        .highlight { color: #ffa657; }
+        .win { color: #7ee787; font-weight: bold; }
+        .action { color: #79c0ff; }
+        .state { color: #d2a8ff; }
+        .note { color: #8b949e; font-style: italic; }
+        table {
+            border-collapse: collapse;
+            margin: 1rem 0;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #30363d;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        th {
+            background: #21262d;
+            color: #58a6ff;
+        }
+        tr:nth-child(even) { background: #161b22; }
+        .legend {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #161b22;
+            border-radius: 6px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>THE SHIFT — Complete Game Tree</h1>
+
+    <p>A Maid Latte text adventure. <strong>70 reachable states, 0 dead ends.</strong></p>
+
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-color" style="background: #d2a8ff;"></div>
+            <span>State</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #79c0ff;"></div>
+            <span>Action</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #7ee787;"></div>
+            <span>Win State</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ffa657;"></div>
+            <span>Key Item</span>
+        </div>
+    </div>
+
+    <h2>Main Flow</h2>
+    <div class="tree">
+<span class="state">┌─────────────────────────────────────────────────────────────────────────────┐</span>
+<span class="state">│                              GAME START                                     │</span>
+<span class="state">│                                                                             │</span>
+<span class="state">│  Location: DINING    Mascot: TABLE2    Inventory: []    Hint Tier: 1       │</span>
+<span class="state">└─────────────────────────────────────────────────────────────────────────────┘</span>
+                                        │
+                    ┌───────────────────┼───────────────────┐
+                    │                   │                   │
+                    ▼                   ▼                   ▼
+            <span class="action">[LOOK around]</span>      <span class="action">[GO COUNTER]</span>       <span class="action">[CATCH bare]</span>
+                    │                   │                   │
+                    │                   │                   │ <span class="note">(fails, mascot moves)</span>
+                    │                   │                   │ <span class="note">(hint tier escalates)</span>
+                    ▼                   ▼                   │
+         <span class="note">"spot mascot"</span>          ┌───────┴───────┐        │
+                    │            │               │        │
+                    │            ▼               ▼        │
+                    │     <span class="action">[TALK USUI]</span>    <span class="action">[GO KITCHEN]</span>    │
+                    │            │               │        │
+                    │     ┌──────┼──────┐        │        │
+                    │     │      │      │        │        │
+                    │     ▼      ▼      ▼        ▼        │
+                    │  <span class="note">tier1</span>  <span class="note">tier2</span>  <span class="note">tier3</span>  ┌────────────┐  │
+                    │  <span class="note">vague</span>  <span class="note">clear</span>  <span class="note">EXPLICIT</span>     │            │  │
+                    │     │      │      │   <span class="action">[TALK SATSUKI]</span>  │
+                    │     │      │      │   <span class="note">"use soft!"</span>│  │
+                    │     └──────┴──────┴───────┤        │  │
+                    │                           │        │  │
+                    │                           ▼        ▼  │
+                    │                    <span class="action">[TAKE APRON]</span> ◄─────┘
+                    │                           │
+                    ▼                           ▼
+<span class="state">┌─────────────────────────────────────────────────────────────────────────────┐</span>
+<span class="state">│                           HAS <span class="highlight">APRON</span> IN INVENTORY                            │</span>
+<span class="state">└─────────────────────────────────────────────────────────────────────────────┘</span>
+                                        │
+                                        ▼
+                                 <span class="action">[GO DINING]</span>
+                                        │
+                                        ▼
+                              <span class="action">[Find Mascot Location]</span>
+                                        │
+                            <span class="note">(mascot cycles every 3 cmds)</span>
+                                        │
+                                        ▼
+                                <span class="action">[USE APRON]</span>
+                                        │
+                                        ▼
+<span class="win">┌─────────────────────────────────────────────────────────────────────────────┐</span>
+<span class="win">│                              ★ WIN STATE ★                                  │</span>
+<span class="win">│                                                                             │</span>
+<span class="win">│  Usui: "Interesting mascot, Misa-chan... The password is: puzzle3"         │</span>
+<span class="win">└─────────────────────────────────────────────────────────────────────────────┘</span>
+    </div>
+
+    <h2>State Space Analysis</h2>
+    <table>
+        <tr>
+            <th>Metric</th>
+            <th>Value</th>
+            <th>Notes</th>
+        </tr>
+        <tr>
+            <td>Total reachable states</td>
+            <td><strong>70</strong></td>
+            <td>3 locations × 5 mascot positions × 4 inventory combos + win states</td>
+        </tr>
+        <tr>
+            <td>Win states</td>
+            <td><strong>10</strong></td>
+            <td>One per mascot position × inventory state at catch time</td>
+        </tr>
+        <tr>
+            <td>Dead ends</td>
+            <td><strong>0</strong></td>
+            <td>Every state has path to WIN (validated by BFS)</td>
+        </tr>
+        <tr>
+            <td>Optimal solution</td>
+            <td><strong>4 steps</strong></td>
+            <td>GO KITCHEN → TAKE APRON → GO DINING → USE APRON</td>
+        </tr>
+        <tr>
+            <td>Worst case (max steps)</td>
+            <td><strong>4 steps</strong></td>
+            <td>From any state, WIN is ≤4 actions away</td>
+        </tr>
+    </table>
+
+    <h2>Progressive Disclosure</h2>
+    <table>
+        <tr>
+            <th>Failed Catches</th>
+            <th>Hint Tier</th>
+            <th>Usui Says</th>
+            <th>Satsuki Says</th>
+        </tr>
+        <tr>
+            <td>0-2</td>
+            <td>Tier 1 (vague)</td>
+            <td>"Lively today, isn't it?"</td>
+            <td>"So moe!"</td>
+        </tr>
+        <tr>
+            <td>3-5</td>
+            <td>Tier 2 (clearer)</td>
+            <td>"Maybe try a different approach?"</td>
+            <td>"Use something soft!"</td>
+        </tr>
+        <tr>
+            <td>6+</td>
+            <td>Tier 3 (explicit)</td>
+            <td>"Use the apron. Kitchen."</td>
+            <td>"THE APRON!"</td>
+        </tr>
+    </table>
+
+    <h2>Mascot Movement Cycle</h2>
+    <div class="tree">
+    <span class="note">Every 3 commands (if not caught):</span>
+
+    ┌─────────┐     ┌─────────┐     ┌─────────┐     ┌─────────┐     ┌─────────┐
+    │ TABLE2  │────▶│ TABLE1  │────▶│ TABLE3  │────▶│ COUNTER │────▶│ KITCHEN │
+    │ (start) │     │         │     │         │     │         │     │         │
+    └─────────┘     └─────────┘     └─────────┘     └─────────┘     └────┬────┘
+         ▲                                                               │
+         └───────────────────────────────────────────────────────────────┘
+                                    <span class="note">(loops forever)</span>
+    </div>
+
+    <h2>Command Parser Coverage</h2>
+    <table>
+        <tr>
+            <th>Category</th>
+            <th>Commands</th>
+        </tr>
+        <tr>
+            <td>Movement</td>
+            <td><code>GO DINING</code>, <code>GO COUNTER</code>, <code>GO KITCHEN</code></td>
+        </tr>
+        <tr>
+            <td>Look</td>
+            <td><code>LOOK</code>, <code>LOOK [target]</code>, <code>EXAMINE [target]</code></td>
+        </tr>
+        <tr>
+            <td>Talk</td>
+            <td><code>TALK USUI</code>, <code>TALK SATSUKI</code></td>
+        </tr>
+        <tr>
+            <td>Items</td>
+            <td><code>TAKE APRON</code>, <code>TAKE TRAY</code>, <code>USE APRON</code></td>
+        </tr>
+        <tr>
+            <td>Catch</td>
+            <td><code>CATCH</code>, <code>CATCH MASCOT</code></td>
+        </tr>
+        <tr>
+            <td>Meta</td>
+            <td><code>INVENTORY</code>, <code>HELP</code></td>
+        </tr>
+        <tr>
+            <td>Easter Eggs</td>
+            <td><code>PUNCH USUI</code>, <code>KISS USUI</code>, <code>YELL</code></td>
+        </tr>
+    </table>
+
+    <h2>Why No Dead Ends?</h2>
+    <ol>
+        <li><strong>Mascot loops infinitely</strong> — never escapes or disappears</li>
+        <li><strong>Apron always available</strong> — no preconditions to TAKE APRON</li>
+        <li><strong>Hints escalate</strong> — player eventually gets explicit instructions</li>
+        <li><strong>No consumables</strong> — apron doesn't break, can retry infinitely</li>
+        <li><strong>No timing failures</strong> — mascot movement creates urgency but not death</li>
+    </ol>
+
+    <p style="margin-top: 3rem; color: #8b949e; text-align: center;">
+        Validated by <code>validate_game_tree.py</code> using BFS exhaustive search.
+    </p>
+</body>
+</html>
