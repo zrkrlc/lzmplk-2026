@@ -10,7 +10,7 @@
            Matching main page theme
            ═══════════════════════════════════════════════════════════ */
 
-        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=VT323&family=Pacifico&family=Silkscreen&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=VT323&family=Pacifico&family=Silkscreen&family=Cutive+Mono&display=swap');
 
         * {
             box-sizing: border-box;
@@ -118,6 +118,7 @@
             flex: 1;
             min-width: 280px;
             max-width: 400px;
+            aspect-ratio: 4/3;
             border: 2px dashed #d4a5a5;
             padding: 0.5rem;
             background: #000;
@@ -137,6 +138,8 @@
         .room-desc {
             flex: 1;
             min-width: 200px;
+            max-height: 280px;
+            overflow-y: auto;
             border: 2px dashed #d4a5a5;
             padding: 1rem;
             font-size: 1rem;
@@ -150,41 +153,36 @@
             color: #c49393;
         }
 
+        /* Takeable/inspectable items */
+        .item {
+            font-family: 'Cutive Mono', monospace;
+            font-size: 0.95em;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #8b6914;
+            letter-spacing: 0.5px;
+        }
+
         .output {
             flex: 1;
             border: 2px dashed #d4a5a5;
             padding: 1rem;
             margin-bottom: 1rem;
-            min-height: 120px;
-            max-height: 220px;
+            min-height: 200px;
+            max-height: 350px;
             overflow-y: auto;
             font-size: 1rem;
             line-height: 1.6;
-            background: #fff;
-            background-image: url('assets/backgrounds/maid-sama-bg.png');
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: contain;
-            background-blend-mode: soft-light;
+            /* Stacked backgrounds: white overlay on top, image below, white base */
+            background:
+                linear-gradient(rgba(255,255,255,0.88), rgba(255,255,255,0.88)),
+                url('assets/backgrounds/maid-sama-bg.png') center/70% no-repeat,
+                #fff;
             font-family: 'Comic Neue', cursive;
-            position: relative;
-        }
-
-        .output::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.7);
-            pointer-events: none;
-            z-index: 0;
         }
 
         .output > * {
             position: relative;
-            z-index: 1;
         }
 
         .output .command {
@@ -414,7 +412,11 @@
             cabinetOpened: false,
             drawerOpened: false,
             talkedCustomer: false,
-            customerLookCount: 0
+            customerLookCount: 0,
+            // Room exploration state (for progressive disclosure)
+            diningLooked: false,
+            counterLooked: false,
+            kitchenLooked: false
         };
 
         const SAVE_KEY = 'afterclass-save';
@@ -558,7 +560,7 @@
                 desc += `The smirk is already deployed.<br>`;
 
                 if (state.apronRevealed && !state.inventory.includes('APRON')) {
-                    desc += `<br>An apron hangs on a hook by the kitchen door.`;
+                    desc += `<br>An <span class="item">apron</span> hangs on a hook by the kitchen door.`;
                 }
 
                 desc += `<br><br>EAST: <strong>DINING</strong> | Through back: <strong>KITCHEN</strong>`;
@@ -575,13 +577,13 @@
                 desc += `Pots, pans, cabinets along the wall. A drawer by the counter.<br>`;
 
                 if (!state.inventory.includes('KNIFE')) {
-                    desc += `A bread knife sits on the cutting board.<br>`;
+                    desc += `A <span class="item">bread knife</span> sits on the cutting board.<br>`;
                 }
 
                 if (state.cabinetOpened) {
                     let cabinetContents = [];
-                    if (!state.inventory.includes('BOWL')) cabinetContents.push('a mixing bowl');
-                    if (!state.inventory.includes('TREATS')) cabinetContents.push('some snacks');
+                    if (!state.inventory.includes('BOWL')) cabinetContents.push('a <span class="item">mixing bowl</span>');
+                    if (!state.inventory.includes('TREATS')) cabinetContents.push('some <span class="item">snacks</span>');
                     if (cabinetContents.length > 0) {
                         desc += `<br>The cabinet is open. Inside: ${cabinetContents.join(', ')}.`;
                     } else {
@@ -591,13 +593,13 @@
 
                 if (state.drawerOpened) {
                     if (!state.inventory.includes('BAG')) {
-                        desc += `<br>The drawer is open. Garbage bags and such.`;
+                        desc += `<br>The drawer is open. <span class="item">Garbage bags</span> and such.`;
                     } else {
                         desc += `<br>The drawer is open.`;
                     }
                 }
 
-                desc += `<br><br>Back to: <strong>COUNTER</strong>`;
+                desc += `<br><br>Back to: <strong>COUNTER</strong> | Back door: <strong>ALLEY</strong>`;
 
                 if (mascotVisible) {
                     desc += getMascotHint();
@@ -639,16 +641,18 @@
             tier3: `<span class="npc-usui">"Ayuzawa."</span><br>He's stopped smirking. Almost looks... concerned?<br><span class="npc-usui">"Whatever you're chasing, corner it first. Then use something soft."</span><br><br>A pause.<br><span class="npc-usui">"I don't like seeing you struggle."</span><br>The smirk comes back.<br><span class="npc-usui">"...Much. I don't like it much."</span>`
         };
 
-        // Satsuki dialogue - enthusiastic, moe-obsessed, but also a real person running a business
+        // Satsuki dialogue - progressive disclosure based on hint tier
         const SATSUKI_DIALOGUE = {
-            first: `<span class="npc-satsuki">"Misa-chan! Did you see it?!"</span><br>Her eyes are sparkling.<br><span class="npc-satsuki">"A MASCOT! In MY cafe! It's SO MOE!"</span><br><br>She clasps her hands together.<br><span class="npc-satsuki">"You know, I've always wanted a cafe mascot. Like those cat cafes in Akihabara!"</span><br><span class="npc-satsuki">"But Aoi-chan said it was 'unsanitary' and 'probably illegal'..."</span><br><br><span class="npc-satsuki">"Anyway! Catch it gently! Use something SOFT!"</span>`,
-            repeat: `<span class="npc-satsuki">"The apron! Use the apron!"</span><br>She gestures frantically at the hook.<br><br><span class="npc-satsuki">"I made that one myself, you know. Triple-stitched."</span><br><span class="npc-satsuki">"I put so much love into the costumes for this place..."</span><br><br><span class="npc-satsuki">"ANYWAY the apron won't hurt the little darling! Go go go!"</span>`,
-            // Extra dialogue when player just wants to chat
-            chat: [
-                `<span class="npc-satsuki">"Did I ever tell you why I opened this cafe?"</span><br>She stirs something.<br><span class="npc-satsuki">"I wanted to create a place where everyone could feel... special. Pampered."</span><br><span class="npc-satsuki">"The maid thing is just the wrapping paper. The gift is the feeling."</span><br>She winks. <span class="npc-satsuki">"Also I really like making costumes."</span>`,
-                `<span class="npc-satsuki">"You and Usui-kun, huh~"</span><br>She's grinning.<br><span class="npc-satsuki">"He's been coming here almost every day since he found out you work here."</span><br><span class="npc-satsuki">"Orders one coffee. Stays for hours. Tips extremely well."</span><br>She sighs.<br><span class="npc-satsuki">"That's love, Misa-chan. Or stalking. Same thing, really~"</span>`,
-                `<span class="npc-satsuki">"My nephew Aoi sometimes helps out here, you know."</span><br>She smiles.<br><span class="npc-satsuki">"He's... got his own style. Very particular about aesthetics."</span><br><span class="npc-satsuki">"Reminds me that everyone expresses love differently."</span>`
-            ]
+            tier1: {
+                first: `<span class="npc-satsuki">"Misa-chan! Did you see it?!"</span><br>Her eyes are sparkling.<br><span class="npc-satsuki">"A MASCOT! In MY cafe! It's SO MOE!"</span><br><br>She clasps her hands together.<br><span class="npc-satsuki">"You know, I've always wanted a cafe mascot. Like those cat cafes in Akihabara!"</span><br><span class="npc-satsuki">"But Aoi-chan said it was 'unsanitary' and 'probably illegal'..."</span><br><br><span class="npc-satsuki">"Anyway! You'll figure it out! You always do!"</span>`,
+                repeat: [
+                    `<span class="npc-satsuki">"Did I ever tell you why I opened this cafe?"</span><br>She stirs something.<br><span class="npc-satsuki">"I wanted to create a place where everyone could feel... special. Pampered."</span><br><span class="npc-satsuki">"The maid thing is just the wrapping paper. The gift is the feeling."</span><br>She winks. <span class="npc-satsuki">"Also I really like making costumes."</span>`,
+                    `<span class="npc-satsuki">"You and Usui-kun, huh~"</span><br>She's grinning.<br><span class="npc-satsuki">"He's been coming here almost every day since he found out you work here."</span><br><span class="npc-satsuki">"Orders one coffee. Stays for hours. Tips extremely well."</span><br>She sighs.<br><span class="npc-satsuki">"That's love, Misa-chan. Or stalking. Same thing, really~"</span>`,
+                    `<span class="npc-satsuki">"My nephew Aoi sometimes helps out here, you know."</span><br>She glances toward the dining area.<br><span class="npc-satsuki">"He's... got his own style. Very particular about aesthetics."</span><br><span class="npc-satsuki">"I think he might be here today, actually..."</span>`
+                ]
+            },
+            tier2: `<span class="npc-satsuki">"Hmm, that little thing is quick, isn't it?"</span><br>She taps her chin.<br><span class="npc-satsuki">"You know, when I catch stray threads, I use something soft..."</span><br>She trails off, distracted by something in the oven.`,
+            tier3: `<span class="npc-satsuki">"The apron! Use the apron!"</span><br>She gestures at the hook by the door.<br><br><span class="npc-satsuki">"I made that one myself, you know. Triple-stitched."</span><br><span class="npc-satsuki">"It won't hurt the little darling! Go go go!"</span>`
         };
 
         // ============================================================
@@ -940,12 +944,46 @@
         function handleLook(target) {
             if (!target || target === 'around' || target === 'room') {
                 updateDisplay();
-                // Reveal apron at counter
-                if (state.location === 'COUNTER' && !state.apronRevealed && !state.inventory.includes('APRON')) {
-                    state.apronRevealed = true;
-                    updateDisplay();
-                    return `You look around...<br><br>There's an apron hanging on a hook by the kitchen door. You hadn't noticed it before.`;
+
+                // Full room descriptions with progressive disclosure
+                if (state.location === 'DINING') {
+                    state.diningLooked = true;
+                    updateHints();
+                    let desc = `The main dining area of Maid Latte. Warm light, the smell of coffee and cake.<br><br>`;
+                    desc += `Three tables with <span class="item">customers</span>: a couple at Table 1, a tired salaryman at Table 2, and someone alone at Table 3, half-hidden behind a menu. Something familiar about that one...<br><br>`;
+                    desc += `A decorative <span class="item">fern</span> sits in the corner. The <span class="item">specials board</span> shows today's menu in pastel chalk.<br><br>`;
+                    desc += `To the west: COUNTER`;
+                    return desc;
                 }
+
+                if (state.location === 'COUNTER') {
+                    state.counterLooked = true;
+                    // Reveal apron on first look
+                    if (!state.apronRevealed && !state.inventory.includes('APRON')) {
+                        state.apronRevealed = true;
+                    }
+                    updateHints();
+                    let desc = `The service counter. <span class="item">Usui</span> is leaning against it, smirking at nothing in particular.<br><br>`;
+                    desc += `The <span class="item">espresso machine</span> hisses and gurgles. A <span class="item">display case</span> shows today's cakes. A <span class="item">tip jar</span> sits by the <span class="item">register</span>. Usui's <span class="item">coffee</span> cup sits untouched.<br><br>`;
+                    if (state.apronRevealed && !state.inventory.includes('APRON')) {
+                        desc += `An <span class="item">apron</span> hangs on a hook by the kitchen door.<br><br>`;
+                    }
+                    desc += `East: DINING | North: KITCHEN`;
+                    return desc;
+                }
+
+                if (state.location === 'KITCHEN') {
+                    state.kitchenLooked = true;
+                    updateHints();
+                    let desc = `<span class="item">Satsuki</span>'s domain. She's here, practically vibrating with excitement.<br><br>`;
+                    desc += `<span class="item">Cabinets</span> line the wall. A <span class="item">drawer</span> by the counter. <span class="item">Mixing bowls</span> stacked precariously. The <span class="item">sink</span> is spotless, the <span class="item">oven</span> hums softly.<br><br>`;
+                    desc += `<span class="item">Costumes</span> hang everywhere — cat ears, gothic dresses, things you'd rather not think about. A <span class="item">treat cabinet</span> in the corner.<br><br>`;
+                    desc += `A <span class="item">recipe book</span> sits open. A small <span class="item">shrine</span> with figurines and photos. A <span class="item">spice rack</span> organized by color.<br><br>`;
+                    desc += `A back door leads to the ALLEY.<br><br>`;
+                    desc += `South: COUNTER`;
+                    return desc;
+                }
+
                 return `You look around...`;
             }
 
@@ -964,7 +1002,7 @@
 
             if (target.includes('mascot') || target.includes('alien') || target.includes('uchujin')) {
                 if (isMascotVisible()) {
-                    return `A palm-sized alien plushie with big eyes and a knowing smirk.<br>Green body, silver antennae. A tiny cape.<br><br>You bought it at a capsule machine three weeks ago.<br>You told yourself it was "just cute" and had nothing to do with anyone.<br>You're a terrible liar.<br><br>...<br>It's looking at you with Usui's exact expression. How does a plushie do that?`;
+                    return `A palm-sized alien plushie with big eyes and a knowing smirk.<br>Green body, silver antennae, and a tuft of golden-blond hair that never looks anything other than perfect.<br>A tiny cape.<br><br>You bought it at a capsule machine three weeks ago.<br>You told yourself it was "just cute" and had nothing to do with anyone.<br>You're a terrible liar.<br><br>...<br>It's looking at you with Usui's exact expression. How does a plushie do that?`;
                 }
                 return `The little plushie isn't here. It must have bounced to another room.<br><br>You can still feel its judgmental stare somehow.`;
             }
@@ -1106,7 +1144,7 @@
                         if (state.inventory.includes('BAG')) {
                             return `The drawer is open. Twist ties, rubber bands. The usual kitchen stuff.`;
                         }
-                        return `The drawer is open. Garbage bags, twist ties, rubber bands.<br><br>The bags might come in handy for... something?`;
+                        return `The drawer is open. <span class="item">Garbage bags</span>, twist ties, rubber bands.<br><br>The bags might come in handy for... something?`;
                     }
                     return `A drawer by the counter. Probably kitchen supplies.`;
                 }
@@ -1117,8 +1155,8 @@
                 if (state.location === 'KITCHEN') {
                     if (state.cabinetOpened) {
                         let contents = [];
-                        if (!state.inventory.includes('BOWL')) contents.push('a metal mixing bowl');
-                        if (!state.inventory.includes('TREATS')) contents.push('some snacks');
+                        if (!state.inventory.includes('BOWL')) contents.push('a <span class="item">metal mixing bowl</span>');
+                        if (!state.inventory.includes('TREATS')) contents.push('some <span class="item">snacks</span>');
                         if (contents.length > 0) {
                             return `The cabinet is open. Inside: ${contents.join(', ')}.`;
                         }
@@ -1251,19 +1289,22 @@
                 const wasFirstTalk = !state.talkedSatsuki;
                 state.talkedSatsuki = true;
                 state.satsukiTalkCount = (state.satsukiTalkCount || 0) + 1;
+                const tier = getHintTier();
 
-                if (wasFirstTalk) {
-                    return SATSUKI_DIALOGUE.first;
+                // Progressive disclosure based on hint tier
+                if (tier === 1) {
+                    // No hints yet - character/moe excitement only
+                    if (wasFirstTalk) {
+                        return SATSUKI_DIALOGUE.tier1.first;
+                    }
+                    return SATSUKI_DIALOGUE.tier1.repeat[state.satsukiTalkCount % SATSUKI_DIALOGUE.tier1.repeat.length];
+                } else if (tier === 2) {
+                    // Vague hints
+                    return SATSUKI_DIALOGUE.tier2;
+                } else {
+                    // Explicit hints
+                    return SATSUKI_DIALOGUE.tier3;
                 }
-
-                // Subsequent talks - mix of hints and personality
-                if (state.satsukiTalkCount % 3 === 0) {
-                    // Personal chat
-                    const chat = SATSUKI_DIALOGUE.chat[state.satsukiTalkCount % SATSUKI_DIALOGUE.chat.length];
-                    return chat;
-                }
-
-                return SATSUKI_DIALOGUE.repeat;
             }
 
             if (target.includes('mascot') || target.includes('alien') || target.includes('uchujin')) {
@@ -1391,6 +1432,7 @@
                 }
                 // SUCCESS: trap mascot
                 state.mascotTrapped = true;
+                updateHints();
                 let response = `You bring the bowl down over Uchujin-kun!<br><br><strong>CLANG!</strong><br><br>`;
                 response += `The mascot is trapped! It scrabbles against the metal, tiny face pressed to the rim.<br><br>`;
                 response += `<span style="color:#b8860b">Now you just need something soft to wrap it up and carry it safely.</span>`;
@@ -1473,7 +1515,7 @@
                 }
                 state.cabinetOpened = true;
                 updateDisplay();
-                return `You open the cabinet.<br><br>Inside: a clean metal mixing bowl, and some snacks for staff breaks.`;
+                return `You open the cabinet.<br><br>Inside: a clean <span class="item">metal mixing bowl</span>, and some <span class="item">snacks</span> for staff breaks.`;
             }
 
             if (target.includes('drawer')) {
@@ -1485,7 +1527,7 @@
                 }
                 state.drawerOpened = true;
                 updateDisplay();
-                return `You slide the drawer open.<br><br>Garbage bags, twist ties, rubber bands. The usual kitchen stuff.`;
+                return `You slide the drawer open.<br><br><span class="item">Garbage bags</span>, twist ties, rubber bands. The usual kitchen stuff.`;
             }
 
             return `Open what?`;
@@ -1594,42 +1636,76 @@
 
         function updateHints() {
             let hints = 'try: ';
+            const tier = getHintTier();
 
             // Exploration hint - always available
             hints += `<span onclick="tryCommand('look around')">look around</span> `;
 
             if (state.location === 'DINING') {
                 hints += `<span onclick="tryCommand('go counter')">go counter</span> `;
+                // Only show after looking around
+                if (state.diningLooked) {
+                    hints += `<span onclick="tryCommand('look customer')">look customer</span> `;
+                    hints += `<span onclick="tryCommand('look fern')">look fern</span> `;
+                    hints += `<span onclick="tryCommand('look menu')">look menu</span> `;
+                }
                 if (isMascotVisible()) {
                     hints += `<span onclick="tryCommand('look mascot')">look mascot</span> `;
-                    if (state.mascotTrapped && state.inventory.includes('APRON')) {
-                        hints += `<span onclick="tryCommand('use apron')">use apron</span> `;
-                    } else if (state.inventory.includes('BOWL') && !state.mascotTrapped) {
-                        hints += `<span onclick="tryCommand('use bowl')">use bowl</span> `;
+                    // Solution hints only at tier 2+
+                    if (tier >= 2) {
+                        if (state.mascotTrapped && state.inventory.includes('APRON')) {
+                            hints += `<span onclick="tryCommand('use apron')">use apron</span> `;
+                        } else if (state.inventory.includes('BOWL') && !state.mascotTrapped) {
+                            hints += `<span onclick="tryCommand('use bowl')">use bowl</span> `;
+                        }
                     }
                 }
             } else if (state.location === 'COUNTER') {
-                hints += `<span onclick="tryCommand('talk usui')">talk usui</span> `;
+                hints += `<span onclick="tryCommand('go dining')">go dining</span> `;
                 hints += `<span onclick="tryCommand('go kitchen')">go kitchen</span> `;
+                // Only show after looking around
+                if (state.counterLooked) {
+                    hints += `<span onclick="tryCommand('talk usui')">talk usui</span> `;
+                    hints += `<span onclick="tryCommand('look display')">look display</span> `;
+                    hints += `<span onclick="tryCommand('look register')">look register</span> `;
+                    if (state.apronRevealed && !state.inventory.includes('APRON')) {
+                        hints += `<span onclick="tryCommand('take apron')">take apron</span> `;
+                    }
+                }
                 if (isMascotVisible()) {
-                    if (state.mascotTrapped && state.inventory.includes('APRON')) {
-                        hints += `<span onclick="tryCommand('use apron')">use apron</span> `;
-                    } else if (state.inventory.includes('BOWL') && !state.mascotTrapped) {
-                        hints += `<span onclick="tryCommand('use bowl')">use bowl</span> `;
+                    // Solution hints only at tier 2+
+                    if (tier >= 2) {
+                        if (state.mascotTrapped && state.inventory.includes('APRON')) {
+                            hints += `<span onclick="tryCommand('use apron')">use apron</span> `;
+                        } else if (state.inventory.includes('BOWL') && !state.mascotTrapped) {
+                            hints += `<span onclick="tryCommand('use bowl')">use bowl</span> `;
+                        }
                     }
                 }
             } else {
                 // KITCHEN
-                hints += `<span onclick="tryCommand('talk satsuki')">talk satsuki</span> `;
-                if (!state.cabinetOpened) {
-                    hints += `<span onclick="tryCommand('open cabinet')">open cabinet</span> `;
-                }
                 hints += `<span onclick="tryCommand('go counter')">go counter</span> `;
+                hints += `<span onclick="tryCommand('go alley')">go alley</span> `;
+                // Only show after looking around
+                if (state.kitchenLooked) {
+                    hints += `<span onclick="tryCommand('talk satsuki')">talk satsuki</span> `;
+                    hints += `<span onclick="tryCommand('look bowls')">look bowls</span> `;
+                    hints += `<span onclick="tryCommand('look costumes')">look costumes</span> `;
+                    if (!state.cabinetOpened) {
+                        hints += `<span onclick="tryCommand('open cabinet')">open cabinet</span> `;
+                    }
+                    if (!state.drawerOpened) {
+                        hints += `<span onclick="tryCommand('open drawer')">open drawer</span> `;
+                    }
+                }
                 if (isMascotVisible()) {
-                    if (state.mascotTrapped && state.inventory.includes('APRON')) {
-                        hints += `<span onclick="tryCommand('use apron')">use apron</span> `;
-                    } else if (state.inventory.includes('BOWL') && !state.mascotTrapped) {
-                        hints += `<span onclick="tryCommand('use bowl')">use bowl</span> `;
+                    // Solution hints only at tier 2+
+                    if (tier >= 2) {
+                        if (state.mascotTrapped && state.inventory.includes('APRON')) {
+                            hints += `<span onclick="tryCommand('use apron')">use apron</span> `;
+                        } else if (state.inventory.includes('BOWL') && !state.mascotTrapped) {
+                            hints += `<span onclick="tryCommand('use bowl')">use bowl</span> `;
+                        }
                     }
                 }
             }
@@ -1672,8 +1748,10 @@
         });
 
         function restartGame() {
-            localStorage.removeItem(SAVE_KEY);
-            location.reload();
+            if (confirm('Start over? Your progress will be lost.')) {
+                localStorage.removeItem(SAVE_KEY);
+                location.reload();
+            }
         }
 
         // ============================================================
