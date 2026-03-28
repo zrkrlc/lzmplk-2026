@@ -729,10 +729,8 @@
                 state.commandCount++;
             }
 
-            // Move mascot every N action commands
-            if (state.commandCount % MOVE_INTERVAL === 0 && !state.won && !isLookCommand) {
-                moveMascot();
-            }
+            // NOTE: Mascot movement happens in submitCommand() AFTER processing
+            // This ensures commands execute against current state
 
             // Win state - no more commands
             if (state.won) {
@@ -1767,7 +1765,28 @@
             const cmd = input.value;
             if (!cmd.trim()) return;
 
-            const response = processCommand(cmd);
+            // Track mascot state BEFORE command
+            const mascotWasHere = isMascotVisible();
+            const oldLocation = state.mascotLocation;
+
+            // Process command
+            let response = processCommand(cmd);
+
+            // Check if mascot should move AFTER command (not during!)
+            // Only move if: action command, hit interval, not won, not trapped
+            const verb = cmd.toLowerCase().trim().split(/\s+/)[0];
+            const isLookCommand = ['look','l','examine','x','listen','hear','smell','sniff','think','ponder','wait','z','inventory','i','inv','help','?'].includes(verb);
+
+            if (!isLookCommand && state.commandCount % MOVE_INTERVAL === 0 && !state.won && !state.mascotTrapped) {
+                moveMascot();
+                updateDisplay();
+
+                // Notify if mascot was here and bounced away
+                if (mascotWasHere && !isMascotVisible()) {
+                    response += `<br><br><em style="color:#b8860b">You hear tiny footsteps... Uchūjin-kun bounced to another room!</em>`;
+                }
+            }
+
             addOutput(cmd, response);
             saveGame();
             input.value = '';
