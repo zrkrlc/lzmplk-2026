@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
 """
-THE SHIFT — Game Tree Validator
+AFTER CLASS — Game Tree Validator
 
 Proves the game has no dead-ends by exhaustively exploring all reachable states
 and verifying each has a path to the win condition.
 
 Uses BFS to find shortest path from any state to WIN.
+
+NEW DESIGN (v2):
+- APRON at COUNTER, revealed by LOOK
+- BOWL in cabinet (KITCHEN), revealed by OPEN CABINET
+- Win sequence: USE BOWL (traps) → USE APRON (catches)
+- Red herrings: KNIFE, BAG, TREATS (fail gracefully, no softlock)
 """
 
 from dataclasses import dataclass, field
@@ -27,17 +33,23 @@ class GameState:
     """Immutable game state for hashability."""
     location: Location
     mascot_location: MascotLocation
-    has_apron: bool
-    has_tray: bool
-    mascot_caught: bool = False
+    apron_revealed: bool = False   # LOOK at counter reveals apron
+    has_apron: bool = False
+    cabinet_opened: bool = False   # OPEN CABINET reveals bowl
+    has_bowl: bool = False
+    mascot_trapped: bool = False   # BOWL traps mascot
+    mascot_caught: bool = False    # WIN state
 
     def __hash__(self):
         return hash((
             self.location,
             self.mascot_location,
+            self.apron_revealed,
             self.has_apron,
-            self.has_tray,
-            self.mascot_caught
+            self.cabinet_opened,
+            self.has_bowl,
+            self.mascot_trapped,
+            self.mascot_caught,
         ))
 
 # ============================================================================
@@ -49,115 +61,158 @@ class Action:
     name: str
     precondition: callable  # GameState -> bool
     effect: callable        # GameState -> GameState
-    advances_mascot: bool = True  # Does this action count toward mascot movement?
+    advances_mascot: bool = False  # Most actions don't move mascot
+
+def _copy_state(s: GameState, **overrides) -> GameState:
+    """Helper to copy state with overrides."""
+    return GameState(
+        location=overrides.get('location', s.location),
+        mascot_location=overrides.get('mascot_location', s.mascot_location),
+        apron_revealed=overrides.get('apron_revealed', s.apron_revealed),
+        has_apron=overrides.get('has_apron', s.has_apron),
+        cabinet_opened=overrides.get('cabinet_opened', s.cabinet_opened),
+        has_bowl=overrides.get('has_bowl', s.has_bowl),
+        mascot_trapped=overrides.get('mascot_trapped', s.mascot_trapped),
+        mascot_caught=overrides.get('mascot_caught', s.mascot_caught),
+    )
+
+def _move_mascot(s: GameState) -> MascotLocation:
+    """Advance mascot to next position in cycle."""
+    if s.mascot_trapped:
+        return s.mascot_location  # Trapped mascot doesn't move
+    current_idx = MASCOT_CYCLE.index(s.mascot_location) if s.mascot_location in MASCOT_CYCLE else 0
+    next_idx = (current_idx + 1) % len(MASCOT_CYCLE)
+    return MASCOT_CYCLE[next_idx]
+
+def _mascot_in_room(s: GameState) -> bool:
+    """Check if mascot is in player's current room."""
+    if s.mascot_location in ["TABLE1", "TABLE2", "TABLE3"]:
+        return s.location == "DINING"
+    return s.location == s.mascot_location
 
 def make_move_action(target: Location) -> Action:
     """Create a movement action."""
     valid_from = {
-        "DINING": ["COUNTER", "KITCHEN"],
+        "DINING": ["COUNTER"],
         "COUNTER": ["DINING", "KITCHEN"],
-        "KITCHEN": ["DINING", "COUNTER"],
+        "KITCHEN": ["COUNTER"],
     }
 
     def precondition(s: GameState) -> bool:
         return s.location in valid_from[target] and not s.mascot_caught
 
     def effect(s: GameState) -> GameState:
-        return GameState(
-            location=target,
-            mascot_location=s.mascot_location,
-            has_apron=s.has_apron,
-            has_tray=s.has_tray,
-            mascot_caught=s.mascot_caught,
-        )
+        return _copy_state(s, location=target)
 
     return Action(f"GO_{target}", precondition, effect)
 
-def take_apron_action() -> Action:
+def look_counter_action() -> Action:
+    """LOOK at counter reveals apron hanging by kitchen door."""
     def precondition(s: GameState) -> bool:
-        return s.location == "KITCHEN" and not s.has_apron and not s.mascot_caught
+        return s.location == "COUNTER" and not s.apron_revealed and not s.mascot_caught
 
     def effect(s: GameState) -> GameState:
-        return GameState(
-            location=s.location,
-            mascot_location=s.mascot_location,
-            has_apron=True,
-            has_tray=s.has_tray,
-            mascot_caught=s.mascot_caught,
-        )
+        return _copy_state(s, apron_revealed=True)
+
+    return Action("LOOK_COUNTER", precondition, effect)
+
+def take_apron_action() -> Action:
+    """Take apron from counter (must be revealed first)."""
+    def precondition(s: GameState) -> bool:
+        return (s.location == "COUNTER" and
+                s.apron_revealed and
+                not s.has_apron and
+                not s.mascot_caught)
+
+    def effect(s: GameState) -> GameState:
+        return _copy_state(s, has_apron=True)
 
     return Action("TAKE_APRON", precondition, effect)
 
-def take_tray_action() -> Action:
+def open_cabinet_action() -> Action:
+    """Open cabinet in kitchen to reveal bowl."""
     def precondition(s: GameState) -> bool:
-        return s.location == "KITCHEN" and not s.has_tray and not s.mascot_caught
+        return s.location == "KITCHEN" and not s.cabinet_opened and not s.mascot_caught
 
     def effect(s: GameState) -> GameState:
-        return GameState(
-            location=s.location,
-            mascot_location=s.mascot_location,
-            has_apron=s.has_apron,
-            has_tray=True,
-            mascot_caught=s.mascot_caught,
-        )
+        return _copy_state(s, cabinet_opened=True)
 
-    return Action("TAKE_TRAY", precondition, effect)
+    return Action("OPEN_CABINET", precondition, effect)
+
+def take_bowl_action() -> Action:
+    """Take bowl from cabinet (must be opened first)."""
+    def precondition(s: GameState) -> bool:
+        return (s.location == "KITCHEN" and
+                s.cabinet_opened and
+                not s.has_bowl and
+                not s.mascot_caught)
+
+    def effect(s: GameState) -> GameState:
+        return _copy_state(s, has_bowl=True)
+
+    return Action("TAKE_BOWL", precondition, effect)
+
+def use_bowl_action() -> Action:
+    """Use bowl to trap mascot (must be in same room)."""
+    def precondition(s: GameState) -> bool:
+        return (s.has_bowl and
+                not s.mascot_trapped and
+                not s.mascot_caught and
+                _mascot_in_room(s))
+
+    def effect(s: GameState) -> GameState:
+        return _copy_state(s, mascot_trapped=True)
+
+    return Action("USE_BOWL", precondition, effect)
 
 def use_apron_action() -> Action:
-    """WIN CONDITION: Use apron to catch mascot."""
+    """Use apron to catch trapped mascot. WIN CONDITION."""
     def precondition(s: GameState) -> bool:
-        if s.mascot_caught:
-            return False
-        if not s.has_apron:
-            return False
-        # Must be in same general area as mascot
-        if s.mascot_location in ["TABLE1", "TABLE2", "TABLE3"]:
-            return s.location == "DINING"
-        return s.location == s.mascot_location
+        return (s.has_apron and
+                s.mascot_trapped and
+                not s.mascot_caught and
+                _mascot_in_room(s))
 
     def effect(s: GameState) -> GameState:
-        return GameState(
-            location=s.location,
-            mascot_location=s.mascot_location,
-            has_apron=s.has_apron,
-            has_tray=s.has_tray,
-            mascot_caught=True,  # WIN!
-        )
+        return _copy_state(s, mascot_caught=True)
 
     return Action("USE_APRON", precondition, effect)
 
-def catch_bare_hands_action() -> Action:
-    """Attempt catch without apron — always fails, mascot moves."""
+def use_apron_fail_action() -> Action:
+    """Use apron without trapping first. Fails, mascot moves."""
     def precondition(s: GameState) -> bool:
-        if s.mascot_caught or s.has_apron:
-            return False
-        if s.mascot_location in ["TABLE1", "TABLE2", "TABLE3"]:
-            return s.location == "DINING"
-        return s.location == s.mascot_location
+        return (s.has_apron and
+                not s.mascot_trapped and
+                not s.mascot_caught and
+                _mascot_in_room(s))
 
     def effect(s: GameState) -> GameState:
-        # Mascot escapes to next position in cycle
-        current_idx = MASCOT_CYCLE.index(s.mascot_location) if s.mascot_location in MASCOT_CYCLE else 0
-        next_idx = (current_idx + 1) % len(MASCOT_CYCLE)
-        return GameState(
-            location=s.location,
-            mascot_location=MASCOT_CYCLE[next_idx],
-            has_apron=s.has_apron,
-            has_tray=s.has_tray,
-            mascot_caught=s.mascot_caught,
-        )
+        return _copy_state(s, mascot_location=_move_mascot(s))
 
-    return Action("CATCH_BARE", precondition, effect)
+    return Action("USE_APRON_FAIL", precondition, effect, advances_mascot=True)
+
+def catch_bare_hands_action() -> Action:
+    """Attempt catch without items. Always fails, mascot moves."""
+    def precondition(s: GameState) -> bool:
+        return (not s.has_apron and
+                not s.has_bowl and
+                not s.mascot_caught and
+                _mascot_in_room(s))
+
+    def effect(s: GameState) -> GameState:
+        return _copy_state(s, mascot_location=_move_mascot(s))
+
+    return Action("CATCH_BARE", precondition, effect, advances_mascot=True)
 
 def wait_action() -> Action:
-    """Do nothing — lets mascot move (for testing purposes)."""
+    """Do nothing. For testing state space."""
     def precondition(s: GameState) -> bool:
         return not s.mascot_caught
 
     def effect(s: GameState) -> GameState:
         return s  # No change
 
-    return Action("WAIT", precondition, effect, advances_mascot=True)
+    return Action("WAIT", precondition, effect)
 
 # ============================================================================
 # GAME DEFINITION
@@ -167,9 +222,13 @@ ALL_ACTIONS = [
     make_move_action("DINING"),
     make_move_action("COUNTER"),
     make_move_action("KITCHEN"),
+    look_counter_action(),
     take_apron_action(),
-    take_tray_action(),
+    open_cabinet_action(),
+    take_bowl_action(),
+    use_bowl_action(),
     use_apron_action(),
+    use_apron_fail_action(),
     catch_bare_hands_action(),
     wait_action(),
 ]
@@ -177,9 +236,6 @@ ALL_ACTIONS = [
 INITIAL_STATE = GameState(
     location="DINING",
     mascot_location="TABLE2",
-    has_apron=False,
-    has_tray=False,
-    mascot_caught=False,
 )
 
 def is_win(s: GameState) -> bool:
@@ -296,11 +352,13 @@ def validate_no_dead_ends():
     # 5. State space breakdown
     print("[5] State space breakdown:")
     win_states = sum(1 for s in all_states if is_win(s))
-    with_apron = sum(1 for s in all_states if s.has_apron and not is_win(s))
-    without_apron = sum(1 for s in all_states if not s.has_apron and not is_win(s))
+    trapped_states = sum(1 for s in all_states if s.mascot_trapped and not is_win(s))
+    ready_to_trap = sum(1 for s in all_states if s.has_bowl and s.has_apron and not s.mascot_trapped and not is_win(s))
+    exploring = sum(1 for s in all_states if not s.has_bowl or not s.has_apron)
     print(f"    Win states: {win_states}")
-    print(f"    States with apron (not won): {with_apron}")
-    print(f"    States without apron: {without_apron}")
+    print(f"    Mascot trapped (not won): {trapped_states}")
+    print(f"    Ready to trap (bowl+apron, not trapped): {ready_to_trap}")
+    print(f"    Still exploring (missing items): {exploring}")
     print()
 
     print("=" * 60)
@@ -310,83 +368,65 @@ def validate_no_dead_ends():
     return True
 
 # ============================================================================
-# PROGRESSIVE DISCLOSURE VERIFICATION
+# OPTIMAL PATH VERIFICATION
 # ============================================================================
 
-def verify_progressive_disclosure():
+def verify_optimal_path():
     """
-    Verify that hint system guarantees progress.
+    Verify the intended optimal path works.
 
-    The key property: even without understanding ANY puzzle mechanics,
-    following Tier 3 hints leads to win.
+    Optimal sequence (8 commands):
+    1. GO COUNTER
+    2. LOOK (reveals apron)
+    3. TAKE APRON
+    4. GO KITCHEN
+    5. OPEN CABINET
+    6. TAKE BOWL
+    7. GO to mascot's room
+    8. USE BOWL (traps)
+    9. USE APRON (win)
     """
     print()
     print("=" * 60)
-    print("Progressive Disclosure Verification")
+    print("Optimal Path Verification")
     print("=" * 60)
     print()
 
-    # Simulate a player who only follows explicit instructions
-    print("Simulating player who ONLY follows Tier 3 hints:")
-    print()
-
-    # Tier 3 instructions (from GAME-DESIGN.md):
-    # 1. "Use the apron. It's in the kitchen."
-    # 2. "Throw it over the mascot."
-
-    tier3_actions = [
-        "GO_KITCHEN",   # Go to kitchen
-        "TAKE_APRON",   # Take the apron
-        "GO_DINING",    # Go to dining (mascot starts at TABLE2)
-        "USE_APRON",    # Catch mascot
+    optimal_actions = [
+        "GO_COUNTER",
+        "LOOK_COUNTER",
+        "TAKE_APRON",
+        "GO_KITCHEN",
+        "OPEN_CABINET",
+        "TAKE_BOWL",
+        "GO_COUNTER",   # Mascot might be at counter
+        "GO_DINING",    # Or go to dining where mascot starts
+        "USE_BOWL",
+        "USE_APRON",
     ]
 
     state = INITIAL_STATE
     print(f"  Start: {state}")
+    print()
 
-    for action_name in tier3_actions:
+    for action_name in optimal_actions:
         action = next((a for a in ALL_ACTIONS if a.name == action_name), None)
         if action and action.precondition(state):
             state = action.effect(state)
-            print(f"  {action_name} -> {state}")
+            status = "WIN!" if is_win(state) else ""
+            print(f"  {action_name:20} -> trapped={state.mascot_trapped} caught={state.mascot_caught} {status}")
+            if is_win(state):
+                break
         else:
-            # Mascot might have moved, need to adjust
-            if action_name == "USE_APRON" and state.has_apron:
-                # Find mascot first
-                mascot_loc = state.mascot_location
-                if mascot_loc in ["TABLE1", "TABLE2", "TABLE3"]:
-                    target = "DINING"
-                else:
-                    target = mascot_loc
-
-                if state.location != target:
-                    move_action = next(
-                        (a for a in ALL_ACTIONS if a.name == f"GO_{target}"),
-                        None
-                    )
-                    if move_action and move_action.precondition(state):
-                        state = move_action.effect(state)
-                        print(f"  GO_{target} -> {state}")
-
-                # Now use apron
-                use_apron = use_apron_action()
-                if use_apron.precondition(state):
-                    state = use_apron.effect(state)
-                    print(f"  USE_APRON -> {state}")
+            print(f"  {action_name:20} -> (skipped, precondition false)")
 
     print()
     if is_win(state):
-        print("  Result: WIN achieved following Tier 3 hints!")
+        print("  Result: WIN achieved on optimal path!")
+        return True
     else:
-        print("  Result: FAILED - Tier 3 hints don't guarantee win!")
+        print("  Result: FAILED - optimal path doesn't win!")
         return False
-
-    print()
-    print("=" * 60)
-    print("PROGRESSIVE DISCLOSURE VERIFIED")
-    print("=" * 60)
-
-    return True
 
 # ============================================================================
 # MAIN
@@ -394,7 +434,7 @@ def verify_progressive_disclosure():
 
 if __name__ == "__main__":
     success = validate_no_dead_ends()
-    success = verify_progressive_disclosure() and success
+    success = verify_optimal_path() and success
 
     if success:
         print()

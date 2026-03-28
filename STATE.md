@@ -52,12 +52,14 @@
 - `STATE.md` — this file
 
 ## Next
+- [x] Fix mascot hint system — tier 1 hints now work in all rooms (COUNTER, KITCHEN), not just DINING
+- [x] Add variety to hiding spots — 11 spots across 3 rooms (was 5)
 - [ ] Optional: ASCII art backgrounds (VN assets → asc11 conversion)
 - [ ] Fill in prize.html placeholders (Steam key, personal message, photo?)
 - [ ] Deploy
 
 ## Pickup
-**Game is playable.** Flow: index.html → puzzle2.html → prize.html. All prose fixed. Canon accurate. Next session: optionally add ASCII art backgrounds from VN assets (Itsu cafe pack, Spiral Atlas house backgrounds — both CC-licensed). Fill in prize.html placeholders before gifting.
+**Game is playable.** Flow: index.html → puzzle2.html → prize.html. Mascot now hides in 11 different spots across all 3 rooms (tables, fern, menu board, espresso machine, display case, tip jar, bowls, apron pile, treat cabinet). Tier 1 hints are now consistently vague ("something rustles...") in all rooms. Fill in prize.html placeholders before gifting.
 
 ## Art Sources (for post-compaction)
 - **Itsu cafe pack** — CC-licensed VN maid cafe backgrounds

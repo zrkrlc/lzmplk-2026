@@ -161,7 +161,30 @@
             font-size: 1rem;
             line-height: 1.6;
             background: #fff;
+            background-image: url('assets/backgrounds/maid-sama-bg.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            background-blend-mode: soft-light;
             font-family: 'Comic Neue', cursive;
+            position: relative;
+        }
+
+        .output::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .output > * {
+            position: relative;
+            z-index: 1;
         }
 
         .output .command {
@@ -384,9 +407,14 @@
             attemptedCatch: 0,
             commandCount: 0,
             won: false,
-            mascotCornered: false,
+            mascotTrapped: false,
             mascotSpooked: 0,
-            triedTreats: false
+            triedTreats: false,
+            apronRevealed: false,
+            cabinetOpened: false,
+            drawerOpened: false,
+            talkedCustomer: false,
+            customerLookCount: 0
         };
 
         const SAVE_KEY = 'afterclass-save';
@@ -418,7 +446,24 @@
 
         const state = { ...defaultState };
 
-        const MASCOT_CYCLE = ['TABLE2', 'TABLE1', 'TABLE3', 'COUNTER', 'KITCHEN'];
+        // Hiding spots: [room, vague hint (tier 1), clear hint (tier 2+)]
+        const HIDING_SPOTS = {
+            // DINING spots
+            TABLE1: ['DINING', 'Something green darts under TABLE 1...', 'Uchūjin-kun is clearly visible under TABLE 1!'],
+            TABLE2: ['DINING', 'Something green darts under TABLE 2...', 'Uchūjin-kun is clearly visible under TABLE 2!'],
+            TABLE3: ['DINING', 'Something green darts under TABLE 3...', 'Uchūjin-kun is clearly visible under TABLE 3!'],
+            MENU_BOARD: ['DINING', 'Something rustles behind the SPECIALS BOARD...', 'Uchūjin-kun peeks out from behind the specials board!'],
+            PLANT: ['DINING', 'The decorative FERN twitches suspiciously...', 'Uchūjin-kun is hiding in the fern! Tiny antennae poke through the leaves.'],
+            // COUNTER spots
+            ESPRESSO: ['COUNTER', 'The espresso machine hisses. Something small ducks behind it...', 'Uchūjin-kun is wedged behind the espresso machine!'],
+            DISPLAY: ['COUNTER', 'A flash of green under the cake display...', 'Uchūjin-kun is under the display case, eyeing the strawberry tart.'],
+            TIP_JAR: ['COUNTER', 'The tip jar wobbles. Something nudged it...', 'Uchūjin-kun is behind the tip jar. Usui pokes it. "Pu."'],
+            // KITCHEN spots
+            BOWLS: ['KITCHEN', 'The mixing bowls clatter softly...', 'Uchūjin-kun is hiding behind the mixing bowls!'],
+            APRON_PILE: ['KITCHEN', 'Something stirs in the costume pile...', 'Uchūjin-kun has burrowed into the apron pile!'],
+            TREAT_CABINET: ['KITCHEN', 'The treat cabinet door is ajar. You hear tiny munching...', 'Uchūjin-kun has found the treat cabinet!']
+        };
+        const MASCOT_CYCLE = ['TABLE2', 'ESPRESSO', 'TABLE1', 'BOWLS', 'MENU_BOARD', 'TIP_JAR', 'TABLE3', 'APRON_PILE', 'PLANT', 'DISPLAY', 'TREAT_CABINET'];
         const MOVE_INTERVAL = 3;
 
         // ============================================================
@@ -426,15 +471,15 @@
         // ============================================================
 
         const ASCII_SCENES = {
-            DINING: (mascotHere, mascotTable) => `╔══════════════════════════════════════╗
+            DINING: (mascotHere) => `╔══════════════════════════════════════╗
 ║           MAID LATTE CAFE            ║
 ╠══════════════════════════════════════╣
 ║  ┌─────┐   ┌─────┐   ┌─────┐        ║
-║  │ T1  │   │ T2  │   │ T3  │        ║
-║  │${mascotTable === 'TABLE1' ? ' * ' : '   '}│   │${mascotTable === 'TABLE2' ? ' * ' : '   '}│   │${mascotTable === 'TABLE3' ? ' * ' : '   '}│        ║
-║  └─────┘   └─────┘   └─────┘        ║
+║  │ T1  │   │ T2  │   │ T3  │  [MENU]║
+║  │     │   │     │   │     │   ~~~  ║
+║  └─────┘   └─────┘   └─────┘  ~FERN~║
 ║         customers seated             ║
-║                                      ║
+║                   ${mascotHere ? '* something moved!' : '                  '}║
 ║         ═══════════════              ║
 ║         [ COUNTER -> ]               ║
 ║         ═══════════════              ║
@@ -442,33 +487,33 @@
 ║             [YOU]                    ║
 ╚══════════════════════════════════════╝`,
 
-            COUNTER: (mascotHere) => `╔══════════════════════════════════════╗
+            COUNTER: (mascotHere, hasApron, apronRevealed) => `╔══════════════════════════════════════╗
 ║              COUNTER                 ║
 ╠══════════════════════════════════════╣
 ║                                      ║
 ║    ┌────────────────────────┐        ║
-║    │    ~  REGISTER  ~      │        ║
-║    │  ${mascotHere ? '  * mascot here!  ' : '                  '}  │        ║
+║    │ ESPRESSO   REGISTER    │  [TIP]║
+║    │    ~~~        ~~~      │   $   ║
 ║    └────────────────────────┘        ║
-║                                      ║
+║    [DISPLAY CASE ~~~~~~~~~~~~]       ║
 ║            ~~ USUI ~~                ║
 ║        (leaning, smirking)           ║
-║                                      ║
-║  <- DINING          KITCHEN ->       ║
+║      ${mascotHere ? '      * something moved!' : '                        '}║
+║  <- DINING   ${apronRevealed && !hasApron ? '[APRN]' : '      '} KITCHEN ->  ║
 ║                                      ║
 ║             [YOU]                    ║
 ╚══════════════════════════════════════╝`,
 
-            KITCHEN: (mascotHere, hasApron) => `╔══════════════════════════════════════╗
+            KITCHEN: (mascotHere, cabinetOpen) => `╔══════════════════════════════════════╗
 ║              KITCHEN                 ║
 ╠══════════════════════════════════════╣
 ║                                      ║
-║    ~ pots ~    ~ supplies ~          ║
+║    ~ pots ~   [CABINETS]   [DRAWER] ║
 ║                                      ║
 ║    ┌────┐   ┌────┐                   ║
-║    │TRAY│   │${hasApron ? '    ' : 'APRN'}│  <- hook         ║
-║    └────┘   └────┘                   ║
-║       ${mascotHere ? '* mascot in treats! ' : '                    '}   ║
+║    │SINK│   │OVEN│   [KNIFE]         ║
+║    └────┘   └────┘   ${cabinetOpen ? '[BOWL]' : '      '}       ║
+║       ${mascotHere ? '* something moved!  ' : '                    '}   ║
 ║                                      ║
 ║          ~~ SATSUKI ~~               ║
 ║      (vibrating excitedly)           ║
@@ -482,6 +527,16 @@
         // ROOM DESCRIPTIONS
         // ============================================================
 
+        function getMascotHint() {
+            const tier = getHintTier();
+            const spot = HIDING_SPOTS[state.mascotLocation];
+            if (!spot) return '';
+            // spot[1] = vague hint (tier 1), spot[2] = clear hint (tier 2+)
+            const hint = tier >= 2 ? spot[2] : spot[1];
+            const color = tier >= 2 ? '#b8860b' : '#8b7355';
+            return `<br><span style="color:${color}">${hint}</span>`;
+        }
+
         function getRoomDesc() {
             const tier = getHintTier();
             const mascotVisible = isMascotVisible();
@@ -489,15 +544,10 @@
             if (state.location === 'DINING') {
                 let desc = `<strong>Maid Latte - Dining Area</strong><br><br>`;
                 desc += `Three tables. Parfaits, coffee, the low murmur of people ignoring each other politely.<br><br>`;
-                desc += `To the WEST: <strong>COUNTER</strong><br>`;
+                desc += `To the WEST: <strong>COUNTER</strong>`;
 
                 if (mascotVisible) {
-                    const table = state.mascotLocation.replace('TABLE', '');
-                    if (tier >= 2) {
-                        desc += `<br><span style="color:#b8860b">Uchūjin-kun is clearly visible under TABLE ${table}!</span>`;
-                    } else {
-                        desc += `<br>Something green darts under TABLE ${table}...`;
-                    }
+                    desc += getMascotHint();
                 }
                 return desc;
             }
@@ -505,11 +555,16 @@
             if (state.location === 'COUNTER') {
                 let desc = `<strong>Maid Latte - Counter</strong><br><br>`;
                 desc += `Usui is leaning against the counter, watching you.<br>`;
-                desc += `The smirk is already deployed.<br><br>`;
-                desc += `EAST: <strong>DINING</strong> | Through back: <strong>KITCHEN</strong><br>`;
+                desc += `The smirk is already deployed.<br>`;
+
+                if (state.apronRevealed && !state.inventory.includes('APRON')) {
+                    desc += `<br>An apron hangs on a hook by the kitchen door.`;
+                }
+
+                desc += `<br><br>EAST: <strong>DINING</strong> | Through back: <strong>KITCHEN</strong>`;
 
                 if (mascotVisible) {
-                    desc += `<br><span style="color:#b8860b">The tiny plushie is on the counter. Usui pokes it. "Pu."</span>`;
+                    desc += getMascotHint();
                 }
                 return desc;
             }
@@ -517,20 +572,35 @@
             if (state.location === 'KITCHEN') {
                 let desc = `<strong>Maid Latte - Kitchen</strong><br><br>`;
                 desc += `Satsuki is here, barely contained.<br>`;
-                desc += `Pots, pans, maid costumes on every surface.<br>`;
+                desc += `Pots, pans, cabinets along the wall. A drawer by the counter.<br>`;
 
-                if (!state.inventory.includes('APRON')) {
-                    if (tier >= 2) {
-                        desc += `<br>An <strong>APRON</strong> on a hook. Soft. Good for catching things.`;
+                if (!state.inventory.includes('KNIFE')) {
+                    desc += `A bread knife sits on the cutting board.<br>`;
+                }
+
+                if (state.cabinetOpened) {
+                    let cabinetContents = [];
+                    if (!state.inventory.includes('BOWL')) cabinetContents.push('a mixing bowl');
+                    if (!state.inventory.includes('TREATS')) cabinetContents.push('some snacks');
+                    if (cabinetContents.length > 0) {
+                        desc += `<br>The cabinet is open. Inside: ${cabinetContents.join(', ')}.`;
                     } else {
-                        desc += `<br>An APRON hangs on a hook. A TRAY sits on the counter.`;
+                        desc += `<br>The cabinet is open, mostly empty now.`;
+                    }
+                }
+
+                if (state.drawerOpened) {
+                    if (!state.inventory.includes('BAG')) {
+                        desc += `<br>The drawer is open. Garbage bags and such.`;
+                    } else {
+                        desc += `<br>The drawer is open.`;
                     }
                 }
 
                 desc += `<br><br>Back to: <strong>COUNTER</strong>`;
 
                 if (mascotVisible) {
-                    desc += `<br><span style="color:#b8860b">Uchūjin-kun has found the treat cabinet!</span>`;
+                    desc += getMascotHint();
                 }
                 return desc;
             }
@@ -592,15 +662,13 @@
         }
 
         function isMascotVisible() {
-            if (state.mascotLocation.startsWith('TABLE')) {
-                return state.location === 'DINING';
-            }
-            return state.location === state.mascotLocation;
+            const spot = HIDING_SPOTS[state.mascotLocation];
+            return spot && spot[0] === state.location;
         }
 
         function moveMascot() {
             if (state.won) return;
-            if (state.mascotCornered) return; // Cornered mascot doesn't move
+            if (state.mascotTrapped) return; // Trapped mascot doesn't move
 
             // Spooked mascot moves twice
             const moves = state.mascotSpooked > 0 ? 2 : 1;
@@ -617,10 +685,8 @@
         }
 
         function canCatchMascot() {
-            if (state.mascotLocation.startsWith('TABLE')) {
-                return state.location === 'DINING';
-            }
-            return state.location === state.mascotLocation;
+            const spot = HIDING_SPOTS[state.mascotLocation];
+            return spot && spot[0] === state.location;
         }
 
         // ============================================================
@@ -681,6 +747,11 @@
                 return handleUse(rest);
             }
 
+            // OPEN
+            if (verb === 'open') {
+                return handleOpen(rest);
+            }
+
             // CATCH
             if (verb === 'catch' || verb === 'grab') {
                 return handleCatch(rest);
@@ -696,13 +767,13 @@
             // HELP
             if (verb === 'help' || verb === '?') {
                 return `<strong>Commands:</strong><br>` +
-                    `• LOOK [thing] — examine something (or just LOOK for the room)<br>` +
-                    `• GO [place] — move around (DINING, COUNTER, KITCHEN)<br>` +
-                    `• TALK [person] — chat with USUI or SATSUKI<br>` +
-                    `• TAKE [item] — pick something up<br>` +
-                    `• USE [item] — use an item you're holding<br>` +
-                    `• CATCH — try to catch the mascot<br>` +
-                    `• INVENTORY — see what you're carrying<br><br>` +
+                    `• LOOK [thing] - examine something (or just LOOK for the room)<br>` +
+                    `• GO [place] - move around (DINING, COUNTER, KITCHEN)<br>` +
+                    `• TALK [person] - chat with USUI or SATSUKI<br>` +
+                    `• TAKE [item] - pick something up<br>` +
+                    `• USE [item] - use an item you're holding<br>` +
+                    `• CATCH - try to catch the mascot<br>` +
+                    `• INVENTORY - see what you're carrying<br><br>` +
                     `<strong>Explore:</strong> LISTEN, SMELL, THINK, WAIT<br><br>` +
                     `<em>Try interacting with everything. The world is alive.</em>`;
             }
@@ -753,7 +824,7 @@
             }
 
             if (cmd.includes('kiss usui')) {
-                return `W-WHAT?!<br><br>Your brain short-circuits. Your face goes nuclear.<br><br>Usui looks... actually surprised for once. Then his expression does something you don't have a name for.<br><br><span class="npc-usui">"...Not here, Misa-chan. The customers are watching."</span><br><br>NOT HERE?! IMPLYING THERE'S A PLACE WHERE—<br><br>You need to catch this mascot and leave. Immediately.`;
+                return `W-WHAT?!<br><br>Your brain short-circuits. Your face goes nuclear.<br><br>Usui looks... actually surprised for once. Then his expression does something you don't have a name for.<br><br><span class="npc-usui">"...Not here, Misa-chan. The customers are watching."</span><br><br>NOT HERE?! IMPLYING THERE'S A PLACE WHERE-<br><br>You need to catch this mascot and leave. Immediately.`;
             }
 
             if (cmd.includes('hug usui')) {
@@ -869,6 +940,12 @@
         function handleLook(target) {
             if (!target || target === 'around' || target === 'room') {
                 updateDisplay();
+                // Reveal apron at counter
+                if (state.location === 'COUNTER' && !state.apronRevealed && !state.inventory.includes('APRON')) {
+                    state.apronRevealed = true;
+                    updateDisplay();
+                    return `You look around...<br><br>There's an apron hanging on a hook by the kitchen door. You hadn't noticed it before.`;
+                }
                 return `You look around...`;
             }
 
@@ -896,18 +973,15 @@
                 if (state.inventory.includes('APRON')) {
                     return `You're holding the apron. Soft white fabric with lace trim.<br>Satsuki's handiwork. You can tell by the careful stitching.`;
                 }
+                if (state.location === 'COUNTER' && state.apronRevealed) {
+                    return `A white apron hanging on a hook by the kitchen door.<br>Satsuki made it herself. You can tell by the careful stitching.<br><br>Perfect for... catching things?`;
+                }
                 if (state.location === 'KITCHEN') {
                     return `A white apron hanging on a hook.<br>Satsuki made it herself. You can tell by the stitching.<br><br>Perfect for... catching things?`;
                 }
                 return `You don't see an apron here.`;
             }
 
-            if (target.includes('tray')) {
-                if (state.location === 'KITCHEN') {
-                    return `A metal serving tray. Well-polished, slightly dented from use.<br>Could make some noise if dropped...<br><br>Satsuki would probably forgive you. Probably.`;
-                }
-                return `You don't see a tray here.`;
-            }
 
             if (target.includes('table')) {
                 if (state.location === 'DINING') {
@@ -916,7 +990,7 @@
                     const customers = [
                         `A young couple sharing a parfait. They're too absorbed in each other to notice you.`,
                         `A salaryman reading a newspaper. He looks like he comes here to escape something.`,
-                        `Two high school girls giggling over their phones. One of them keeps glancing at Usui.`
+                        `Blonde pigtails. Black bow. Red dress. Big blue eyes peeking over a menu.<br><br>Something about that face. You're not going to think about it.`
                     ];
                     const customer = customers[parseInt(table) - 1] || customers[0];
                     if (hasMascot) {
@@ -929,7 +1003,15 @@
 
             if (target.includes('customer')) {
                 if (state.location === 'DINING') {
-                    return `The regulars are here today.<br><br>Table 1: A couple. Cute.<br>Table 2: A tired-looking salaryman. Relatable.<br>Table 3: High schoolers. One keeps staring at Usui.<br><br>You fight down an irrational surge of something. You're not going to name it.`;
+                    // Check if looking at the mysterious customer at Table 3
+                    if (target.includes('3') || target.includes('mysterious') || target.includes('alone')) {
+                        state.customerLookCount++;
+                        if (state.customerLookCount === 1) {
+                            return `Long blonde pigtails. Black bow headband. Big blue eyes. A red dress with black ruffles - like a doll come to life.<br><br>The menu lowers. Those eyes sweep over you, appraising. Cold. Judgmental.<br><br>The menu goes back up.<br><br>You've seen that face somewhere. You're not going to think about where.`;
+                        }
+                        return `Still there. Still watching. Still hasn't ordered anything.<br><br>You're not going to give them the satisfaction of acknowledging them.<br><br>They catch you looking and raise an eyebrow. You look away first.`;
+                    }
+                    return `The regulars are here today.<br><br>Table 1: A couple. Cute.<br>Table 2: A tired-looking salaryman. Relatable.<br>Table 3: Someone alone, half-hidden behind a menu.<br><br>That third one is giving you a weird vibe. You know them from somewhere. You're choosing not to deal with it right now.`;
                 }
                 return `No customers back here. Just staff.`;
             }
@@ -943,6 +1025,10 @@
 
             if (target.includes('display') || target.includes('case')) {
                 if (state.location === 'COUNTER') {
+                    const hasMascot = state.mascotLocation === 'DISPLAY';
+                    if (hasMascot) {
+                        return `Cakes behind glass. A strawberry shortcake is almost sold out. The Mont Blanc looks lonely.<br><br><span style="color:#b8860b">A pair of tiny eyes peers out from under the case, fixed on the strawberry tart.</span>`;
+                    }
                     return `Cakes behind glass. A strawberry shortcake is almost sold out. The Mont Blanc looks lonely.`;
                 }
                 return `You don't see a display case here.`;
@@ -950,6 +1036,10 @@
 
             if (target.includes('tip') || target.includes('jar')) {
                 if (state.location === 'COUNTER') {
+                    const hasMascot = state.mascotLocation === 'TIP_JAR';
+                    if (hasMascot) {
+                        return `A few coins. A folded note that says "Misa-chan is cute!"<br><br><span style="color:#b8860b">The jar wobbles. Something small is hiding behind it.</span> Usui notices and pokes at it. "Pu."`;
+                    }
                     return `A few coins. A folded note that says "Misa-chan is cute!"<br><br>You're going to PUNCH whoever wrote that. (It was probably Usui.)`;
                 }
                 return `You don't see a tip jar here.`;
@@ -966,8 +1056,96 @@
                 return `Street view. People walking by. Normal day for everyone except you.<br><br>You could YELL for help but that would raise questions.<br><br>Through the glass, Seika High is just visible in the distance. You should probably be studying right now.`;
             }
 
-            if (target.includes('costume') || target.includes('uniform')) {
+            if (target.includes('menu') || target.includes('specials') || target.includes('board')) {
+                if (state.location === 'DINING') {
+                    const hasMascot = state.mascotLocation === 'MENU_BOARD';
+                    if (hasMascot) {
+                        return `The daily specials board. Satsuki's handwriting in pastel chalk.<br><br>Wait - <span style="color:#b8860b">something is peeking out from behind it!</span>`;
+                    }
+                    return `The daily specials board. Satsuki's handwriting in pastel chalk.<br><br>"Moe Moe Parfait ♥" "Love Love Omurice ♥♥"<br><br>You've had to say those names out loud. Many times.`;
+                }
+                return `You can see the menu board from the dining area.`;
+            }
+
+            if (target.includes('fern') || target.includes('plant')) {
+                if (state.location === 'DINING') {
+                    const hasMascot = state.mascotLocation === 'PLANT';
+                    if (hasMascot) {
+                        return `A fake fern in a decorative pot. Adds "ambiance," Satsuki said.<br><br>The leaves are... <span style="color:#b8860b">rustling. Tiny antennae poke through!</span>`;
+                    }
+                    return `A fake fern in a decorative pot. Adds "ambiance," Satsuki said.<br><br>At least you don't have to water it.`;
+                }
+                return `You don't see a plant here.`;
+            }
+
+            if (target.includes('espresso') || target.includes('machine')) {
+                if (state.location === 'COUNTER') {
+                    const hasMascot = state.mascotLocation === 'ESPRESSO';
+                    if (hasMascot) {
+                        return `The espresso machine hisses and gurgles. Italian brand, Satsuki's pride and joy.<br><br>Something green is <span style="color:#b8860b">wedged behind it!</span>`;
+                    }
+                    return `The espresso machine hisses and gurgles. Italian brand, Satsuki's pride and joy.<br><br>You've burned yourself on it twice. Worth it for the free drinks.`;
+                }
+                return `You can't see the espresso machine from here.`;
+            }
+
+            if (target.includes('bowl') || target.includes('mixing')) {
                 if (state.location === 'KITCHEN') {
+                    const hasMascot = state.mascotLocation === 'BOWLS';
+                    if (hasMascot) {
+                        return `Mixing bowls stacked precariously. Various sizes, all well-used.<br><br>One of them is <span style="color:#b8860b">rocking slightly...</span>`;
+                    }
+                    return `Mixing bowls stacked precariously. Various sizes, all well-used.<br><br>A big one might trap something small...`;
+                }
+                return `You don't see mixing bowls here.`;
+            }
+
+            if (target.includes('drawer')) {
+                if (state.location === 'KITCHEN') {
+                    if (state.drawerOpened) {
+                        if (state.inventory.includes('BAG')) {
+                            return `The drawer is open. Twist ties, rubber bands. The usual kitchen stuff.`;
+                        }
+                        return `The drawer is open. Garbage bags, twist ties, rubber bands.<br><br>The bags might come in handy for... something?`;
+                    }
+                    return `A drawer by the counter. Probably kitchen supplies.`;
+                }
+                return `You don't see a drawer here.`;
+            }
+
+            if (target.includes('cabinet') || target.includes('cupboard')) {
+                if (state.location === 'KITCHEN') {
+                    if (state.cabinetOpened) {
+                        let contents = [];
+                        if (!state.inventory.includes('BOWL')) contents.push('a metal mixing bowl');
+                        if (!state.inventory.includes('TREATS')) contents.push('some snacks');
+                        if (contents.length > 0) {
+                            return `The cabinet is open. Inside: ${contents.join(', ')}.`;
+                        }
+                        return `The cabinet is open. Mostly empty now.`;
+                    }
+                    return `Kitchen cabinets along the wall. Who knows what's inside?`;
+                }
+                return `You don't see cabinets here.`;
+            }
+
+            if (target.includes('treat') || target.includes('snack')) {
+                if (state.location === 'KITCHEN') {
+                    const hasMascot = state.mascotLocation === 'TREAT_CABINET';
+                    if (hasMascot) {
+                        return `The treat cabinet. Staff snacks, customer samples, Satsuki's secret chocolate stash.<br><br>The door is ajar. <span style="color:#b8860b">You hear tiny munching sounds...</span>`;
+                    }
+                    return `The treat cabinet. Staff snacks, customer samples, Satsuki's secret chocolate stash.<br><br>You're not supposed to know about the chocolate.`;
+                }
+                return `You don't see treats here.`;
+            }
+
+            if (target.includes('costume') || target.includes('uniform') || target.includes('apron pile') || target.includes('aprons')) {
+                if (state.location === 'KITCHEN') {
+                    const hasMascot = state.mascotLocation === 'APRON_PILE';
+                    if (hasMascot) {
+                        return `Costumes and spare aprons in various states of completion hang everywhere.<br>Cat ears. Gothic lolita dresses. A questionable "sexy nurse" outfit.<br><br><span style="color:#b8860b">The apron pile is... moving. Something burrowed in there!</span>`;
+                    }
                     return `Costumes in various states of completion hang everywhere.<br>Cat ears. Gothic lolita dresses. A questionable "sexy nurse" outfit.<br><br>Satsuki's next theme day ideas, presumably.<br><br>There's also a half-finished alien costume that looks suspiciously like Uchujin-kun scaled up to human size. You pretend not to see it.`;
                 }
                 return `You're wearing your maid uniform. As always.`;
@@ -1100,10 +1278,16 @@
 
             if (target.includes('customer')) {
                 if (state.location === 'DINING') {
+                    // Talking to mysterious customer at Table 3
+                    if (target.includes('3') || target.includes('mysterious') || target.includes('alone')) {
+                        state.talkedCustomer = true;
+                        // Misaki knows them, doesn't want to engage
+                        return `You know what? No.<br><br>You know that face. And that face has opinions about your fashion sense. Your "unfeminine" strength. Your everything, basically.<br><br>You have a rogue plushie to catch. You don't need a lecture right now.<br><br><em>You're going to pretend you didn't see them.</em>`;
+                    }
                     const responses = [
                         `<em>"Welcome home, Master~"</em> you say automatically.<br>The customer smiles. Another satisfied regular.<br><br>You hate that you're good at this.`,
                         `A customer flags you down. <em>"More coffee, please?"</em><br>You nod and smile. Work doesn't stop just because you're chasing a rogue plushie.`,
-                        `One of the high schoolers giggles as you pass.<br><em>"Is that guy your boyfriend?"</em> she whispers, nodding toward Usui.<br><br><em>"NO,"</em> you say, way too loudly.`
+                        `The couple at Table 1 flags you down. They want to share a parfait.<br><br><em>"So cute~"</em> you manage. The words taste like sugar and lies.`
                     ];
                     return responses[state.commandCount % responses.length];
                 }
@@ -1115,26 +1299,75 @@
 
         function handleTake(target) {
             if (target.includes('apron')) {
-                if (state.location !== 'KITCHEN') {
-                    return `You don't see an apron here. Try the kitchen.`;
+                if (state.location !== 'COUNTER') {
+                    return `You don't see an apron here.`;
+                }
+                if (!state.apronRevealed) {
+                    return `You don't see an apron. Maybe look around first?`;
                 }
                 if (state.inventory.includes('APRON')) {
                     return `You already have the apron.`;
                 }
                 state.inventory.push('APRON');
                 updateDisplay();
-                return `You take the apron. The soft fabric feels... useful.`;
+                return `You take the apron. Soft white fabric, Satsuki's handiwork. Good for catching things.`;
             }
 
-            if (target.includes('tray')) {
+            if (target.includes('bowl')) {
                 if (state.location !== 'KITCHEN') {
-                    return `You don't see a tray here.`;
+                    return `You don't see a bowl here.`;
                 }
-                if (state.inventory.includes('TRAY')) {
-                    return `You already have the tray.`;
+                if (!state.cabinetOpened) {
+                    return `You don't see a bowl. Maybe check the cabinets?`;
                 }
-                state.inventory.push('TRAY');
-                return `You take the metal tray.`;
+                if (state.inventory.includes('BOWL')) {
+                    return `You're already holding the bowl.`;
+                }
+                state.inventory.push('BOWL');
+                updateDisplay();
+                return `You take the mixing bowl. Heavy metal, good weight.`;
+            }
+
+            if (target.includes('knife') || target.includes('bread')) {
+                if (state.location !== 'KITCHEN') {
+                    return `You don't see a knife here.`;
+                }
+                if (state.inventory.includes('KNIFE')) {
+                    return `You're already carrying the knife.`;
+                }
+                state.inventory.push('KNIFE');
+                updateDisplay();
+                return `You pick up the bread knife. Sharp.`;
+            }
+
+            if (target.includes('bag') || target.includes('garbage')) {
+                if (state.location !== 'KITCHEN') {
+                    return `You don't see a bag here.`;
+                }
+                if (!state.drawerOpened) {
+                    return `You don't see a bag. Maybe check the drawers?`;
+                }
+                if (state.inventory.includes('BAG')) {
+                    return `You already have a garbage bag.`;
+                }
+                state.inventory.push('BAG');
+                updateDisplay();
+                return `You pull out a garbage bag. Thin plastic.`;
+            }
+
+            if (target.includes('treat') || target.includes('snack') || target.includes('cookie')) {
+                if (state.location !== 'KITCHEN') {
+                    return `You don't have any treats on you.`;
+                }
+                if (!state.cabinetOpened) {
+                    return `You don't see any treats lying around.`;
+                }
+                if (state.inventory.includes('TREATS')) {
+                    return `You already grabbed some treats.`;
+                }
+                state.inventory.push('TREATS');
+                updateDisplay();
+                return `You pocket a handful of snacks. Tiny cookies, mostly.`;
             }
 
             if (target.includes('mascot') || target.includes('alien') || target.includes('uchujin')) {
@@ -1145,65 +1378,117 @@
         }
 
         function handleUse(target) {
+            // BOWL - traps the mascot
+            if (target.includes('bowl')) {
+                if (!state.inventory.includes('BOWL')) {
+                    return `You don't have the bowl.`;
+                }
+                if (!canCatchMascot()) {
+                    return `You're holding a bowl. The plushie isn't here.`;
+                }
+                if (state.mascotTrapped) {
+                    return `The mascot is already trapped under the bowl.`;
+                }
+                // SUCCESS: trap mascot
+                state.mascotTrapped = true;
+                let response = `You bring the bowl down over Uchujin-kun!<br><br><strong>CLANG!</strong><br><br>`;
+                response += `The mascot is trapped! It scrabbles against the metal, tiny face pressed to the rim.<br><br>`;
+                response += `<span style="color:#b8860b">Now you just need something soft to wrap it up and carry it safely.</span>`;
+
+                if (state.location === 'COUNTER') {
+                    response += `<br><br><span class="npc-usui">"Nice reflexes."</span><br>Usui sounds almost impressed.`;
+                }
+                return response;
+            }
+
+            // APRON - catches trapped mascot (WIN) or fails if not trapped
             if (target.includes('apron')) {
                 if (!state.inventory.includes('APRON')) {
                     return `You don't have the apron.`;
                 }
-
                 if (!canCatchMascot()) {
-                    return `The plushie isn't in this room. It bounces around. Check DINING, COUNTER, or KITCHEN.`;
+                    return `The plushie isn't here. It's bouncing around somewhere else.`;
                 }
-
-                if (!state.mascotCornered) {
-                    state.attemptedCatch++;
-                    moveMascot();
-                    updateDisplay();
-                    return `You throw the apron, but Uchujin-kun darts away!<br><br>It's too fast when it has room to maneuver. You need to CORNER it first...<br><br><em>Maybe the TRAY could help block its escape?</em>`;
+                if (state.mascotTrapped) {
+                    // WIN!
+                    return triggerWin();
                 }
-
-                // WIN!
-                return triggerWin();
+                // Fail: too floppy to catch a free mascot
+                state.attemptedCatch++;
+                moveMascot();
+                updateDisplay();
+                return `You throw the apron!<br><br>It flutters down... and the mascot darts away before it lands.<br><br><em>Too floppy to aim. If only I had something solid to trap it first... then the apron would work.</em>`;
             }
 
-            if (target.includes('tray')) {
-                if (!state.inventory.includes('TRAY')) {
-                    return `You don't have the tray.`;
+            // KNIFE - red herring, self-admonishment
+            if (target.includes('knife')) {
+                if (!state.inventory.includes('KNIFE')) {
+                    return `You don't have a knife.`;
                 }
-
                 if (!canCatchMascot()) {
-                    return `The plushie isn't here. Using the tray now would just make noise for nothing.`;
+                    return `You're waving a knife around for no reason. Stop that.`;
                 }
-
-                // If we have apron ready, corner the mascot
-                if (state.inventory.includes('APRON')) {
-                    state.mascotCornered = true;
-                    state.commandCount = 0; // Reset counter
-                    let response = `CLANG!<br><br>You sweep the tray in a wide arc, blocking the mascot's escape route.<br><br>Uchujin-kun backs into the corner, ears flat.<br><br><span style="color:#b8860b">It's cornered! Now's your chance!</span>`;
-
-                    if (state.location === 'COUNTER') {
-                        response += `<br><br><span class="npc-usui">"Nice move."</span><br>Usui sounds almost impressed.`;
-                    }
-
-                    return response;
-                } else {
-                    // No apron - spook the mascot!
-                    state.mascotSpooked = 3; // Spooked for 3 turns
-                    moveMascot(); // Immediately flees
-                    updateDisplay();
-                    return `CLANG!<br><br>The noise startles the mascot!<br><br>Uchujin-kun bolts, moving twice as fast as before. You don't have anything soft to catch it with!<br><br><em>It's spooked now. Maybe get the APRON first next time...</em>`;
-                }
+                return `You raise the knife and immediately feel horrible.<br><br>What are you DOING? It's a plushie. YOUR plushie.<br><br>You put the knife away, face burning with shame.`;
             }
 
-            // TREATS red herring
-            if (target.includes('treat') || target.includes('lure') || target.includes('food') || target.includes('snack')) {
-                if (state.location !== 'KITCHEN') {
-                    return `You don't have any treats on you.`;
+            // BAG - red herring, tears through
+            if (target.includes('bag') || target.includes('garbage')) {
+                if (!state.inventory.includes('BAG')) {
+                    return `You don't have a bag.`;
                 }
+                if (!canCatchMascot()) {
+                    return `No point using a bag here. The mascot isn't around.`;
+                }
+                state.attemptedCatch++;
+                moveMascot();
+                updateDisplay();
+                return `You throw the bag over Uchujin-kun!<br><br>For a moment it works... then tiny claws tear through the thin plastic.<br><br>It escapes through the hole.<br><br><em>Need something much thicker. Something it can't tear through.</em>`;
+            }
+
+            // TREATS - red herring, snatches and runs
+            if (target.includes('treat') || target.includes('snack') || target.includes('lure') || target.includes('bait') || target.includes('cookie')) {
+                if (!state.inventory.includes('TREATS')) {
+                    return `You don't have any treats.`;
+                }
+                if (!canCatchMascot()) {
+                    return `You could eat these yourself, but that seems wasteful.`;
+                }
+                state.attemptedCatch++;
                 state.triedTreats = true;
-                return `You wave the treats enticingly.<br><br>Uchujin-kun doesn't even look. It's not hungry. It's having too much fun tormenting you.`;
+                moveMascot();
+                updateDisplay();
+                return `You hold out a treat. Uchujin-kun's eyes light up.<br><br>It darts over, snatches the cookie, and bolts before you can react.<br><br>So much for bribery.`;
             }
 
             return `Use what on what?`;
+        }
+
+        function handleOpen(target) {
+            if (target.includes('cabinet') || target.includes('cupboard')) {
+                if (state.location !== 'KITCHEN') {
+                    return `You don't see a cabinet here.`;
+                }
+                if (state.cabinetOpened) {
+                    return `It's already open.`;
+                }
+                state.cabinetOpened = true;
+                updateDisplay();
+                return `You open the cabinet.<br><br>Inside: a clean metal mixing bowl, and some snacks for staff breaks.`;
+            }
+
+            if (target.includes('drawer')) {
+                if (state.location !== 'KITCHEN') {
+                    return `You don't see a drawer here.`;
+                }
+                if (state.drawerOpened) {
+                    return `It's already open.`;
+                }
+                state.drawerOpened = true;
+                updateDisplay();
+                return `You slide the drawer open.<br><br>Garbage bags, twist ties, rubber bands. The usual kitchen stuff.`;
+            }
+
+            return `Open what?`;
         }
 
         function handleCatch(target) {
@@ -1215,15 +1500,15 @@
                 }
             }
 
-            if (state.inventory.includes('APRON') && state.mascotCornered) {
+            if (state.inventory.includes('APRON') && state.mascotTrapped) {
                 return triggerWin();
             }
 
-            if (state.inventory.includes('APRON') && !state.mascotCornered) {
+            if (state.inventory.includes('APRON') && !state.mascotTrapped) {
                 state.attemptedCatch++;
                 moveMascot();
                 updateDisplay();
-                return `You throw the apron, but the mascot dodges!<br><br>It's too quick when it has room to run. You need to CORNER it first.<br><br><em>The TRAY might help block its escape...</em>`;
+                return `You throw the apron, but the mascot dodges!<br><br>It's too quick when it has room to run. You need to TRAP it first.<br><br><em>Maybe something in the KITCHEN could help...</em>`;
             }
 
             // Bare hands attempt
@@ -1247,14 +1532,15 @@
             }
 
             if (state.attemptedCatch >= 6) {
-                return msg + `<br><br><em>Hint: Get the APRON and TRAY from the KITCHEN.</em>`;
+                return msg + `<br><br><em>Hint: Look around the KITCHEN for something to catch it with...</em>`;
             }
 
             return msg;
         }
 
         function isMascotInDining() {
-            return state.mascotLocation.startsWith('TABLE');
+            const spot = HIDING_SPOTS[state.mascotLocation];
+            return spot && spot[0] === 'DINING';
         }
 
         function triggerWin() {
@@ -1272,7 +1558,7 @@
                 `His voice is softer.<br>` +
                 `<span class="npc-usui">"Keep it close, Misa-chan."</span><br><br>` +
                 `Satsuki appears from the kitchen, beaming.<br>` +
-                `<span class="npc-satsuki">"You did it! And just in time for—"</span><br>` +
+                `<span class="npc-satsuki">"You did it! And just in time for-"</span><br>` +
                 `She stops herself, grinning.<br>` +
                 `<span class="npc-satsuki">"Well. You'll see~"</span><br><br>` +
                 `<a href="prize.html" class="win-link">✨ claim your prize ✨</a>`;
@@ -1307,52 +1593,45 @@
         }
 
         function updateHints() {
-            const tier = getHintTier();
             let hints = 'try: ';
 
-            // pick a random sensory command
-            const sensory = ['listen', 'smell', 'think', 'wait'];
-            const sense = sensory[Math.floor(Math.random() * sensory.length)];
+            // Exploration hint - always available
+            hints += `<span onclick="tryCommand('look around')">look around</span> `;
 
             if (state.location === 'DINING') {
                 hints += `<span onclick="tryCommand('go counter')">go counter</span> `;
                 if (isMascotVisible()) {
                     hints += `<span onclick="tryCommand('look mascot')">look mascot</span> `;
-                    if (state.mascotCornered && state.inventory.includes('APRON')) {
+                    if (state.mascotTrapped && state.inventory.includes('APRON')) {
                         hints += `<span onclick="tryCommand('use apron')">use apron</span> `;
-                    } else if (state.inventory.includes('TRAY') && state.inventory.includes('APRON')) {
-                        hints += `<span onclick="tryCommand('use tray')">use tray</span> `;
+                    } else if (state.inventory.includes('BOWL') && !state.mascotTrapped) {
+                        hints += `<span onclick="tryCommand('use bowl')">use bowl</span> `;
                     }
                 }
-                hints += `<span onclick="tryCommand('${sense}')">${sense}</span> `;
             } else if (state.location === 'COUNTER') {
                 hints += `<span onclick="tryCommand('talk usui')">talk usui</span> `;
                 hints += `<span onclick="tryCommand('go kitchen')">go kitchen</span> `;
                 if (isMascotVisible()) {
-                    if (state.mascotCornered && state.inventory.includes('APRON')) {
+                    if (state.mascotTrapped && state.inventory.includes('APRON')) {
                         hints += `<span onclick="tryCommand('use apron')">use apron</span> `;
-                    } else if (state.inventory.includes('TRAY') && state.inventory.includes('APRON')) {
-                        hints += `<span onclick="tryCommand('use tray')">use tray</span> `;
+                    } else if (state.inventory.includes('BOWL') && !state.mascotTrapped) {
+                        hints += `<span onclick="tryCommand('use bowl')">use bowl</span> `;
                     }
                 }
-                hints += `<span onclick="tryCommand('${sense}')">${sense}</span> `;
             } else {
+                // KITCHEN
                 hints += `<span onclick="tryCommand('talk satsuki')">talk satsuki</span> `;
-                if (!state.inventory.includes('APRON')) {
-                    hints += `<span onclick="tryCommand('take apron')">take apron</span> `;
-                }
-                if (!state.inventory.includes('TRAY')) {
-                    hints += `<span onclick="tryCommand('take tray')">take tray</span> `;
+                if (!state.cabinetOpened) {
+                    hints += `<span onclick="tryCommand('open cabinet')">open cabinet</span> `;
                 }
                 hints += `<span onclick="tryCommand('go counter')">go counter</span> `;
                 if (isMascotVisible()) {
-                    if (state.mascotCornered && state.inventory.includes('APRON')) {
+                    if (state.mascotTrapped && state.inventory.includes('APRON')) {
                         hints += `<span onclick="tryCommand('use apron')">use apron</span> `;
-                    } else if (state.inventory.includes('TRAY') && state.inventory.includes('APRON')) {
-                        hints += `<span onclick="tryCommand('use tray')">use tray</span> `;
+                    } else if (state.inventory.includes('BOWL') && !state.mascotTrapped) {
+                        hints += `<span onclick="tryCommand('use bowl')">use bowl</span> `;
                     }
                 }
-                hints += `<span onclick="tryCommand('${sense}')">${sense}</span> `;
             }
 
             document.getElementById('hints').innerHTML = hints;
@@ -1412,7 +1691,7 @@
                     document.getElementById('hints').innerHTML = '';
                 }
             } else {
-                addOutput('', `Welcome to ★ AFTER CLASS ★<br><br>Your shift at Maid Latte was going fine until...<br><br>Your tiny plushie mascot, <strong>Uchūjin-kun</strong>, fell out of your bag. Now it's bouncing from room to room — dining area, counter, kitchen — like it has somewhere to be.<br><br>Catch it before Usui sees it!<br><br>(Type HELP for commands)`);
+                addOutput('', `Welcome to ★ AFTER CLASS ★<br><br>Your shift at Maid Latte was going fine until...<br><br>Your tiny plushie mascot, <strong>Uchūjin-kun</strong>, fell out of your bag. Now it's bouncing from room to room - dining area, counter, kitchen - like it has somewhere to be.<br><br>Catch it before Usui sees it!<br><br>(Type HELP for commands)`);
             }
         }
 

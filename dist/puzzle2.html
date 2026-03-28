@@ -1,1082 +1,1721 @@
 <!DOCTYPE html>
-<html class="staticrypt-html">
-    <head>
-        <meta charset="utf-8" />
-        <title>puzzle 2</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>★ AFTER CLASS ★</title>
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           EARLY 2000s MANILA BLOG AESTHETIC
+           Matching main page theme
+           ═══════════════════════════════════════════════════════════ */
 
-        <!-- do not cache this page -->
-        <meta http-equiv="cache-control" content="max-age=0" />
-        <meta http-equiv="cache-control" content="no-cache" />
-        <meta http-equiv="expires" content="0" />
-        <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
-        <meta http-equiv="pragma" content="no-cache" />
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=VT323&family=Pacifico&family=Silkscreen&display=swap');
 
-        <style>
-            /* ═══════════════════════════════════════════════════════════
-               EARLY 2000s MANILA BLOG AESTHETIC
-               #fvckinerd energy — not glittery, but warm
-               ═══════════════════════════════════════════════════════════ */
+        * {
+            box-sizing: border-box;
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath fill='%23c49393' d='M1 1 L1 7 L7 1 Z'/%3E%3Cpath fill='%23d4a5a5' d='M14 23l-1.2-1.1C8.5 17.8 5.5 15 5.5 11.5c0-2.5 2-4.5 4.5-4.5 1.4 0 2.7.65 3.6 1.7.9-1.05 2.2-1.7 3.6-1.7 2.5 0 4.5 2 4.5 4.5 0 3.5-3 6.3-7.3 10.4L14 23z'/%3E%3C/svg%3E") 1 1, auto;
+        }
 
-            @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+        /* custom scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f5e6d3; }
+        ::-webkit-scrollbar-thumb {
+            background: #d4a5a5;
+            border-radius: 5px;
+            border: 2px solid #f5e6d3;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: #c49393; }
 
-            * {
-                cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath fill='%23d4a5a5' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") 10 10, auto;
-            }
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            background: #faf8f5;
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(212, 165, 165, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(180, 165, 212, 0.1) 0%, transparent 50%);
+            color: #4a4a4a;
+            margin: 0;
+            padding: 1rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
 
-            /* custom scrollbar */
-            ::-webkit-scrollbar { width: 10px; }
-            ::-webkit-scrollbar-track { background: #f5e6d3; }
-            ::-webkit-scrollbar-thumb {
-                background: #d4a5a5;
-                border-radius: 5px;
-                border: 2px solid #f5e6d3;
-            }
-            ::-webkit-scrollbar-thumb:hover { background: #c49393; }
+        .terminal {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 700px;
+            margin: 0 auto;
+            width: 100%;
+        }
 
-            .staticrypt-html {
-                height: 100%;
-            }
+        .header {
+            text-align: center;
+            padding: 1rem;
+            border: 2px dashed #d4a5a5;
+            margin-bottom: 1rem;
+            background: #fff;
+            position: relative;
+        }
 
-            .staticrypt-body {
-                height: 100%;
-                margin: 0;
-                background: #faf8f5;
-                background-image:
-                    radial-gradient(circle at 20% 80%, rgba(212, 165, 165, 0.1) 0%, transparent 50%),
-                    radial-gradient(circle at 80% 20%, rgba(180, 165, 212, 0.1) 0%, transparent 50%);
-            }
+        .header::before {
+            content: "҉ ҉ ҉";
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #faf8f5;
+            padding: 0 1rem;
+            color: #d4a5a5;
+            font-size: 0.8rem;
+        }
 
-            .staticrypt-content {
-                height: 100%;
-                font-family: Georgia, 'Times New Roman', serif;
-                color: #4a4a4a;
-                -webkit-font-smoothing: antialiased;
-            }
+        .header h1 {
+            margin: 0;
+            font-family: 'Pacifico', cursive;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+            color: #d4a5a5;
+            animation: glitter 1.5s ease-in-out infinite;
+        }
 
-            .staticrypt-page {
-                max-width: 500px;
-                padding: 2rem 1rem;
-                margin: auto;
-                box-sizing: border-box;
-            }
-
-            /* ═══ HEADER ═══ */
-            .blog-header {
-                text-align: center;
-                margin-bottom: 1.5rem;
-            }
-
-            .blog-header h1 {
-                font-family: 'Comic Neue', cursive;
-                font-size: 1.8rem;
-                color: #6b5b6b;
-                margin: 0;
-                letter-spacing: 2px;
-            }
-
-            .marquee-container {
-                overflow: hidden;
-                background: linear-gradient(90deg, transparent, rgba(212, 165, 165, 0.2), transparent);
-                padding: 0.3rem 0;
-                margin: 0.5rem 0;
-            }
-
-            .marquee {
-                display: inline-block;
-                white-space: nowrap;
-                animation: marquee 15s linear infinite;
-                font-size: 0.85rem;
-                color: #8b7b8b;
-            }
-
-            @keyframes marquee {
-                0% { transform: translateX(100%); }
-                100% { transform: translateX(-100%); }
-            }
-
-            /* ═══ MAIN FORM BOX ═══ */
-            .staticrypt-form {
-                background: #fff;
-                border: 2px dashed #d4a5a5;
-                padding: 2rem;
-                text-align: center;
-                position: relative;
-            }
-
-            .staticrypt-form::before {
-                content: "҉ ҉ ҉";
-                position: absolute;
-                top: -12px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: #faf8f5;
-                padding: 0 1rem;
+        @keyframes glitter {
+            0%, 100% {
                 color: #d4a5a5;
-                font-size: 0.8rem;
+                text-shadow: 0 0 4px rgba(212, 165, 165, 0.5);
             }
-
-            .staticrypt-title {
-                font-family: 'Comic Neue', cursive;
-                font-size: 1.3rem;
-                color: #6b5b6b;
-                margin: 0 0 0.5rem 0;
+            25% {
+                color: #e8b4b4;
+                text-shadow: 0 0 8px rgba(232, 180, 180, 0.8), 0 0 12px rgba(255, 200, 200, 0.4);
             }
-
-            .staticrypt-instructions {
-                font-size: 0.9rem;
-                color: #8b7b8b;
-                line-height: 1.6;
+            50% {
+                color: #c49393;
+                text-shadow: 0 0 4px rgba(196, 147, 147, 0.5);
             }
-
-            .staticrypt-instructions p {
-                margin: 0.5rem 0;
+            75% {
+                color: #daa5b4;
+                text-shadow: 0 0 8px rgba(218, 165, 180, 0.8), 0 0 12px rgba(255, 180, 200, 0.4);
             }
+        }
 
-            .staticrypt-hr {
-                border: none;
-                border-top: 1px dashed #e0d0d0;
-                margin: 1.5rem 0;
+        .header .subtitle {
+            font-family: 'Silkscreen', cursive;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            margin-top: 0.3rem;
+        }
+
+        .scene-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .ascii-scene {
+            flex: 1;
+            min-width: 280px;
+            max-width: 400px;
+            border: 2px dashed #d4a5a5;
+            padding: 0.5rem;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .ascii-scene img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+
+        .room-desc {
+            flex: 1;
+            min-width: 200px;
+            border: 2px dashed #d4a5a5;
+            padding: 1rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            background: #fff;
+            font-family: 'Comic Neue', cursive;
+        }
+
+        .room-desc strong {
+            font-family: 'Pacifico', cursive;
+            color: #c49393;
+        }
+
+        .output {
+            flex: 1;
+            border: 2px dashed #d4a5a5;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            min-height: 120px;
+            max-height: 220px;
+            overflow-y: auto;
+            font-size: 1rem;
+            line-height: 1.6;
+            background: #fff;
+            background-image: url('assets/backgrounds/maid-sama-bg.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            background-blend-mode: soft-light;
+            font-family: 'Comic Neue', cursive;
+            position: relative;
+        }
+
+        .output::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .output > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .output .command {
+            color: #8b7b8b;
+            font-style: italic;
+        }
+
+        .output .response {
+            color: #4a4a4a;
+            margin-bottom: 1rem;
+        }
+
+        .output .npc-usui {
+            color: #7b6b8b;
+            font-weight: bold;
+            font-family: 'Comic Neue', cursive;
+            font-style: italic;
+        }
+
+        .output .npc-satsuki {
+            color: #c49393;
+            font-weight: bold;
+            font-family: 'Comic Neue', cursive;
+        }
+
+        .output .success {
+            color: #8ba58b;
+            font-weight: bold;
+            font-family: 'Pacifico', cursive;
+            animation: glitter 1.5s ease-in-out infinite;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .input-area input {
+            flex: 1;
+            background: #fff;
+            border: 2px dashed #d4a5a5;
+            color: #4a4a4a;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 1rem;
+            padding: 0.8rem;
+            outline: none;
+        }
+
+        .input-area input::placeholder {
+            color: #b4a5a5;
+        }
+
+        .input-area input:focus {
+            border-color: #c49393;
+            background: #fffaf8;
+        }
+
+        .input-area button {
+            background: linear-gradient(135deg, #d4a5a5 0%, #daa5b4 100%);
+            color: #fff;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-family: 'Silkscreen', cursive;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 3px;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+        }
+
+        .input-area button:hover {
+            background: linear-gradient(135deg, #c49393 0%, #ca95a4 100%);
+        }
+
+        .hints {
+            font-size: 0.8rem;
+            color: #8b7b8b;
+            margin-bottom: 1rem;
+            font-family: 'Silkscreen', cursive;
+            letter-spacing: 0.5px;
+        }
+
+        .hints span {
+            margin-right: 1rem;
+            cursor: pointer;
+            padding: 0.2rem 0.4rem;
+            background: rgba(212, 165, 165, 0.1);
+            border-radius: 3px;
+        }
+
+        .hints span:hover {
+            color: #6b5b6b;
+            background: rgba(212, 165, 165, 0.25);
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #b4a5a5;
+            padding-top: 1rem;
+            border-top: 1px dashed #e0d0d0;
+            font-family: 'Comic Neue', cursive;
+        }
+
+        .footer a {
+            color: #c49393;
+            text-decoration: none;
+            font-family: 'Silkscreen', cursive;
+            font-size: 0.7rem;
+        }
+
+        .footer a:hover {
+            color: #d4a5a5;
+            text-shadow: 0 0 4px rgba(212, 165, 165, 0.5);
+        }
+
+        .blink {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .win-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, #d4a5a5 0%, #daa5b4 50%, #d4a5a5 100%);
+            background-size: 200% 200%;
+            animation: shimmer 2s ease-in-out infinite;
+            color: #fff;
+            text-decoration: none;
+            font-family: 'Pacifico', cursive;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            border-radius: 3px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .win-link:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 600px) {
+            .ascii-scene {
+                min-width: 100%;
+                max-width: 100%;
+                aspect-ratio: 4/3;
             }
-
-            /* ═══ PASSWORD INPUT ═══ */
-            .staticrypt-password-container {
-                position: relative;
-                background: #faf8f5;
-                border: 1px dashed #ccc;
-                margin: 0 0 1rem;
-            }
-
-            .staticrypt-form input[type="password"],
-            .staticrypt-form input[type="text"] {
-                background: transparent;
-                border: 0;
-                font-family: 'Courier New', monospace;
-                font-size: 1rem;
-                padding: 0.8rem 2.5rem 0.8rem 0.8rem;
-                width: 100%;
-                box-sizing: border-box;
-                outline: none;
-                color: #4a4a4a;
-            }
-
-            .staticrypt-form input::placeholder {
-                color: #aaa;
-                font-style: italic;
-            }
-
-            .staticrypt-toggle-password-visibility {
-                cursor: pointer;
-                height: 18px;
-                width: 18px;
-                opacity: 0.5;
-                position: absolute;
-                right: 10px;
-                top: 50%;
-                transform: translateY(-50%);
-            }
-
-            .staticrypt-toggle-password-visibility:hover {
-                opacity: 0.8;
-            }
-
-            /* ═══ DECRYPT BUTTON ═══ */
-            .staticrypt-decrypt-button {
-                font-family: 'Comic Neue', cursive;
-                font-size: 1rem;
-                font-weight: bold;
-                background: #d4a5a5;
-                color: #fff;
-                border: none;
-                padding: 0.8rem 2rem;
-                cursor: pointer;
-                letter-spacing: 1px;
-                transition: all 0.2s ease;
-            }
-
-            .staticrypt-decrypt-button:hover {
-                background: #c49393;
-                transform: scale(1.02);
-            }
-
-            .staticrypt-decrypt-button:active {
-                transform: scale(0.98);
-            }
-
-            /* ═══ REMEMBER ME ═══ */
-            label.staticrypt-remember {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-bottom: 1rem;
-                font-size: 0.85rem;
-                color: #8b7b8b;
-            }
-
-            .staticrypt-remember input[type="checkbox"] {
-                margin-right: 0.5rem;
-                accent-color: #d4a5a5;
-            }
-
-            /* ═══ FOOTER ═══ */
-            .blog-footer {
-                margin-top: 1.5rem;
-                text-align: center;
-                font-size: 0.75rem;
-                color: #aaa;
-            }
-
-            .blog-footer .divider {
-                color: #d4a5a5;
-                margin: 0.5rem 0;
-            }
-
-            .visitor-counter {
-                font-family: 'Courier New', monospace;
-                background: #333;
-                color: #0f0;
-                padding: 0.2rem 0.5rem;
-                display: inline-block;
-                font-size: 0.7rem;
-                letter-spacing: 2px;
-            }
-
-            .blogroll {
-                margin-top: 0.8rem;
-            }
-
-            .blogroll a {
-                color: #b4a5b4;
-                text-decoration: none;
-                margin: 0 0.3rem;
-            }
-
-            .blogroll a:hover {
-                color: #d4a5a5;
-                text-decoration: underline;
-            }
-
-            .hashtag {
-                margin-top: 0.8rem;
-                font-style: italic;
-            }
-
-            /* ═══ ASCII ART ═══ */
-            .ascii-art {
-                font-family: monospace;
-                font-size: 0.6rem;
-                color: #d4a5a5;
-                line-height: 1;
-                margin: 1rem 0;
-                white-space: pre;
-            }
-
-            /* ═══ LOADING SPINNER ═══ */
-            .staticrypt-spinner-container {
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+            .scene-container {
                 flex-direction: column;
-                background: #faf8f5;
             }
+        }
 
-            .staticrypt-spinner {
-                width: 2rem;
-                height: 2rem;
-                border: 3px solid #f5e6d3;
-                border-top-color: #d4a5a5;
-                border-radius: 50%;
-                animation: spin 1s linear infinite;
-            }
-
-            @keyframes spin {
-                100% { transform: rotate(360deg); }
-            }
-
-            .loading-text {
-                margin-top: 1rem;
-                font-family: 'Comic Neue', cursive;
-                color: #8b7b8b;
-                font-size: 0.9rem;
-            }
-
-            /* ═══ BLINK ═══ */
-            .blink {
-                animation: blink 1.2s step-end infinite;
-            }
-
-            @keyframes blink {
-                50% { opacity: 0; }
-            }
-
-            .hidden {
-                display: none !important;
-            }
-
-            /* ═══ RESPONSIVE ═══ */
-            @media (max-width: 540px) {
-                .staticrypt-page {
-                    padding: 1rem;
-                }
-                .staticrypt-form {
-                    padding: 1.5rem 1rem;
-                }
-                .blog-header h1 {
-                    font-size: 1.4rem;
-                }
-            }
-        </style>
-    </head>
-
-    <body class="staticrypt-body">
-        <div id="staticrypt_loading" class="staticrypt-spinner-container">
-            <div class="staticrypt-spinner"></div>
-            <div class="loading-text">loading<span class="blink">...</span></div>
+        /* cursor trail */
+        .trail {
+            position: fixed;
+            pointer-events: none;
+            font-size: 10px;
+            color: #d4a5a5;
+            opacity: 0.6;
+            animation: trail-fade 0.8s ease-out forwards;
+            z-index: 9999;
+        }
+        @keyframes trail-fade {
+            0% { opacity: 0.5; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.3); }
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="header">
+            <h1>★ AFTER CLASS ★</h1>
+            <div class="subtitle">☆ a maid latte adventure ☆</div>
+            <div style="font-size: 0.75rem; color: #b4a5a5; margin-top: 0.3rem;">( ´ ▽ ` )ノ</div>
         </div>
 
-        <div id="staticrypt_content" class="staticrypt-content hidden">
-            <div class="staticrypt-page">
-
-                <!-- HEADER -->
-                <div class="blog-header">
-                    <h1>★ puzzle 2 ★</h1>
-                    <div class="marquee-container">
-                        <span class="marquee">♡ welcome to my secret page ♡ u found it ♡ now enter the password ♡ welcome to my secret page ♡</span>
-                    </div>
-                </div>
-
-                <!-- MAIN FORM -->
-                <div class="staticrypt-form">
-                    <div class="staticrypt-instructions">
-                        <p class="staticrypt-title">this page is <span class="blink">protected</span></p>
-                        <p></p>
-                    </div>
-
-                    <hr class="staticrypt-hr" />
-
-                    <form id="staticrypt-form" action="#" method="post">
-                        <div class="staticrypt-password-container">
-                            <input
-                                id="staticrypt-password"
-                                type="password"
-                                name="password"
-                                placeholder="the password?"
-                                autofocus
-                            />
-                            <img
-                                class="staticrypt-toggle-password-visibility"
-                                alt="Show password"
-                                title="Show password"
-                                src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iIzhiN2I4YiIgZD0iTTM4LjggNS4xQzI4LjQtMy4xIDEzLjMtMS4yIDUuMSA5LjJTLTEuMiAzNC43IDkuMiA0Mi45bDU5MiA0NjRjMTAuNCA4LjIgMjUuNSA2LjMgMzMuNy00LjFzNi4zLTI1LjUtNC4xLTMzLjdMNTI1LjYgMzg2LjdjMzkuNi00MC42IDY2LjQtODYuMSA3OS45LTExOC40YzMuMy03LjkgMy4zLTE2LjcgMC0yNC42Yy0xNC45LTM1LjctNDYuMi04Ny43LTkzLTEzMS4xQzQ2NS41IDY4LjggNDAwLjggMzIgMzIwIDMyYy02OC4yIDAtMTI1IDI2LjMtMTY5LjMgNjAuOEwzOC44IDUuMXpNMjIzLjEgMTQ5LjVDMjQ4LjYgMTI2LjIgMjgyLjcgMTEyIDMyMCAxMTJjNzkuNSAwIDE0NCA2NC41IDE0NCAxNDRjMCAyNC45LTYuMyA0OC4zLTE3LjQgNjguN0w0MDggMjk0LjVjOC40LTE5LjMgMTAuNi00MS40IDQuOC02My4zYy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM2MwIDEwLjItMi40IDE5LjgtNi42IDI4LjNsLTkwLjMtNzAuOHpNMzczIDM4OS45Yy0xNi40IDYuNS0zNC4zIDEwLjEtNTMgMTAuMWMtNzkuNSAwLTE0NC02NC41LTE0NC0xNDRjMC02LjkgLjUtMTMuNiAxLjQtMjAuMkw4My4xIDE2MS41QzYwLjMgMTkxLjIgNDQgMjIwLjggMzQuNSAyNDMuN2MtMy4zIDcuOS0zLjMgMTYuNyAwIDI0LjZjMTQuOSAzNS43IDQ2LjIgODcuNyA5MyAxMzEuMUMxNzQuNSA0NDMuMiAyMzkuMiA0ODAgMzIwIDQ4MGM0Ny44IDAgODkuOS0xMi45IDEyNi4yLTMyLjVMMzczIDM4OS45eiIvPjwvc3ZnPg=="
-                            />
-                        </div>
-
-                        <label id="staticrypt-remember-label" class="staticrypt-remember hidden">
-                            <input id="staticrypt-remember" type="checkbox" name="remember" />
-                            Remember me
-                        </label>
-
-                        <input type="submit" class="staticrypt-decrypt-button" value="enter →" />
-                    </form>
-
-                    <div class="ascii-art">
-    (\(\
-    ( -.- )
-    o_(")(")
-                    </div>
-                </div>
-
-                <!-- FOOTER -->
-                <div class="blog-footer">
-                    <div class="divider">─ ･ ｡ﾟ☆: *.☽ .* :☆ﾟ. ─</div>
-                    <div class="visitor-counter">visitors: 000001</div>
-                    <div class="blogroll">
-                        <a href="#">about</a> |
-                        <a href="#">links</a> |
-                        <a href="#" onclick="clearAndReload(); return false;">restart?</a>
-                    </div>
-                    <div class="hashtag">#fvckinerd</div>
-                </div>
-
-            </div>
+        <div class="scene-container">
+            <div class="ascii-scene" id="asciiScene"><img id="sceneImg" src="assets/backgrounds/dining-area.gif" alt="Scene"></div>
+            <div class="room-desc" id="roomDesc"></div>
         </div>
 
-        <script>
-            // clear localStorage and reload (for testing / restart)
-            function clearAndReload() {
-                localStorage.removeItem("staticrypt_expiration");
-                localStorage.removeItem("staticrypt_passphrase");
-                location.reload();
-            }
+        <div class="output" id="output"></div>
 
-            // these variables will be filled when generating the file - the template format is 'variable_name'
-            const staticryptInitiator = ((function(){
-  const exports = {};
-  const cryptoEngine = ((function(){
-  const exports = {};
-  const { subtle } = crypto;
+        <div class="hints" id="hints"></div>
 
-const IV_BITS = 16 * 8;
-const HEX_BITS = 4;
-const ENCRYPTION_ALGO = "AES-CBC";
+        <div class="input-area" id="inputArea">
+            <input type="text" id="command" placeholder="what do? (・ω・)" autofocus>
+            <button onclick="submitCommand()">GO!</button>
+        </div>
 
-/**
- * Translates between utf8 encoded hexadecimal strings
- * and Uint8Array bytes.
- */
-const HexEncoder = {
-    /**
-     * hex string -> bytes
-     * @param {string} hexString
-     * @returns {Uint8Array}
-     */
-    parse: function (hexString) {
-        if (hexString.length % 2 !== 0) throw "Invalid hexString";
-        const arrayBuffer = new Uint8Array(hexString.length / 2);
+        <div class="footer">
+            ─ ･ ｡ﾟ☆: *.☽ .* :☆ﾟ. ─<br>
+            <a href="index.html">← back</a> |
+            <a href="#" onclick="restartGame(); return false;">restart?</a><br>
+            <span style="font-style: italic;">#fvckinerd</span>
+        </div>
+    </div>
 
-        for (let i = 0; i < hexString.length; i += 2) {
-            const byteValue = parseInt(hexString.substring(i, i + 2), 16);
-            if (isNaN(byteValue)) {
-                throw "Invalid hexString";
-            }
-            arrayBuffer[i / 2] = byteValue;
-        }
-        return arrayBuffer;
-    },
+    <script>
+        // ============================================================
+        // GAME STATE
+        // ============================================================
 
-    /**
-     * bytes -> hex string
-     * @param {Uint8Array} bytes
-     * @returns {string}
-     */
-    stringify: function (bytes) {
-        const hexBytes = [];
-
-        for (let i = 0; i < bytes.length; ++i) {
-            let byteString = bytes[i].toString(16);
-            if (byteString.length < 2) {
-                byteString = "0" + byteString;
-            }
-            hexBytes.push(byteString);
-        }
-        return hexBytes.join("");
-    },
-};
-
-/**
- * Translates between utf8 strings and Uint8Array bytes.
- */
-const UTF8Encoder = {
-    parse: function (str) {
-        return new TextEncoder().encode(str);
-    },
-
-    stringify: function (bytes) {
-        return new TextDecoder().decode(bytes);
-    },
-};
-
-/**
- * Salt and encrypt a msg with a password.
- */
-async function encrypt(msg, hashedPassword) {
-    // Must be 16 bytes, unpredictable, and preferably cryptographically random. However, it need not be secret.
-    // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#parameters
-    const iv = crypto.getRandomValues(new Uint8Array(IV_BITS / 8));
-
-    const key = await subtle.importKey("raw", HexEncoder.parse(hashedPassword), ENCRYPTION_ALGO, false, ["encrypt"]);
-
-    const encrypted = await subtle.encrypt(
-        {
-            name: ENCRYPTION_ALGO,
-            iv: iv,
-        },
-        key,
-        UTF8Encoder.parse(msg)
-    );
-
-    // iv will be 32 hex characters, we prepend it to the ciphertext for use in decryption
-    return HexEncoder.stringify(iv) + HexEncoder.stringify(new Uint8Array(encrypted));
-}
-exports.encrypt = encrypt;
-
-/**
- * Decrypt a salted msg using a password.
- *
- * @param {string} encryptedMsg
- * @param {string} hashedPassword
- * @returns {Promise<string>}
- */
-async function decrypt(encryptedMsg, hashedPassword) {
-    const ivLength = IV_BITS / HEX_BITS;
-    const iv = HexEncoder.parse(encryptedMsg.substring(0, ivLength));
-    const encrypted = encryptedMsg.substring(ivLength);
-
-    const key = await subtle.importKey("raw", HexEncoder.parse(hashedPassword), ENCRYPTION_ALGO, false, ["decrypt"]);
-
-    const outBuffer = await subtle.decrypt(
-        {
-            name: ENCRYPTION_ALGO,
-            iv: iv,
-        },
-        key,
-        HexEncoder.parse(encrypted)
-    );
-
-    return UTF8Encoder.stringify(new Uint8Array(outBuffer));
-}
-exports.decrypt = decrypt;
-
-/**
- * Salt and hash the password so it can be stored in localStorage without opening a password reuse vulnerability.
- *
- * @param {string} password
- * @param {string} salt
- * @returns {Promise<string>}
- */
-async function hashPassword(password, salt) {
-    // we hash the password in multiple steps, each adding more iterations. This is because we used to allow less
-    // iterations, so for backward compatibility reasons, we need to support going from that to more iterations.
-    let hashedPassword = await hashLegacyRound(password, salt);
-
-    hashedPassword = await hashSecondRound(hashedPassword, salt);
-
-    return hashThirdRound(hashedPassword, salt);
-}
-exports.hashPassword = hashPassword;
-
-/**
- * This hashes the password with 1k iterations. This is a low number, we need this function to support backwards
- * compatibility.
- *
- * @param {string} password
- * @param {string} salt
- * @returns {Promise<string>}
- */
-function hashLegacyRound(password, salt) {
-    return pbkdf2(password, salt, 1000, "SHA-1");
-}
-exports.hashLegacyRound = hashLegacyRound;
-
-/**
- * Add a second round of iterations. This is because we used to use 1k, so for backwards compatibility with
- * remember-me/autodecrypt links, we need to support going from that to more iterations.
- *
- * @param hashedPassword
- * @param salt
- * @returns {Promise<string>}
- */
-function hashSecondRound(hashedPassword, salt) {
-    return pbkdf2(hashedPassword, salt, 14000, "SHA-256");
-}
-exports.hashSecondRound = hashSecondRound;
-
-/**
- * Add a third round of iterations to bring total number to 600k. This is because we used to use 1k, then 15k, so for
- * backwards compatibility with remember-me/autodecrypt links, we need to support going from that to more iterations.
- *
- * @param hashedPassword
- * @param salt
- * @returns {Promise<string>}
- */
-function hashThirdRound(hashedPassword, salt) {
-    return pbkdf2(hashedPassword, salt, 585000, "SHA-256");
-}
-exports.hashThirdRound = hashThirdRound;
-
-/**
- * Salt and hash the password so it can be stored in localStorage without opening a password reuse vulnerability.
- *
- * @param {string} password
- * @param {string} salt
- * @param {int} iterations
- * @param {string} hashAlgorithm
- * @returns {Promise<string>}
- */
-async function pbkdf2(password, salt, iterations, hashAlgorithm) {
-    const key = await subtle.importKey("raw", UTF8Encoder.parse(password), "PBKDF2", false, ["deriveBits"]);
-
-    const keyBytes = await subtle.deriveBits(
-        {
-            name: "PBKDF2",
-            hash: hashAlgorithm,
-            iterations,
-            salt: UTF8Encoder.parse(salt),
-        },
-        key,
-        256
-    );
-
-    return HexEncoder.stringify(new Uint8Array(keyBytes));
-}
-
-function generateRandomSalt() {
-    const bytes = crypto.getRandomValues(new Uint8Array(128 / 8));
-
-    return HexEncoder.stringify(new Uint8Array(bytes));
-}
-exports.generateRandomSalt = generateRandomSalt;
-
-async function signMessage(hashedPassword, message) {
-    const key = await subtle.importKey(
-        "raw",
-        HexEncoder.parse(hashedPassword),
-        {
-            name: "HMAC",
-            hash: "SHA-256",
-        },
-        false,
-        ["sign"]
-    );
-    const signature = await subtle.sign("HMAC", key, UTF8Encoder.parse(message));
-
-    return HexEncoder.stringify(new Uint8Array(signature));
-}
-exports.signMessage = signMessage;
-
-function getRandomAlphanum() {
-    const possibleCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-    let byteArray;
-    let parsedInt;
-
-    // Keep generating new random bytes until we get a value that falls
-    // within a range that can be evenly divided by possibleCharacters.length
-    do {
-        byteArray = crypto.getRandomValues(new Uint8Array(1));
-        // extract the lowest byte to get an int from 0 to 255 (probably unnecessary, since we're only generating 1 byte)
-        parsedInt = byteArray[0] & 0xff;
-    } while (parsedInt >= 256 - (256 % possibleCharacters.length));
-
-    // Take the modulo of the parsed integer to get a random number between 0 and totalLength - 1
-    const randomIndex = parsedInt % possibleCharacters.length;
-
-    return possibleCharacters[randomIndex];
-}
-
-/**
- * Generate a random string of a given length.
- *
- * @param {int} length
- * @returns {string}
- */
-function generateRandomString(length) {
-    let randomString = "";
-
-    for (let i = 0; i < length; i++) {
-        randomString += getRandomAlphanum();
-    }
-
-    return randomString;
-}
-exports.generateRandomString = generateRandomString;
-
-  return exports;
-})());
-const codec = ((function(){
-  const exports = {};
-  /**
- * Initialize the codec with the provided cryptoEngine - this return functions to encode and decode messages.
- *
- * @param cryptoEngine - the engine to use for encryption / decryption
- */
-function init(cryptoEngine) {
-    const exports = {};
-
-    /**
-     * Top-level function for encoding a message.
-     * Includes password hashing, encryption, and signing.
-     *
-     * @param {string} msg
-     * @param {string} password
-     * @param {string} salt
-     *
-     * @returns {string} The encoded text
-     */
-    async function encode(msg, password, salt) {
-        const hashedPassword = await cryptoEngine.hashPassword(password, salt);
-
-        const encrypted = await cryptoEngine.encrypt(msg, hashedPassword);
-
-        // we use the hashed password in the HMAC because this is effectively what will be used a password (so we can store
-        // it in localStorage safely, we don't use the clear text password)
-        const hmac = await cryptoEngine.signMessage(hashedPassword, encrypted);
-
-        return hmac + encrypted;
-    }
-    exports.encode = encode;
-
-    /**
-     * Encode using a password that has already been hashed. This is useful to encode multiple messages in a row, that way
-     * we don't need to hash the password multiple times.
-     *
-     * @param {string} msg
-     * @param {string} hashedPassword
-     *
-     * @returns {string} The encoded text
-     */
-    async function encodeWithHashedPassword(msg, hashedPassword) {
-        const encrypted = await cryptoEngine.encrypt(msg, hashedPassword);
-
-        // we use the hashed password in the HMAC because this is effectively what will be used a password (so we can store
-        // it in localStorage safely, we don't use the clear text password)
-        const hmac = await cryptoEngine.signMessage(hashedPassword, encrypted);
-
-        return hmac + encrypted;
-    }
-    exports.encodeWithHashedPassword = encodeWithHashedPassword;
-
-    /**
-     * Top-level function for decoding a message.
-     * Includes signature check and decryption.
-     *
-     * @param {string} signedMsg
-     * @param {string} hashedPassword
-     * @param {string} salt
-     * @param {int} backwardCompatibleAttempt
-     * @param {string} originalPassword
-     *
-     * @returns {Object} {success: true, decoded: string} | {success: false, message: string}
-     */
-    async function decode(signedMsg, hashedPassword, salt, backwardCompatibleAttempt = 0, originalPassword = "") {
-        const encryptedHMAC = signedMsg.substring(0, 64);
-        const encryptedMsg = signedMsg.substring(64);
-        const decryptedHMAC = await cryptoEngine.signMessage(hashedPassword, encryptedMsg);
-
-        if (decryptedHMAC !== encryptedHMAC) {
-            // we have been raising the number of iterations in the hashing algorithm multiple times, so to support the old
-            // remember-me/autodecrypt links we need to try bringing the old hashes up to speed.
-            originalPassword = originalPassword || hashedPassword;
-            if (backwardCompatibleAttempt === 0) {
-                const updatedHashedPassword = await cryptoEngine.hashThirdRound(originalPassword, salt);
-
-                return decode(signedMsg, updatedHashedPassword, salt, backwardCompatibleAttempt + 1, originalPassword);
-            }
-            if (backwardCompatibleAttempt === 1) {
-                let updatedHashedPassword = await cryptoEngine.hashSecondRound(originalPassword, salt);
-                updatedHashedPassword = await cryptoEngine.hashThirdRound(updatedHashedPassword, salt);
-
-                return decode(signedMsg, updatedHashedPassword, salt, backwardCompatibleAttempt + 1, originalPassword);
-            }
-
-            return { success: false, message: "Signature mismatch" };
-        }
-
-        return {
-            success: true,
-            decoded: await cryptoEngine.decrypt(encryptedMsg, hashedPassword),
+        const defaultState = {
+            location: 'DINING',
+            mascotLocation: 'TABLE2',
+            inventory: [],
+            talkedUsui: false,
+            talkedSatsuki: false,
+            usuiTalkCount: 0,
+            satsukiTalkCount: 0,
+            attemptedCatch: 0,
+            commandCount: 0,
+            won: false,
+            mascotTrapped: false,
+            mascotSpooked: 0,
+            triedTreats: false,
+            apronRevealed: false,
+            cabinetOpened: false,
+            drawerOpened: false,
+            talkedCustomer: false,
+            customerLookCount: 0
         };
-    }
-    exports.decode = decode;
 
-    return exports;
-}
-exports.init = init;
+        const SAVE_KEY = 'afterclass-save';
 
-  return exports;
-})());
-const decode = codec.init(cryptoEngine).decode;
-
-/**
- * Initialize the staticrypt module, that exposes functions callbable by the password_template.
- *
- * @param {{
- *  staticryptEncryptedMsgUniqueVariableName: string,
- *  isRememberEnabled: boolean,
- *  rememberDurationInDays: number,
- *  staticryptSaltUniqueVariableName: string,
- * }} staticryptConfig - object of data that is stored on the password_template at encryption time.
- *
- * @param {{
- *  rememberExpirationKey: string,
- *  rememberPassphraseKey: string,
- *  replaceHtmlCallback: function,
- *  clearLocalStorageCallback: function,
- * }} templateConfig - object of data that can be configured by a custom password_template.
- */
-function init(staticryptConfig, templateConfig) {
-    const exports = {};
-
-    /**
-     * Decrypt our encrypted page, replace the whole HTML.
-     *
-     * @param {string} hashedPassword
-     * @returns {Promise<boolean>}
-     */
-    async function decryptAndReplaceHtml(hashedPassword) {
-        const { staticryptEncryptedMsgUniqueVariableName, staticryptSaltUniqueVariableName } = staticryptConfig;
-        const { replaceHtmlCallback } = templateConfig;
-
-        const result = await decode(
-            staticryptEncryptedMsgUniqueVariableName,
-            hashedPassword,
-            staticryptSaltUniqueVariableName
-        );
-        if (!result.success) {
-            return false;
-        }
-        const plainHTML = result.decoded;
-
-        // if the user configured a callback call it, otherwise just replace the whole HTML
-        if (typeof replaceHtmlCallback === "function") {
-            replaceHtmlCallback(plainHTML);
-        } else {
-            document.write(plainHTML);
-            document.close();
-        }
-
-        return true;
-    }
-
-    /**
-     * Attempt to decrypt the page and replace the whole HTML.
-     *
-     * @param {string} password
-     * @param {boolean} isRememberChecked
-     *
-     * @returns {Promise<{isSuccessful: boolean, hashedPassword?: string}>} - we return an object, so that if we want to
-     *   expose more information in the future we can do it without breaking the password_template
-     */
-    async function handleDecryptionOfPage(password, isRememberChecked) {
-        const { staticryptSaltUniqueVariableName } = staticryptConfig;
-
-        // decrypt and replace the whole page
-        const hashedPassword = await cryptoEngine.hashPassword(password, staticryptSaltUniqueVariableName);
-        return handleDecryptionOfPageFromHash(hashedPassword, isRememberChecked);
-    }
-    exports.handleDecryptionOfPage = handleDecryptionOfPage;
-
-    async function handleDecryptionOfPageFromHash(hashedPassword, isRememberChecked) {
-        const { isRememberEnabled, rememberDurationInDays } = staticryptConfig;
-        const { rememberExpirationKey, rememberPassphraseKey } = templateConfig;
-
-        const isDecryptionSuccessful = await decryptAndReplaceHtml(hashedPassword);
-
-        if (!isDecryptionSuccessful) {
-            return {
-                isSuccessful: false,
-                hashedPassword,
+        function saveGame() {
+            const data = {
+                state: state,
+                transcript: document.getElementById('output').innerHTML
             };
+            localStorage.setItem(SAVE_KEY, JSON.stringify(data));
         }
 
-        // remember the hashedPassword and set its expiration if necessary
-        if (isRememberEnabled && isRememberChecked) {
-            window.localStorage.setItem(rememberPassphraseKey, hashedPassword);
-
-            // set the expiration if the duration isn't 0 (meaning no expiration)
-            if (rememberDurationInDays > 0) {
-                window.localStorage.setItem(
-                    rememberExpirationKey,
-                    (new Date().getTime() + rememberDurationInDays * 24 * 60 * 60 * 1000).toString()
-                );
+        function loadGame() {
+            const saved = localStorage.getItem(SAVE_KEY);
+            if (saved) {
+                const data = JSON.parse(saved);
+                // Handle old saves (just state) vs new saves (state + transcript)
+                if (data.state) {
+                    Object.assign(state, data.state);
+                    document.getElementById('output').innerHTML = data.transcript || '';
+                } else {
+                    // Old format: data IS the state
+                    Object.assign(state, data);
+                }
+                return true;
             }
-        }
-
-        return {
-            isSuccessful: true,
-            hashedPassword,
-        };
-    }
-    exports.handleDecryptionOfPageFromHash = handleDecryptionOfPageFromHash;
-
-    /**
-     * Clear localstorage from staticrypt related values
-     */
-    function clearLocalStorage() {
-        const { clearLocalStorageCallback, rememberExpirationKey, rememberPassphraseKey } = templateConfig;
-
-        if (typeof clearLocalStorageCallback === "function") {
-            clearLocalStorageCallback();
-        } else {
-            localStorage.removeItem(rememberPassphraseKey);
-            localStorage.removeItem(rememberExpirationKey);
-        }
-    }
-
-    async function handleDecryptOnLoad() {
-        let isSuccessful = await decryptOnLoadFromUrl();
-
-        if (!isSuccessful) {
-            isSuccessful = await decryptOnLoadFromRememberMe();
-        }
-
-        return { isSuccessful };
-    }
-    exports.handleDecryptOnLoad = handleDecryptOnLoad;
-
-    /**
-     * Clear storage if we are logging out
-     *
-     * @returns {boolean} - whether we logged out
-     */
-    function logoutIfNeeded() {
-        const logoutKey = "staticrypt_logout";
-
-        // handle logout through query param
-        const queryParams = new URLSearchParams(window.location.search);
-        if (queryParams.has(logoutKey)) {
-            clearLocalStorage();
-            return true;
-        }
-
-        // handle logout through URL fragment
-        const hash = window.location.hash.substring(1);
-        if (hash.includes(logoutKey)) {
-            clearLocalStorage();
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * To be called on load: check if we want to try to decrypt and replace the HTML with the decrypted content, and
-     * try to do it if needed.
-     *
-     * @returns {Promise<boolean>} true if we derypted and replaced the whole page, false otherwise
-     */
-    async function decryptOnLoadFromRememberMe() {
-        const { rememberDurationInDays } = staticryptConfig;
-        const { rememberExpirationKey, rememberPassphraseKey } = templateConfig;
-
-        // if we are login out, terminate
-        if (logoutIfNeeded()) {
             return false;
         }
 
-        // if there is expiration configured, check if we're not beyond the expiration
-        if (rememberDurationInDays && rememberDurationInDays > 0) {
-            const expiration = localStorage.getItem(rememberExpirationKey),
-                isExpired = expiration && new Date().getTime() > parseInt(expiration);
+        const state = { ...defaultState };
 
-            if (isExpired) {
-                clearLocalStorage();
-                return false;
+        // Hiding spots: [room, vague hint (tier 1), clear hint (tier 2+)]
+        const HIDING_SPOTS = {
+            // DINING spots
+            TABLE1: ['DINING', 'Something green darts under TABLE 1...', 'Uchūjin-kun is clearly visible under TABLE 1!'],
+            TABLE2: ['DINING', 'Something green darts under TABLE 2...', 'Uchūjin-kun is clearly visible under TABLE 2!'],
+            TABLE3: ['DINING', 'Something green darts under TABLE 3...', 'Uchūjin-kun is clearly visible under TABLE 3!'],
+            MENU_BOARD: ['DINING', 'Something rustles behind the SPECIALS BOARD...', 'Uchūjin-kun peeks out from behind the specials board!'],
+            PLANT: ['DINING', 'The decorative FERN twitches suspiciously...', 'Uchūjin-kun is hiding in the fern! Tiny antennae poke through the leaves.'],
+            // COUNTER spots
+            ESPRESSO: ['COUNTER', 'The espresso machine hisses. Something small ducks behind it...', 'Uchūjin-kun is wedged behind the espresso machine!'],
+            DISPLAY: ['COUNTER', 'A flash of green under the cake display...', 'Uchūjin-kun is under the display case, eyeing the strawberry tart.'],
+            TIP_JAR: ['COUNTER', 'The tip jar wobbles. Something nudged it...', 'Uchūjin-kun is behind the tip jar. Usui pokes it. "Pu."'],
+            // KITCHEN spots
+            BOWLS: ['KITCHEN', 'The mixing bowls clatter softly...', 'Uchūjin-kun is hiding behind the mixing bowls!'],
+            APRON_PILE: ['KITCHEN', 'Something stirs in the costume pile...', 'Uchūjin-kun has burrowed into the apron pile!'],
+            TREAT_CABINET: ['KITCHEN', 'The treat cabinet door is ajar. You hear tiny munching...', 'Uchūjin-kun has found the treat cabinet!']
+        };
+        const MASCOT_CYCLE = ['TABLE2', 'ESPRESSO', 'TABLE1', 'BOWLS', 'MENU_BOARD', 'TIP_JAR', 'TABLE3', 'APRON_PILE', 'PLANT', 'DISPLAY', 'TREAT_CABINET'];
+        const MOVE_INTERVAL = 3;
+
+        // ============================================================
+        // ASCII SCENES
+        // ============================================================
+
+        const ASCII_SCENES = {
+            DINING: (mascotHere) => `╔══════════════════════════════════════╗
+║           MAID LATTE CAFE            ║
+╠══════════════════════════════════════╣
+║  ┌─────┐   ┌─────┐   ┌─────┐        ║
+║  │ T1  │   │ T2  │   │ T3  │  [MENU]║
+║  │     │   │     │   │     │   ~~~  ║
+║  └─────┘   └─────┘   └─────┘  ~FERN~║
+║         customers seated             ║
+║                   ${mascotHere ? '* something moved!' : '                  '}║
+║         ═══════════════              ║
+║         [ COUNTER -> ]               ║
+║         ═══════════════              ║
+║                                      ║
+║             [YOU]                    ║
+╚══════════════════════════════════════╝`,
+
+            COUNTER: (mascotHere, hasApron, apronRevealed) => `╔══════════════════════════════════════╗
+║              COUNTER                 ║
+╠══════════════════════════════════════╣
+║                                      ║
+║    ┌────────────────────────┐        ║
+║    │ ESPRESSO   REGISTER    │  [TIP]║
+║    │    ~~~        ~~~      │   $   ║
+║    └────────────────────────┘        ║
+║    [DISPLAY CASE ~~~~~~~~~~~~]       ║
+║            ~~ USUI ~~                ║
+║        (leaning, smirking)           ║
+║      ${mascotHere ? '      * something moved!' : '                        '}║
+║  <- DINING   ${apronRevealed && !hasApron ? '[APRN]' : '      '} KITCHEN ->  ║
+║                                      ║
+║             [YOU]                    ║
+╚══════════════════════════════════════╝`,
+
+            KITCHEN: (mascotHere, cabinetOpen) => `╔══════════════════════════════════════╗
+║              KITCHEN                 ║
+╠══════════════════════════════════════╣
+║                                      ║
+║    ~ pots ~   [CABINETS]   [DRAWER] ║
+║                                      ║
+║    ┌────┐   ┌────┐                   ║
+║    │SINK│   │OVEN│   [KNIFE]         ║
+║    └────┘   └────┘   ${cabinetOpen ? '[BOWL]' : '      '}       ║
+║       ${mascotHere ? '* something moved!  ' : '                    '}   ║
+║                                      ║
+║          ~~ SATSUKI ~~               ║
+║      (vibrating excitedly)           ║
+║                                      ║
+║           <- COUNTER                 ║
+║             [YOU]                    ║
+╚══════════════════════════════════════╝`
+        };
+
+        // ============================================================
+        // ROOM DESCRIPTIONS
+        // ============================================================
+
+        function getMascotHint() {
+            const tier = getHintTier();
+            const spot = HIDING_SPOTS[state.mascotLocation];
+            if (!spot) return '';
+            // spot[1] = vague hint (tier 1), spot[2] = clear hint (tier 2+)
+            const hint = tier >= 2 ? spot[2] : spot[1];
+            const color = tier >= 2 ? '#b8860b' : '#8b7355';
+            return `<br><span style="color:${color}">${hint}</span>`;
+        }
+
+        function getRoomDesc() {
+            const tier = getHintTier();
+            const mascotVisible = isMascotVisible();
+
+            if (state.location === 'DINING') {
+                let desc = `<strong>Maid Latte - Dining Area</strong><br><br>`;
+                desc += `Three tables. Parfaits, coffee, the low murmur of people ignoring each other politely.<br><br>`;
+                desc += `To the WEST: <strong>COUNTER</strong>`;
+
+                if (mascotVisible) {
+                    desc += getMascotHint();
+                }
+                return desc;
             }
-        }
 
-        const hashedPassword = localStorage.getItem(rememberPassphraseKey);
+            if (state.location === 'COUNTER') {
+                let desc = `<strong>Maid Latte - Counter</strong><br><br>`;
+                desc += `Usui is leaning against the counter, watching you.<br>`;
+                desc += `The smirk is already deployed.<br>`;
 
-        if (hashedPassword) {
-            // try to decrypt
-            const isDecryptionSuccessful = await decryptAndReplaceHtml(hashedPassword);
+                if (state.apronRevealed && !state.inventory.includes('APRON')) {
+                    desc += `<br>An apron hangs on a hook by the kitchen door.`;
+                }
 
-            // if the decryption is unsuccessful the password might be wrong - silently clear the saved data and let
-            // the user fill the password form again
-            if (!isDecryptionSuccessful) {
-                clearLocalStorage();
-                return false;
+                desc += `<br><br>EAST: <strong>DINING</strong> | Through back: <strong>KITCHEN</strong>`;
+
+                if (mascotVisible) {
+                    desc += getMascotHint();
+                }
+                return desc;
             }
 
-            return true;
-        }
+            if (state.location === 'KITCHEN') {
+                let desc = `<strong>Maid Latte - Kitchen</strong><br><br>`;
+                desc += `Satsuki is here, barely contained.<br>`;
+                desc += `Pots, pans, cabinets along the wall. A drawer by the counter.<br>`;
 
-        return false;
-    }
+                if (!state.inventory.includes('KNIFE')) {
+                    desc += `A bread knife sits on the cutting board.<br>`;
+                }
 
-    async function decryptOnLoadFromUrl() {
-        const passwordKey = "staticrypt_pwd";
-        const rememberMeKey = "remember_me";
-
-        // try to get the password from the query param (for backward compatibility - we now want to avoid this method,
-        // since it sends the hashed password to the server which isn't needed)
-        const queryParams = new URLSearchParams(window.location.search);
-        const hashedPasswordQuery = queryParams.get(passwordKey);
-        const rememberMeQuery = queryParams.get(rememberMeKey);
-
-        const urlFragment = window.location.hash.substring(1);
-        // get the password from the url fragment
-        const hashedPasswordRegexMatch = urlFragment.match(new RegExp(passwordKey + "=([^&]*)"));
-        const hashedPasswordFragment = hashedPasswordRegexMatch ? hashedPasswordRegexMatch[1] : null;
-        const rememberMeFragment = urlFragment.includes(rememberMeKey);
-
-        const hashedPassword = hashedPasswordFragment || hashedPasswordQuery;
-        const rememberMe = rememberMeFragment || rememberMeQuery;
-
-        if (hashedPassword) {
-            return handleDecryptionOfPageFromHash(hashedPassword, rememberMe);
-        }
-
-        return false;
-    }
-
-    return exports;
-}
-exports.init = init;
-
-  return exports;
-})());
-            const templateError = "nope!",
-                templateToggleAltShow = "Show password",
-                templateToggleAltHide = "Hide password",
-                isRememberEnabled = true,
-                staticryptConfig = {"staticryptEncryptedMsgUniqueVariableName":"87be56df6b2d10a257d90bfeaf11e890053e519ccd6524d3a5fa50396a42700112c54562a025db5db715a1fe8f3c81faae93f8d879e89f0d413b29744ba7851601652d00d399fcf783cabd4914c60f626604c03130be2ac50627197a5bbd59e05d86ae82f4e6416dcc4d3f1a55d6841e6e4d07bc694c0d52923e8b7f13574bbf89f381d2a42656f8eaec817ef4dfe437e8b974d7d2485b670ad99a333b7637f545bb9934bc4e0073cf81084fcbdebbaf62221a84cc4ee3d29d31f29d718cdf981954ec944b29d9f75593133389e9b11c21ab6706962460efa3af4dca4c83476d1f063806e56a3182cf9c576a71f7229171c1857186b5fea9eeacc1a306d4161ad373fc18b34f4ff1e3a62de890eed3e2d570742f0cecc4b2c66327aa8d641a24e22ed0759957d8da08fd5a5a219b9fbfcd9ef1a3979bda1a09936fb5949dfbb06579e96a3322bd7252f50364c3c83b6917a1e3e328cb40e8b4799c760306b0893c989a56d8c18f12fd68c6411dcc7ffeb0338b435c46468ba28345943abe85109fa5b126914f346a4e035f8f00b3faf8749e089916bdcea5fb31e17b19194024e9f7b61001c35763b680d3ce0315c94f89830a5c7cc51cf22517e65a710d705ebb13bd1bb3476f9565b00c75b14ae770fa2fd3e1dab63830d0073321d33dc34b60b872b5e40501e4faca78761024bd5ab30addd85aafbd5c78f019572e05836449c30fd124275af504f9ca471ab8c8dd3172f1194ca04f961c94d7bd379458893e8d15e93dbbfb4ea2c131f6bb037cc29f4ac13aa5b011b2185cc1f501573ef50457c6ee3f6d510f0b285a7dd0bbe156ce37297544ade9f333608ba8dc58d5896abe56d9326201cf7507ebe59d69a40a2d29b9f67f2f03ebc865982107f5d4bdeccf99531bffa2a286501792a53c181148ceb90873e60bbe62f7bf1a2efe347867f4f6b11189b10209d3d0c559683e717fef59478245e16449c26ba15399be172195aec644da051eaeeeb9cc0bd1fd4f4d54c37c78bfb2a639ef0d4715df97baafbeb17660a96f8bdadce29c6b4176cdb4fa0fa86b2cfc94cdff2566a91acda9e3a133a681f8033e7613631c79be827f69ce592fadb2dbe6942f45dd26a02661ff699d936044dd7babc7d54d44d75ab801afe4468678e37e38b6e8c6a0412aabbeb565a21c2df192c61d532bc4a91f1b339162e3e9056df8993b2cdd51fd1574e0f1f095a85de7c92d5284f0e801330aacc0f9b0778a973dfcc5cb9441e992929a416d112429e49925ef7b98b510c421532826e6cb53acc64c04d4c303f56d6d8dfcb370a947ba0336cbb355eb1acf10d3cd816032eaf4961952b93a92ce11c3c1ec69dd2600b5dde2e39cefd110ddd203428add1e4858f7c563b7fe496d5a9d51b685fb6f5a4625113d77c67b516d7890b0b840a5b3b388878674e1b476ce5b2d47acf0fdb63855dbe725e87014beae07de59a811bb10902163a74b4af5efdca76c518f658d96e9159fc9d0ce9e41d2f8716109380ef18632c5e8c32ca5809e419ed384bf3cfda068df189529687823ee69f40daf4973d2f404370afd3adcaad927980af41bb5362942bff1e51699f436777dcf2a9ad466a1cbbf7b32ca35e280f28b5e45d1662703a404ec4a9ae04239f510b2801fdc7fa067ffa01de42c4f3c778945a4021c305f53ce459d9efa7f20f487e898945a67633dfb0b8d585557fb7fe52519a813fddfca3603d6739ceefeb08f2c37b8b1621d98c21dccab3b759136471d7a7f68cb6096fe4ef094388389c9bd236456149995f82121d4b771a4c6661b17dbe492ce97c2dbb1258e43256c8416ea6c0d59da04d4c42751716cfb5ba95b3050b790d7d5929c42b885b82992e3c2567f153f1235580bd5b864913c7a3cf4e16ae5a81255943d3b216cb73068605ace33b34f516ea21537ea66806507e65a03347845c5a2fdeadca74b0ed06765dbed959b3986de5033d8fa0d023d560431ed31d2ca5bf5ef616f77464e75e1fb7e09245e17b48625c76b3d946eb2b3401471bc315cd5c7be741bf0112b30bf983d5c62867788610f247bcce8d04db4caa3127ae5d7ff951c0ca86daf7cf3905cbe29a92856bebc005a772d564fac81678634e2ce2031f3bf85c056fc8ead4531fecca84ff0231bfed99e36b97f237a7dd6d98cc1846917dc19c1d30035ced7f6d703a16a4a3d7086e44ec76006827b8831b501c3a75321140b474dc0b893fd9777f157d52b8c93f44b2c39a17934e2b4f5517d6f7df3df993da11cdcad953394b9a8497e60b5b8e9339cc71fb1058310542cc35fe943ef64f17df20be967bd72c9df16fecff3ec3b2012c10ce5b0ff7b31faad630276a9096b9bd73bd68b74f298f461b3b683b4d1eb6fb567b8764578be89258d791d7c71f992f10a341df54ea68ce4d856a10e6bd97aed015acfea8a7ba15b7b30421b778f473c50b527a4190e4add34da00be346ad1fb599d3fd41ce1139ca58873bbdbfc636e1924862f5b29b85beffb4ea2bfaa7bfd0c3ccdf488ed229b522b254fb12a14622acff17a9bceae1f82dccc9f774e84c40f7665c078e0a74de67a82f15432ca629d0d5a1bacfa42ae579aabdbea20413959203803e8ce4c901a93a4df3a2144ce043264fbde4fb1e9ad2eddcff09c74774bd35a3467a04cb6de6b0d46f67ca4984270451b3ad45e1459ca478df3132d03221aeb4b36266e88f2acd63e8c3a66e6e6d717d5755748aa132249a7500c7e791fc9919233276b71ac7a77e6bfe3f72fb2b39a6a820bf942f91ce8a5e152b713f5463cf13e091d222fb8501ea8b2b67dbf449c16f509964cb96aff7ff661676e4e7b15dd7fd30ca9feda5fd9cd66254b079e4fd2c3dbdfed8eb5c41c406a1195b600e4e581f7ea4920be1043e797f2fdbc5d24d13b633ab7af965985a3ec83d4646e2adc09fcb347ad87af2f0567494d5948094a3735a23650f44aef0ada0ddda8fc6996b73f1222ddec476f1568e322d00cae574fc22afa7401d0e00ee2fff4d40a1cb96e020333f7cfbe272a13b5f184b7a193da180b55231de9be4f6694eea665487615336229ecceee3657fc5989642fdf03c312caff2f7d41955ceb800c2e40e1c91379afc996b578835b671906cbab6b1c79acbb7ee901b937acac841576319123c6ef6755d589b7b960daad54f063fe57fd29ae8c3daf441010f5ae9b37803a5f7a4ee300f6fe940e16465ea1f7e1cc1e254917009f728e4386b6fc6a78162fc180300510ebc962dbfd7f023589d0a4dadbe8ce14909b6631ae92834b1fa044588e5fb922e08892506a8178746743533b744cc40ea897af1efb51cec73f2238d2f6a9a16181d79b8c24152d5af441e8328db20ea10bb2b96384c49518fd57d4e0e07c93e5ea30984859e2b81dc55244e7a20342b0162ee2d25a03a83facd96976f0bac891bd86e3cb5e5142dc63051888e02a2205c2784ca3e926ba6460e7fdb63e896205a8bd1a7d45ff584a452561c39593ec4920a400816bb79657cb18a9df39302b26511ba3d67b8b3f26de84c83f7de1d25c487e3d21a6f96bf04199d175e99c63fc2f321741bdc531151bfa7a3ef5602784ff6521f9102e2ff26ad9c5179385495bd1a0d397546fdcf59d665b89f967c19882390ab67332b033a7f1c5db3d766bac4dfa76b0d922fd9e02aa0f5117582a608d62d4133084142e2821ef35daeafdac48e21bc311fe5746f1eeda9686fb88521f02e34f1f60bbeea04ef754129827c99bf32a208eca497cd10fc81edf2ad1a570b2197485016a1e6ba84a9d1d8dc4021d7e95bf6b94cb5170025d80d5c1b23eafe511614fad92838880ad9df3f3c956c8c0b4b95aed9db94dc0e655184cf6902106d6bab2fa243b479f90a30f98bce00b61ccbeab03c1a9f42555e1cc2f6dad13aea76edd54f72bc236189109b9f4b68c3cb0b9a4f83553d4d6a3f31485fb9cdf69ad12dfe5c83329d8769ad3adad8cd8a0eff3d923e25e00b98998b6c3d9d82e3a21e078153e1062b9df67f7a0310d56e98aa7e5502f68fff358170c478d51ae6a8d3eef3e8443fbe746b8b9ef55bca2394c21433d1e9ab98e89d2c7e10d9f6b1c17144551977f9de7bfc2af55e3993ee297a52f84f9f05898c3d7281f5d69b1f9d20ca3237cc3fbde8d099f18bd1d34ee2d0c205b6bef7b219cf9028098a3ffa4f1ec2baa9247178ac67e7ced83776ea170525a0c968fa4a4b0fea3c4f03fdbb82eccdc39e0f592e811d56157da0decfea6e85a60562cc48a5f17cc4af49b45c648ce63388e08f896351709e6637d87711f8305d35c92319b3be784526df39e6a9efbb6841b559a0181ed372fb9248d4c9e98be56d884d705fc88c2a98dc0c89dc75b87b642704380323d72b82e3dfde6cc63a7fee3c3a81d4bb3b9fcc32587ace7b50c85645e49a5e4fc024a20a788efd154bbc33df4078136246257b276a18dbeba52c63e3583765074dc805f8fd6cae8fabdaad55c73e61fcecb74620e578791156240225d3af5e5cce17c1b5c5eb0bddba5ac1ecd6eb076a2ccf059b823a23269842551cbd0a17f36f6b5843356b6a690636209d42868daf489595b6aa7731cd7bcac32790191ee8a93c9419b7d8ccfe00e586dfe624cd34c6c3985eca724ba47da2d2b9b51b18ecb95041534dd61f337323f92ddf2af7054f1812fe8f8030e190130954ef8e60447d44365399018c925a495b68b045844248a110576ea10b70efa15e29f86f70d7e24dad154a3d3fb14527fb744db098d66193acf929a905a8d327267cbb5938761e154e9ab9961bdebd16dece4c6bdccd5047a0482a5bb98ffcd6174b34757708c5425fbb7dddf3ee4e2a7f4323779d2d0b17511f431c4ea6dc47c1d25df463118afdb257cff5d60197f96fd09bd38c42bdb9133f9bf1ad0ed9f8c263273c19c039a82f51bea44578db527f5e48c0292a867e2a0a3379c683b32b7d5e6f1044b76b944b0960a9913f8a2412c00cdbb717e8335e2aa38bd6b8e5cb9fd84bd1de1002f668441b2f6da0e45a39bb483e090e9957c310e876282e6eda3e19a9fb1ad9dedca7c025fe288a2c4192795d11ad8ad2f0623ec5f36e02e2183f7b163a6c72b4b35c0cf2c69c952f24f113501beace53e930750661edb52c16a4efe396c16b41b312dc3173c98f21403a41a7e8a636ecf9c076f4c4fb8bc844cb0304e2a2fa76494cc18ae0cb166f61de092d6c06301fb583a8377358ef8bd91f792b4c13a73c388bc1a22b3407b1ae68959db467c5a905f15e14c41beadda04b63a4ed29e2d425e800670c0256248c0d9afda7f639285eade0034b9b2028bee64eaa885b970d9b1e9b204d387fbc74a77c457e5ab1a1569cbbdece8e63cc6079aebfb8d4d47a25f5adc633cbb81c415c3ed8bc2180c2fbfac96c91e0abcd5bea9d62873b18dfee428e0356907073093a8248d62a9b0111a7640466c59a640a1980fb2bcebff1e9d202216e55feddf581b796f6f982193fc28ac51d599bce42ae2af926e880f1689f7c578d55c735cdadcfe94cb0f86688507d0164615c8045d920687eb76476a056b9fe765d1f041b0806a19791f0465168d6d2ff17b61e327aea877a45adc8665800776965a412b6b9fe927288cc4aea6afe3b49d0c6d7109f36a240b3d924e991331b6a8a389188cc3d36afee02cecb85d7e39a2d309c40a259b8ba32c1106623e6fe91aa6c958666f2159df389ffb1126adf9c646848a94b98490e1e788fb865bbb6d09bbc2a186720c3d90ee57addaa9f8c2cb488058df96cf8ba94085d0b5ae6c54230a918d08253d73c5af28f1f1041645244d41dd4f7d152b5ceeb0cf6c411471e034e12bcb058ad32dcceb3312e79f214c750e7300827822487c5c136b3c646eea4ad2f90ff8f73932404e9ac12e7f479eb5d0704c647561867ecc0aa6a5e0f0aac109ac4528cb8070e61e8335e1df98811b49d9679ae8d40fa2a73a39e878f9373bd42877ad2c821fab52c04007296cb4d60bf3a84e701f1af27f621be771e9da73f064638c7e0f65e70c16c7f12ce1ca7b83a065d6beabfe2ebabe5001da4482ecc12370b96afde2914529633d8a23c1f32792d638f02d1de8a74fc473be25ce9e0113895b149dd0f6c3531d5f0c9657d00af3e81c5410eee19a1095e5089ec4a540e7ae400221df0e9f215adc36b0eb07c8210627dcce73baebb9a547b68f6b68a74d9c37af2aad51805e05b3a9f98600f1af8b03e60ab88656f15e90b2965864722f52fb0a4c44896f38019d661261951cde9bde860e4c3b307fef3be1e0f9b7167ff474577f035355c770323e14b6edd5523f01acd279ce1007b39075064aaf0f0aa1c3a34065b7dcfa525e30d68210089191da923dc35517cd7578ebf4818faced37a36daee8fa0153b5b610a2695a56bb7aa2e1aef49ad172fdb14b7f051577d8895716ef36e7561e55bc6be69506569d44c060897b3f56a1d2063919d0298ddefad87d38e004b036340932dcc9d74e0f463ede81d2f554a49898587f5c12f7c14e1c866dc76e18fc5e77889d65d8edd8a69164179399e4b2c91a2e8d114dd10e865e71a46fbf401169efc8fcfa56bc53d4064b3e91d4a045a3d5938d827e5c00bda90c485343879d8c182958e9c5e7fed3b2b865cf001c668d40c5aa4da258d19cc0ec071ebef7e1b38973f5c4cf0c9daae23ef044ff0b2188954d20a80a424dd3b4c80e20e2e198b4cc65631a14a303bf322fc6ff97cbc90abb7fdf7508b52fa1199807e6cfb1f22219b3cab9a29b700789d78fa3d8e8dbea7b3049c40328b97f1e44b3487ae3c17f478728f1f4a0f0723493c7e476c5bc48e195161ee3d1dc7faf21e1946b853aa22b8eb72549b971bf098c3061edb986801485b01ff0c29373b229b14b01","isRememberEnabled":true,"rememberDurationInDays":1,"staticryptSaltUniqueVariableName":"74b0c24f2e2b4363f3fd45c1912a3cf6"};
-
-            // you can edit these values to customize some of the behavior of StatiCrypt
-            const templateConfig = {
-                rememberExpirationKey: "staticrypt_expiration",
-                rememberPassphraseKey: "staticrypt_passphrase",
-                replaceHtmlCallback: null,
-                clearLocalStorageCallback: null,
-            };
-
-            // init the staticrypt engine
-            const staticrypt = staticryptInitiator.init(staticryptConfig, templateConfig);
-
-            // try to automatically decrypt on load if there is a saved password
-            window.onload = async function () {
-                const { isSuccessful } = await staticrypt.handleDecryptOnLoad();
-
-                // if we didn't decrypt anything on load, show the password prompt. Otherwise the content has already been
-                // replaced, no need to do anything
-                if (!isSuccessful) {
-                    // hide loading screen
-                    document.getElementById("staticrypt_loading").classList.add("hidden");
-                    document.getElementById("staticrypt_content").classList.remove("hidden");
-                    document.getElementById("staticrypt-password").focus();
-
-                    // show the remember me checkbox
-                    if (isRememberEnabled) {
-                        document.getElementById("staticrypt-remember-label").classList.remove("hidden");
+                if (state.cabinetOpened) {
+                    let cabinetContents = [];
+                    if (!state.inventory.includes('BOWL')) cabinetContents.push('a mixing bowl');
+                    if (!state.inventory.includes('TREATS')) cabinetContents.push('some snacks');
+                    if (cabinetContents.length > 0) {
+                        desc += `<br>The cabinet is open. Inside: ${cabinetContents.join(', ')}.`;
+                    } else {
+                        desc += `<br>The cabinet is open, mostly empty now.`;
                     }
                 }
-            };
 
-            // toggle password visibility
-            const toggleIcon = document.querySelector(".staticrypt-toggle-password-visibility");
-            const imgSrcEyeClosed =
-                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iIzhiN2I4YiIgZD0iTTM4LjggNS4xQzI4LjQtMy4xIDEzLjMtMS4yIDUuMSA5LjJTLTEuMiAzNC43IDkuMiA0Mi45bDU5MiA0NjRjMTAuNCA4LjIgMjUuNSA2LjMgMzMuNy00LjFzNi4zLTI1LjUtNC4xLTMzLjdMNTI1LjYgMzg2LjdjMzkuNi00MC42IDY2LjQtODYuMSA3OS45LTExOC40YzMuMy03LjkgMy4zLTE2LjcgMC0yNC42Yy0xNC45LTM1LjctNDYuMi04Ny43LTkzLTEzMS4xQzQ2NS41IDY4LjggNDAwLjggMzIgMzIwIDMyYy02OC4yIDAtMTI1IDI2LjMtMTY5LjMgNjAuOEwzOC44IDUuMXpNMjIzLjEgMTQ5LjVDMjQ4LjYgMTI2LjIgMjgyLjcgMTEyIDMyMCAxMTJjNzkuNSAwIDE0NCA2NC41IDE0NCAxNDRjMCAyNC45LTYuMyA0OC4zLTE3LjQgNjguN0w0MDggMjk0LjVjOC40LTE5LjMgMTAuNi00MS40IDQuOC02My4zYy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM2MwIDEwLjItMi40IDE5LjgtNi42IDI4LjNsLTkwLjMtNzAuOHpNMzczIDM4OS45Yy0xNi40IDYuNS0zNC4zIDEwLjEtNTMgMTAuMWMtNzkuNSAwLTE0NC02NC41LTE0NC0xNDRjMC02LjkgLjUtMTMuNiAxLjQtMjAuMkw4My4xIDE2MS41QzYwLjMgMTkxLjIgNDQgMjIwLjggMzQuNSAyNDMuN2MtMy4zIDcuOS0zLjMgMTYuNyAwIDI0LjZjMTQuOSAzNS43IDQ2LjIgODcuNyA5MyAxMzEuMUMxNzQuNSA0NDMuMiAyMzkuMiA0ODAgMzIwIDQ4MGM0Ny44IDAgODkuOS0xMi45IDEyNi4yLTMyLjVMMzczIDM4OS45eiIvPjwvc3ZnPg==";
-            const imgSrcEyeOpened =
-                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NzYgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZmlsbD0iIzhiN2I4YiIgZD0iTTI4OCAzMmMtODAuOCAwLTE0NS41IDM2LjgtMTkyLjYgODAuNkM0OC42IDE1NiAxNy4zIDIwOCAyLjUgMjQzLjdjLTMuMyA3LjktMy4zIDE2LjcgMCAyNC42QzE3LjMgMzA0IDQ4LjYgMzU2IDk1LjQgMzk5LjRDMTQyLjUgNDQzLjIgMjA3LjIgNDgwIDI4OCA0ODBzMTQ1LjUtMzYuOCAxOTIuNi04MC42YzQ2LjgtNDMuNSA3OC4xLTk1LjQgOTMtMTMxLjFjMy4zLTcuOSAzLjMtMTYuNyAwLTI0LjZjLTE0LjktMzUuNy00Ni4yLTg3LjctOTMtMTMxLjFDNDMzLjUgNjguOCAzNjguOCAzMiAyODggMzJ6TTE0NCAyNTZhMTQ0IDE0NCAwIDEgMSAyODggMCAxNDQgMTQ0IDAgMSAxIC0yODggMHptMTQ0LTY0YzAgMzUuMy0yOC43IDY0LTY0IDY0Yy03LjEgMC0xMy45LTEuMi0yMC4zLTMuM2MtNS41LTEuOC0xMS45IDEuNi0xMS43IDcuNGMuMyA2LjkgMS4zIDEzLjggMy4yIDIwLjdjMTMuNyA1MS4yIDY2LjQgODEuNiAxMTcuNiA2Ny45czgxLjYtNjYuNCA2Ny45LTExNy42Yy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM3oiLz48L3N2Zz4=";
-            toggleIcon.addEventListener("click", function () {
-                const passwordInput = document.getElementById("staticrypt-password");
-                if (passwordInput.type === "password") {
-                    passwordInput.type = "text";
-                    toggleIcon.src = imgSrcEyeOpened;
-                    toggleIcon.alt = templateToggleAltHide;
-                    toggleIcon.title = templateToggleAltHide;
+                if (state.drawerOpened) {
+                    if (!state.inventory.includes('BAG')) {
+                        desc += `<br>The drawer is open. Garbage bags and such.`;
+                    } else {
+                        desc += `<br>The drawer is open.`;
+                    }
+                }
+
+                desc += `<br><br>Back to: <strong>COUNTER</strong>`;
+
+                if (mascotVisible) {
+                    desc += getMascotHint();
+                }
+                return desc;
+            }
+        }
+
+        // ============================================================
+        // DIALOGUE
+        // ============================================================
+
+        // Usui dialogue - with personality, flavortext, interiority
+        const USUI_LINES = {
+            // Idle chatter - things he says unprompted, showing his inner life
+            idle: [
+                `He's staring out the window. <span class="npc-usui">"The rain's nice today."</span><br>A pause. <span class="npc-usui">"...Reminds me of England."</span>`,
+                `He's spinning a coffee cup on one finger.<br><span class="npc-usui">"I used to do this to annoy the maids back home."</span><br>He catches your look. <span class="npc-usui">"What? I was bored."</span>`,
+                `<span class="npc-usui">"You know, I could be anywhere right now."</span><br>He smiles.<br><span class="npc-usui">"But this cafe has the best entertainment."</span><br>He doesn't look away.`,
+            ],
+            // Teasing lines
+            tease: [
+                `<span class="npc-usui">"Your face is red, Ayuzawa."</span><br><span class="npc-usui">"Is it the running around, or...?"</span><br>He leaves it there.`,
+                `<span class="npc-usui">"I could help, you know."</span><br>A pause.<br><span class="npc-usui">"But watching you is more fun~"</span>`,
+                `<span class="npc-usui">"Misa-chan looks cute when she's flustered."</span><br>You resist the urge to throw something at him.`,
+            ]
+        };
+
+        const USUI_DIALOGUE = {
+            tier1: {
+                first: `<span class="npc-usui">"You seem busy."</span><br><br>He's settled into his usual spot at the counter. Coffee ordered, nowhere to be, eyes on you as always.<br><br><span class="npc-usui">"I'm just here as a customer."</span><br>That smirk. <span class="npc-usui">"A very loyal one."</span>`,
+                mascotVisible: `<span class="npc-usui">"Interesting technique."</span><br><br>He's watching you dart around.<br><br><span class="npc-usui">"Is this a new maid cafe service? Floor inspection?"</span><br><br>He sips his coffee. <span class="npc-usui">"I'd tip extra for this."</span>`,
+                mascotHidden: `<span class="npc-usui">"Looking for something, Ayuzawa?"</span><br>He's already smirking.<br><br>He leans back.<br><span class="npc-usui">"You know, I'm good at finding things people try to hide."</span><br><br>Why does everything he says sound like a threat AND a promise?`,
+            },
+            tier2: {
+                noApron: `<span class="npc-usui">"You know..."</span><br>He leans on the counter, unusually serious.<br><span class="npc-usui">"Whatever you're doing, the direct approach doesn't seem to be working."</span><br><br>He glances toward the kitchen.<br><span class="npc-usui">"When I was a kid, we had a cat that would only come out for soft blankets."</span><br>The smirk comes back.<br><span class="npc-usui">"Not that I'm comparing you to a cat, Misa-chan."</span>`,
+                hasApron: `<span class="npc-usui">"Ah. You found something."</span><br>He nods at the apron in your hands.<br><span class="npc-usui">"Soft things are good for catching soft things."</span><br><br>His voice drops.<br><span class="npc-usui">"I'll come to save you as much as you want, you know."</span><br>Your heart does something annoying.<br><span class="npc-usui">"But it looks like you've got this one."</span>`,
+            },
+            tier3: `<span class="npc-usui">"Ayuzawa."</span><br>He's stopped smirking. Almost looks... concerned?<br><span class="npc-usui">"Whatever you're chasing, corner it first. Then use something soft."</span><br><br>A pause.<br><span class="npc-usui">"I don't like seeing you struggle."</span><br>The smirk comes back.<br><span class="npc-usui">"...Much. I don't like it much."</span>`
+        };
+
+        // Satsuki dialogue - enthusiastic, moe-obsessed, but also a real person running a business
+        const SATSUKI_DIALOGUE = {
+            first: `<span class="npc-satsuki">"Misa-chan! Did you see it?!"</span><br>Her eyes are sparkling.<br><span class="npc-satsuki">"A MASCOT! In MY cafe! It's SO MOE!"</span><br><br>She clasps her hands together.<br><span class="npc-satsuki">"You know, I've always wanted a cafe mascot. Like those cat cafes in Akihabara!"</span><br><span class="npc-satsuki">"But Aoi-chan said it was 'unsanitary' and 'probably illegal'..."</span><br><br><span class="npc-satsuki">"Anyway! Catch it gently! Use something SOFT!"</span>`,
+            repeat: `<span class="npc-satsuki">"The apron! Use the apron!"</span><br>She gestures frantically at the hook.<br><br><span class="npc-satsuki">"I made that one myself, you know. Triple-stitched."</span><br><span class="npc-satsuki">"I put so much love into the costumes for this place..."</span><br><br><span class="npc-satsuki">"ANYWAY the apron won't hurt the little darling! Go go go!"</span>`,
+            // Extra dialogue when player just wants to chat
+            chat: [
+                `<span class="npc-satsuki">"Did I ever tell you why I opened this cafe?"</span><br>She stirs something.<br><span class="npc-satsuki">"I wanted to create a place where everyone could feel... special. Pampered."</span><br><span class="npc-satsuki">"The maid thing is just the wrapping paper. The gift is the feeling."</span><br>She winks. <span class="npc-satsuki">"Also I really like making costumes."</span>`,
+                `<span class="npc-satsuki">"You and Usui-kun, huh~"</span><br>She's grinning.<br><span class="npc-satsuki">"He's been coming here almost every day since he found out you work here."</span><br><span class="npc-satsuki">"Orders one coffee. Stays for hours. Tips extremely well."</span><br>She sighs.<br><span class="npc-satsuki">"That's love, Misa-chan. Or stalking. Same thing, really~"</span>`,
+                `<span class="npc-satsuki">"My nephew Aoi sometimes helps out here, you know."</span><br>She smiles.<br><span class="npc-satsuki">"He's... got his own style. Very particular about aesthetics."</span><br><span class="npc-satsuki">"Reminds me that everyone expresses love differently."</span>`
+            ]
+        };
+
+        // ============================================================
+        // HELPER FUNCTIONS
+        // ============================================================
+
+        function getHintTier() {
+            if (state.attemptedCatch >= 6) return 3;
+            if (state.attemptedCatch >= 3) return 2;
+            return 1;
+        }
+
+        function isMascotVisible() {
+            const spot = HIDING_SPOTS[state.mascotLocation];
+            return spot && spot[0] === state.location;
+        }
+
+        function moveMascot() {
+            if (state.won) return;
+            if (state.mascotTrapped) return; // Trapped mascot doesn't move
+
+            // Spooked mascot moves twice
+            const moves = state.mascotSpooked > 0 ? 2 : 1;
+            for (let i = 0; i < moves; i++) {
+                const idx = MASCOT_CYCLE.indexOf(state.mascotLocation);
+                const nextIdx = (idx + 1) % MASCOT_CYCLE.length;
+                state.mascotLocation = MASCOT_CYCLE[nextIdx];
+            }
+
+            // Decrement spook counter
+            if (state.mascotSpooked > 0) {
+                state.mascotSpooked--;
+            }
+        }
+
+        function canCatchMascot() {
+            const spot = HIDING_SPOTS[state.mascotLocation];
+            return spot && spot[0] === state.location;
+        }
+
+        // ============================================================
+        // COMMAND PROCESSING
+        // ============================================================
+
+        function processCommand(cmd) {
+            cmd = cmd.toLowerCase().trim();
+            state.commandCount++;
+
+            // Move mascot every N commands
+            if (state.commandCount % MOVE_INTERVAL === 0 && !state.won) {
+                moveMascot();
+            }
+
+            // Win state - no more commands
+            if (state.won) {
+                return `You've already caught Uchūjin-kun! Click the link to continue.`;
+            }
+
+            // Parse command
+            const words = cmd.split(/\s+/);
+            const verb = words[0];
+            const rest = words.slice(1).join(' ');
+
+            // MOVEMENT
+            if (verb === 'go' || verb === 'move' || verb === 'walk') {
+                return handleMove(rest);
+            }
+
+            // Direction shortcuts (W, E, N, S)
+            if (['w', 'west', 'e', 'east', 'n', 'north', 's', 'south'].includes(verb)) {
+                return handleMove(verb);
+            }
+
+            // Location names as commands
+            if (['dining', 'counter', 'kitchen'].includes(verb)) {
+                return handleMove(verb);
+            }
+
+            // LOOK
+            if (verb === 'look' || verb === 'l' || verb === 'examine' || verb === 'x') {
+                return handleLook(rest);
+            }
+
+            // TALK
+            if (verb === 'talk' || verb === 'speak' || verb === 'ask') {
+                return handleTalk(rest);
+            }
+
+            // TAKE / GET
+            if (verb === 'take' || verb === 'get' || verb === 'grab' || verb === 'pick') {
+                return handleTake(rest);
+            }
+
+            // USE
+            if (verb === 'use' || verb === 'throw') {
+                return handleUse(rest);
+            }
+
+            // OPEN
+            if (verb === 'open') {
+                return handleOpen(rest);
+            }
+
+            // CATCH
+            if (verb === 'catch' || verb === 'grab') {
+                return handleCatch(rest);
+            }
+
+            // INVENTORY
+            if (verb === 'inventory' || verb === 'i' || verb === 'inv') {
+                return state.inventory.length
+                    ? `You have: ${state.inventory.join(', ')}`
+                    : `Your inventory is empty.`;
+            }
+
+            // HELP
+            if (verb === 'help' || verb === '?') {
+                return `<strong>Commands:</strong><br>` +
+                    `• LOOK [thing] - examine something (or just LOOK for the room)<br>` +
+                    `• GO [place] - move around (DINING, COUNTER, KITCHEN)<br>` +
+                    `• TALK [person] - chat with USUI or SATSUKI<br>` +
+                    `• TAKE [item] - pick something up<br>` +
+                    `• USE [item] - use an item you're holding<br>` +
+                    `• CATCH - try to catch the mascot<br>` +
+                    `• INVENTORY - see what you're carrying<br><br>` +
+                    `<strong>Explore:</strong> LISTEN, SMELL, THINK, WAIT<br><br>` +
+                    `<em>Try interacting with everything. The world is alive.</em>`;
+            }
+
+            // AMBIENT COMMANDS - Make the world feel alive
+            if (verb === 'listen' || verb === 'hear') {
+                const sounds = {
+                    'DINING': `You listen...<br><br>The clink of cups and saucers. Murmured conversations. A customer laughing at something on their phone.<br><br>Faint J-pop from the speakers, Satsuki's playlist. Currently playing something about "eternal love" or whatever.<br><br>And somewhere, the padding of tiny plushie feet on tile.`,
+                    'COUNTER': `You listen...<br><br>The hiss of the espresso machine. Usui humming something, is that a British pop song?<br><br>From the kitchen, Satsuki singing off-key. From the dining area, the buzz of customers who've been here before.<br><br>Somehow this place got to you. You don't dwell on that.`,
+                    'KITCHEN': `You listen...<br><br>Pots bubbling. The whir of a mixer. Satsuki narrating her cooking to herself like it's a TV show.<br><br><span class="npc-satsuki">"And NOW we add the secret ingredient... LOVE~"</span><br><br>You're pretty sure the secret ingredient is actually just extra sugar.`
+                };
+                return sounds[state.location];
+            }
+
+            if (verb === 'smell' || verb === 'sniff') {
+                const smells = {
+                    'DINING': `Fresh coffee. Vanilla from the parfaits. Someone's floral perfume.<br><br>A cafe that's been open long enough to have a smell of its own.`,
+                    'COUNTER': `Coffee, strongly. Usui's cologne, something expensive that you definitely haven't memorised.<br><br>You take a step back. For professional reasons.`,
+                    'KITCHEN': `Heaven.<br><br>Fresh-baked cookies. Caramelizing sugar. The sharp clean smell of lemon cleaner.<br><br>Satsuki runs a tight ship back here.`
+                };
+                return smells[state.location];
+            }
+
+            if (verb === 'wait' || verb === 'z') {
+                const waits = [
+                    `Time passes. The cafe hums around you.<br>Uchūjin-kun is still out there. Judging you.`,
+                    `You take a breath. Okay. You can do this.<br>You're the Student Council President. You've faced worse than a rogue plushie.`,
+                    `A moment of calm. Then Usui catches your eye and winks.<br>The moment is ruined.`,
+                    `You wait. Nothing happens.<br>Well, the mascot probably moved. Great.`
+                ];
+                return waits[state.commandCount % waits.length];
+            }
+
+            if (verb === 'think' || verb === 'ponder' || verb === 'consider') {
+                const thoughts = [
+                    `Okay, think. It's a plushie. A small, fast plushie.<br>You can't catch it with your bare hands.<br>What would work? Something soft? Something to trap it?`,
+                    `Why did you even bring that thing to work?<br>...<br>Because it's comforting. Because it reminds you of someone.<br>You refuse to elaborate.`,
+                    `If Usui finds out that plushie looks like him, you'll never hear the end of it.<br>Actually, he probably already knows. He knows everything.<br>You want to PUNCH him sometimes.`,
+                    `Student Council President by day, maid by night.<br>Currently: chasing a toy alien around a cafe while a hot guy watches.<br>Your life is a manga and you're not sure which genre.`,
+                    `What if you just... CALL MOM and tell her everything?<br>...<br>No. Absolutely not. She can never know.`
+                ];
+                return thoughts[state.commandCount % thoughts.length];
+            }
+
+            // EASTER EGGS - Usui interactions
+            if (cmd.includes('punch usui') || cmd.includes('hit usui') || cmd.includes('slap usui') || cmd.includes('kick usui')) {
+                return `You swing. He catches your wrist without looking up.<br><br><span class="npc-usui">"Violent today, Kaichou."</span><br><br>Your face burns. That somehow made it worse.`;
+            }
+
+            if (cmd.includes('kiss usui')) {
+                return `W-WHAT?!<br><br>Your brain short-circuits. Your face goes nuclear.<br><br>Usui looks... actually surprised for once. Then his expression does something you don't have a name for.<br><br><span class="npc-usui">"...Not here, Misa-chan. The customers are watching."</span><br><br>NOT HERE?! IMPLYING THERE'S A PLACE WHERE-<br><br>You need to catch this mascot and leave. Immediately.`;
+            }
+
+            if (cmd.includes('hug usui')) {
+                return `You consider it for exactly 0.3 seconds.<br><br>Then your survival instincts kick in and you remember you're AT WORK and there are CUSTOMERS.<br><br>Usui tilts his head. <span class="npc-usui">"Something on your mind?"</span><br><br>NOTHING. ABSOLUTELY NOTHING.`;
+            }
+
+            if (cmd.includes('yell') || cmd.includes('scream') || cmd.includes('shout')) {
+                return `<em>"USUI, YOU PERVERTED OUTER-SPACE ALIEN!"</em><br><br>Wait, you said that out loud.<br><br>Several customers look alarmed. One of them whispers "Is this a bit?"<br><br>Usui looks delighted. <span class="npc-usui">"There she is."</span>`;
+            }
+
+            if (cmd === 'alien' || cmd === 'aliens') {
+                return `"PERVERTED OUTER-SPACE ALIEN!"<br><br>...You said that out loud.<br><br>Usui looks delighted. Several customers are concerned.`;
+            }
+
+            if (cmd.includes('call mom') || cmd.includes('phone mom') || cmd.includes('call mother')) {
+                return `Absolutely not. She can NEVER know about this job.<br><br>You'd rather fight the entire Miyabigaoka student council again.`;
+            }
+
+            if (cmd === 'moe' || cmd.includes('say moe')) {
+                return `As if summoned, Satsuki appears.<br><br><span class="npc-satsuki">"Did someone say MOE?!"</span><br><br>Flowers seem to materialize around her. How does she do that?`;
+            }
+
+            if (cmd === 'chess' || cmd.includes('play chess')) {
+                return `You don't have time for chess.<br><br>Usui probably wins at that too. (He once beat a national champion. Because of course he did.)`;
+            }
+
+            if (cmd.includes('rooftop') || cmd.includes('roof') || cmd === 'fall') {
+                return `You remember when he fell off the school building and just... walked it off.<br><br>Normal humans don't do that. Hence: ALIEN.`;
+            }
+
+            if (cmd.includes('ignore usui')) {
+                return `You pointedly look away from him.<br><br>You feel his gaze on your back anyway.<br><br><span class="npc-usui">"I'll wait, Ayuzawa."</span><br><br>He always waits. That's somehow worse.`;
+            }
+
+            if (cmd.includes('blush') || cmd.includes('embarrass')) {
+                return `You're already blushing. Have been this whole time, probably.<br><br>Usui notices. He doesn't say anything, just looks at you like you're the most interesting thing in the room.<br><br>Somehow that's worse than being teased.`;
+            }
+
+            if (cmd.includes('cry') || cmd.includes('sob')) {
+                return `You are NOT going to cry. You're the Student Council President. You've handled delinquents, budget crises, and the Idiot Trio.<br><br>You can handle one (1) escaped plushie and one (1) infuriating pretty boy.<br><br>Probably.`;
+            }
+
+            if (cmd.includes('dance') || cmd.includes('sing')) {
+                return `This is a workplace. You have some dignity.<br><br>...Okay, Satsuki is literally singing in the kitchen right now.<br><br>But still. No.`;
+            }
+
+            if (cmd.includes('quit') || cmd.includes('give up') || cmd.includes('surrender')) {
+                return `Absolutely not.<br><br>Misaki Ayuzawa does not quit. Misaki Ayuzawa catches the mascot, finishes her shift, and goes home to scream into a pillow about boys.<br><br>In that order.`;
+            }
+
+            return `I don't understand "${cmd}". Type HELP for commands.`;
+        }
+
+        function handleMove(target) {
+            target = target.replace('to ', '').replace('the ', '').trim();
+
+            if (target.includes('table')) {
+                if (state.location !== 'DINING') {
+                    return `You need to be in the DINING area to examine tables.`;
+                }
+                return `You're already in the dining area. The tables are right here.`;
+            }
+
+            // Dining area - east from counter, or "dining"
+            if (target.includes('dining') || target.includes('tables') || target === 'e' || target === 'east') {
+                if (state.location === 'DINING') return `You're already in the dining area.`;
+                if (state.location === 'KITCHEN') return `You can't go directly to dining from the kitchen. Go through the COUNTER first.`;
+                state.location = 'DINING';
+                updateDisplay();
+                return `You walk back to the dining area.`;
+            }
+
+            // Counter - west from dining, back from kitchen
+            if (target.includes('counter') || target === 'w' || target === 'west' || target.includes('back')) {
+                if (state.location === 'COUNTER') return `You're already at the counter.`;
+                state.location = 'COUNTER';
+                updateDisplay();
+                return `You walk to the counter. Usui's smirk intensifies.`;
+            }
+
+            // Kitchen - north from counter
+            if (target.includes('kitchen') || target === 'n' || target === 'north') {
+                if (state.location === 'KITCHEN') return `You're already in the kitchen.`;
+                if (state.location === 'DINING') return `You need to go through the COUNTER to reach the kitchen.`;
+                state.location = 'KITCHEN';
+                updateDisplay();
+                return `You slip into the kitchen. Satsuki waves.`;
+            }
+
+            // South from kitchen goes to counter
+            if (target === 's' || target === 'south') {
+                if (state.location === 'KITCHEN') {
+                    state.location = 'COUNTER';
+                    updateDisplay();
+                    return `You head back to the counter.`;
+                }
+                return `There's nothing that way.`;
+            }
+
+            // ALLEY - fake location, Misaki refuses
+            if (target.includes('alley') || target.includes('outside') || target === 'out' || target === 'exit' || target === 'leave') {
+                const refusals = [
+                    `You glance at the back door.<br><br>No. You're in the middle of your shift. You can't just wander outside.`,
+                    `The alley can wait. The customers can't.<br><br>What kind of example would that set?`,
+                    `Even if you wanted to... no. You're working. That's that.`
+                ];
+                return refusals[state.commandCount % refusals.length];
+            }
+
+            return `Go where? Try: DINING (E), COUNTER (W), or KITCHEN (N). Or just type the name.`;
+        }
+
+        function handleLook(target) {
+            if (!target || target === 'around' || target === 'room') {
+                updateDisplay();
+                // Reveal apron at counter
+                if (state.location === 'COUNTER' && !state.apronRevealed && !state.inventory.includes('APRON')) {
+                    state.apronRevealed = true;
+                    updateDisplay();
+                    return `You look around...<br><br>There's an apron hanging on a hook by the kitchen door. You hadn't noticed it before.`;
+                }
+                return `You look around...`;
+            }
+
+            if (target.includes('usui')) {
+                const looks = [
+                    `Tall. Annoyingly handsome. Currently smirking at nothing in particular.<br>He catches you looking and winks.<br><br><em>Why does he always look like he knows something you don't?</em>`,
+                    `He's leaning against the counter like he's been there all day.<br>Green eyes tracking your movement. That blond hair that never looks anything other than perfect.<br><br>You hate that you noticed.`,
+                    `Usui Takumi. Transfer student. Inexplicably good at everything.<br>CHESS champion. Martial arts expert. Survived falling off a ROOFTOP.<br>Currently watching your every move.<br><br><span class="npc-usui">"Like what you see, Kaichou?"</span><br>You look away quickly.`
+                ];
+                return looks[state.commandCount % looks.length];
+            }
+
+            if (target.includes('satsuki') || target.includes('manager')) {
+                return `Satsuki Hyōdō, manager of Maid Latte.<br><br>Mid-thirties but operating at twice the RPM of anyone around her. Currently thrilled about the escaped mascot.<br><br>She's wearing a pink apron with hand-embroidered lace trim. There's a pin on her collar that says "MOE IS JUSTICE."<br><br>You've never met anyone who genuinely uses the word "moe" in conversation as much as she does.`;
+            }
+
+            if (target.includes('mascot') || target.includes('alien') || target.includes('uchujin')) {
+                if (isMascotVisible()) {
+                    return `A palm-sized alien plushie with big eyes and a knowing smirk.<br>Green body, silver antennae. A tiny cape.<br><br>You bought it at a capsule machine three weeks ago.<br>You told yourself it was "just cute" and had nothing to do with anyone.<br>You're a terrible liar.<br><br>...<br>It's looking at you with Usui's exact expression. How does a plushie do that?`;
+                }
+                return `The little plushie isn't here. It must have bounced to another room.<br><br>You can still feel its judgmental stare somehow.`;
+            }
+
+            if (target.includes('apron')) {
+                if (state.inventory.includes('APRON')) {
+                    return `You're holding the apron. Soft white fabric with lace trim.<br>Satsuki's handiwork. You can tell by the careful stitching.`;
+                }
+                if (state.location === 'COUNTER' && state.apronRevealed) {
+                    return `A white apron hanging on a hook by the kitchen door.<br>Satsuki made it herself. You can tell by the careful stitching.<br><br>Perfect for... catching things?`;
+                }
+                if (state.location === 'KITCHEN') {
+                    return `A white apron hanging on a hook.<br>Satsuki made it herself. You can tell by the stitching.<br><br>Perfect for... catching things?`;
+                }
+                return `You don't see an apron here.`;
+            }
+
+
+            if (target.includes('table')) {
+                if (state.location === 'DINING') {
+                    const table = target.match(/\d/)?.[0] || '2';
+                    const hasMascot = state.mascotLocation === `TABLE${table}`;
+                    const customers = [
+                        `A young couple sharing a parfait. They're too absorbed in each other to notice you.`,
+                        `A salaryman reading a newspaper. He looks like he comes here to escape something.`,
+                        `Blonde pigtails. Black bow. Red dress. Big blue eyes peeking over a menu.<br><br>Something about that face. You're not going to think about it.`
+                    ];
+                    const customer = customers[parseInt(table) - 1] || customers[0];
+                    if (hasMascot) {
+                        return `Table ${table}. ${customer}<br><br>Under the table... <span style="color:#b8860b">Uchūjin-kun!</span><br>It stares back at you, daring you to try something.`;
+                    }
+                    return `Table ${table}. ${customer}<br><br>Nothing unusual underneath.`;
+                }
+                return `You're not in the dining area.`;
+            }
+
+            if (target.includes('customer')) {
+                if (state.location === 'DINING') {
+                    // Check if looking at the mysterious customer at Table 3
+                    if (target.includes('3') || target.includes('mysterious') || target.includes('alone')) {
+                        state.customerLookCount++;
+                        if (state.customerLookCount === 1) {
+                            return `Long blonde pigtails. Black bow headband. Big blue eyes. A red dress with black ruffles - like a doll come to life.<br><br>The menu lowers. Those eyes sweep over you, appraising. Cold. Judgmental.<br><br>The menu goes back up.<br><br>You've seen that face somewhere. You're not going to think about where.`;
+                        }
+                        return `Still there. Still watching. Still hasn't ordered anything.<br><br>You're not going to give them the satisfaction of acknowledging them.<br><br>They catch you looking and raise an eyebrow. You look away first.`;
+                    }
+                    return `The regulars are here today.<br><br>Table 1: A couple. Cute.<br>Table 2: A tired-looking salaryman. Relatable.<br>Table 3: Someone alone, half-hidden behind a menu.<br><br>That third one is giving you a weird vibe. You know them from somewhere. You're choosing not to deal with it right now.`;
+                }
+                return `No customers back here. Just staff.`;
+            }
+
+            if (target.includes('register')) {
+                if (state.location === 'COUNTER') {
+                    return `Old but reliable. You've memorized every button.<br><br>THINK about how many hours you've spent here...<br><br>There's a photo taped to the side: the whole Maid Latte staff. You're in it, smiling despite yourself.`;
+                }
+                return `You can't see the register from here.`;
+            }
+
+            if (target.includes('display') || target.includes('case')) {
+                if (state.location === 'COUNTER') {
+                    const hasMascot = state.mascotLocation === 'DISPLAY';
+                    if (hasMascot) {
+                        return `Cakes behind glass. A strawberry shortcake is almost sold out. The Mont Blanc looks lonely.<br><br><span style="color:#b8860b">A pair of tiny eyes peers out from under the case, fixed on the strawberry tart.</span>`;
+                    }
+                    return `Cakes behind glass. A strawberry shortcake is almost sold out. The Mont Blanc looks lonely.`;
+                }
+                return `You don't see a display case here.`;
+            }
+
+            if (target.includes('tip') || target.includes('jar')) {
+                if (state.location === 'COUNTER') {
+                    const hasMascot = state.mascotLocation === 'TIP_JAR';
+                    if (hasMascot) {
+                        return `A few coins. A folded note that says "Misa-chan is cute!"<br><br><span style="color:#b8860b">The jar wobbles. Something small is hiding behind it.</span> Usui notices and pokes at it. "Pu."`;
+                    }
+                    return `A few coins. A folded note that says "Misa-chan is cute!"<br><br>You're going to PUNCH whoever wrote that. (It was probably Usui.)`;
+                }
+                return `You don't see a tip jar here.`;
+            }
+
+            if (target.includes('coffee') || target.includes('cup')) {
+                if (state.location === 'COUNTER') {
+                    return `Usui's cup. Black coffee, no sugar. Of course he drinks it black.`;
+                }
+                return `You don't see any coffee here.`;
+            }
+
+            if (target.includes('window')) {
+                return `Street view. People walking by. Normal day for everyone except you.<br><br>You could YELL for help but that would raise questions.<br><br>Through the glass, Seika High is just visible in the distance. You should probably be studying right now.`;
+            }
+
+            if (target.includes('menu') || target.includes('specials') || target.includes('board')) {
+                if (state.location === 'DINING') {
+                    const hasMascot = state.mascotLocation === 'MENU_BOARD';
+                    if (hasMascot) {
+                        return `The daily specials board. Satsuki's handwriting in pastel chalk.<br><br>Wait - <span style="color:#b8860b">something is peeking out from behind it!</span>`;
+                    }
+                    return `The daily specials board. Satsuki's handwriting in pastel chalk.<br><br>"Moe Moe Parfait ♥" "Love Love Omurice ♥♥"<br><br>You've had to say those names out loud. Many times.`;
+                }
+                return `You can see the menu board from the dining area.`;
+            }
+
+            if (target.includes('fern') || target.includes('plant')) {
+                if (state.location === 'DINING') {
+                    const hasMascot = state.mascotLocation === 'PLANT';
+                    if (hasMascot) {
+                        return `A fake fern in a decorative pot. Adds "ambiance," Satsuki said.<br><br>The leaves are... <span style="color:#b8860b">rustling. Tiny antennae poke through!</span>`;
+                    }
+                    return `A fake fern in a decorative pot. Adds "ambiance," Satsuki said.<br><br>At least you don't have to water it.`;
+                }
+                return `You don't see a plant here.`;
+            }
+
+            if (target.includes('espresso') || target.includes('machine')) {
+                if (state.location === 'COUNTER') {
+                    const hasMascot = state.mascotLocation === 'ESPRESSO';
+                    if (hasMascot) {
+                        return `The espresso machine hisses and gurgles. Italian brand, Satsuki's pride and joy.<br><br>Something green is <span style="color:#b8860b">wedged behind it!</span>`;
+                    }
+                    return `The espresso machine hisses and gurgles. Italian brand, Satsuki's pride and joy.<br><br>You've burned yourself on it twice. Worth it for the free drinks.`;
+                }
+                return `You can't see the espresso machine from here.`;
+            }
+
+            if (target.includes('bowl') || target.includes('mixing')) {
+                if (state.location === 'KITCHEN') {
+                    const hasMascot = state.mascotLocation === 'BOWLS';
+                    if (hasMascot) {
+                        return `Mixing bowls stacked precariously. Various sizes, all well-used.<br><br>One of them is <span style="color:#b8860b">rocking slightly...</span>`;
+                    }
+                    return `Mixing bowls stacked precariously. Various sizes, all well-used.<br><br>A big one might trap something small...`;
+                }
+                return `You don't see mixing bowls here.`;
+            }
+
+            if (target.includes('drawer')) {
+                if (state.location === 'KITCHEN') {
+                    if (state.drawerOpened) {
+                        if (state.inventory.includes('BAG')) {
+                            return `The drawer is open. Twist ties, rubber bands. The usual kitchen stuff.`;
+                        }
+                        return `The drawer is open. Garbage bags, twist ties, rubber bands.<br><br>The bags might come in handy for... something?`;
+                    }
+                    return `A drawer by the counter. Probably kitchen supplies.`;
+                }
+                return `You don't see a drawer here.`;
+            }
+
+            if (target.includes('cabinet') || target.includes('cupboard')) {
+                if (state.location === 'KITCHEN') {
+                    if (state.cabinetOpened) {
+                        let contents = [];
+                        if (!state.inventory.includes('BOWL')) contents.push('a metal mixing bowl');
+                        if (!state.inventory.includes('TREATS')) contents.push('some snacks');
+                        if (contents.length > 0) {
+                            return `The cabinet is open. Inside: ${contents.join(', ')}.`;
+                        }
+                        return `The cabinet is open. Mostly empty now.`;
+                    }
+                    return `Kitchen cabinets along the wall. Who knows what's inside?`;
+                }
+                return `You don't see cabinets here.`;
+            }
+
+            if (target.includes('treat') || target.includes('snack')) {
+                if (state.location === 'KITCHEN') {
+                    const hasMascot = state.mascotLocation === 'TREAT_CABINET';
+                    if (hasMascot) {
+                        return `The treat cabinet. Staff snacks, customer samples, Satsuki's secret chocolate stash.<br><br>The door is ajar. <span style="color:#b8860b">You hear tiny munching sounds...</span>`;
+                    }
+                    return `The treat cabinet. Staff snacks, customer samples, Satsuki's secret chocolate stash.<br><br>You're not supposed to know about the chocolate.`;
+                }
+                return `You don't see treats here.`;
+            }
+
+            if (target.includes('costume') || target.includes('uniform') || target.includes('apron pile') || target.includes('aprons')) {
+                if (state.location === 'KITCHEN') {
+                    const hasMascot = state.mascotLocation === 'APRON_PILE';
+                    if (hasMascot) {
+                        return `Costumes and spare aprons in various states of completion hang everywhere.<br>Cat ears. Gothic lolita dresses. A questionable "sexy nurse" outfit.<br><br><span style="color:#b8860b">The apron pile is... moving. Something burrowed in there!</span>`;
+                    }
+                    return `Costumes in various states of completion hang everywhere.<br>Cat ears. Gothic lolita dresses. A questionable "sexy nurse" outfit.<br><br>Satsuki's next theme day ideas, presumably.<br><br>There's also a half-finished alien costume that looks suspiciously like Uchujin-kun scaled up to human size. You pretend not to see it.`;
+                }
+                return `You're wearing your maid uniform. As always.`;
+            }
+
+            if (target.includes('sink')) {
+                if (state.location === 'KITCHEN') {
+                    return `Clean. Satsuki runs a tight ship.`;
+                }
+                return `You don't see a sink here.`;
+            }
+
+            if (target.includes('oven') || target.includes('stove')) {
+                if (state.location === 'KITCHEN') {
+                    return `Industrial grade. Satsuki's domain.<br><br>You're not allowed to touch it after The Incident.`;
+                }
+                return `You don't see an oven here.`;
+            }
+
+            if (target.includes('recipe') || target.includes('book')) {
+                if (state.location === 'KITCHEN') {
+                    return `Handwritten recipes in Satsuki's loopy script.<br><br>There's a whole section on "MOE Presentation Tips."`;
+                }
+                return `You don't see a recipe book here.`;
+            }
+
+            if (target.includes('shrine') || target.includes('figurine') || target.includes('photo')) {
+                if (state.location === 'KITCHEN') {
+                    return `A small shelf with figurines, photos, and... is that a candid shot of you and Usui?<br><br>SATSUKI.`;
+                }
+                return `You don't see anything like that here.`;
+            }
+
+            if (target.includes('spice') || target.includes('rack')) {
+                if (state.location === 'KITCHEN') {
+                    return `Organized by color. Because of course it is.`;
+                }
+                return `You don't see a spice rack here.`;
+            }
+
+            if (target.includes('menu') || target.includes('board')) {
+                return `Parfaits, cakes, coffee. The "Moe Moe Omurice" has a heart drawn in ketchup.<br><br>You've had to draw so many hearts.<br><br>Everything comes with a smile and "Welcome home, Master~"<br>You've said those words thousands of times. They still make you cringe.`;
+            }
+
+            if (target.includes('self') || target.includes('myself') || target.includes('me')) {
+                return `Ayuzawa Misaki. Student Council President. Secret maid cafe employee.<br><br>Currently: panicked, determined, flustered by a certain blond idiot.<br><br>Your maid uniform is dishevelled from chasing a plushie around. Great.`;
+            }
+
+            return `You don't see anything special about that.`;
+        }
+
+        function handleTalk(target) {
+            target = target.replace('to ', '').replace('with ', '').trim();
+
+            if (target.includes('usui')) {
+                if (state.location !== 'COUNTER') {
+                    return `Usui is at the counter. You can hear his voice from here, probably saying something infuriating.`;
+                }
+
+                const wasFirstTalk = !state.talkedUsui;
+                state.talkedUsui = true;
+                state.usuiTalkCount = (state.usuiTalkCount || 0) + 1;
+                const tier = getHintTier();
+
+                // First talk or hint-giving based on tier
+                if (tier >= 3) {
+                    return USUI_DIALOGUE.tier3;
+                }
+
+                if (tier >= 2) {
+                    return state.inventory.includes('APRON')
+                        ? USUI_DIALOGUE.tier2.hasApron
+                        : USUI_DIALOGUE.tier2.noApron;
+                }
+
+                if (wasFirstTalk) {
+                    return USUI_DIALOGUE.tier1.first;
+                }
+
+                // Subsequent talks - mix of hints and personality
+                if (state.usuiTalkCount % 3 === 0) {
+                    // Every third talk, show some idle/personal dialogue
+                    const idle = USUI_LINES.idle[state.usuiTalkCount % USUI_LINES.idle.length];
+                    return idle;
+                }
+
+                if (state.usuiTalkCount % 2 === 0) {
+                    // Teasing
+                    const tease = USUI_LINES.tease[state.usuiTalkCount % USUI_LINES.tease.length];
+                    return tease;
+                }
+
+                return isMascotVisible()
+                    ? USUI_DIALOGUE.tier1.mascotVisible
+                    : USUI_DIALOGUE.tier1.mascotHidden;
+            }
+
+            if (target.includes('satsuki') || target.includes('manager')) {
+                if (state.location !== 'KITCHEN') {
+                    return `Satsuki is in the kitchen. You can hear her humming something from a magical girl anime.`;
+                }
+
+                const wasFirstTalk = !state.talkedSatsuki;
+                state.talkedSatsuki = true;
+                state.satsukiTalkCount = (state.satsukiTalkCount || 0) + 1;
+
+                if (wasFirstTalk) {
+                    return SATSUKI_DIALOGUE.first;
+                }
+
+                // Subsequent talks - mix of hints and personality
+                if (state.satsukiTalkCount % 3 === 0) {
+                    // Personal chat
+                    const chat = SATSUKI_DIALOGUE.chat[state.satsukiTalkCount % SATSUKI_DIALOGUE.chat.length];
+                    return chat;
+                }
+
+                return SATSUKI_DIALOGUE.repeat;
+            }
+
+            if (target.includes('mascot') || target.includes('alien') || target.includes('uchujin')) {
+                const responses = [
+                    `It doesn't respond.<br>Unlike some perverted outer-space aliens you know.`,
+                    `<em>"Hey."</em><br>...<br>It just stares at you.<br>Great. You're talking to a plushie. In public. At work.`,
+                    `You whisper: <em>"Please just let me catch you."</em><br>Uchūjin-kun's expression seems to say: "No."`,
+                    `It blinks at you. Wait, can plushies blink?<br>You're losing your mind.`
+                ];
+                return responses[state.commandCount % responses.length];
+            }
+
+            if (target.includes('customer')) {
+                if (state.location === 'DINING') {
+                    // Talking to mysterious customer at Table 3
+                    if (target.includes('3') || target.includes('mysterious') || target.includes('alone')) {
+                        state.talkedCustomer = true;
+                        // Misaki knows them, doesn't want to engage
+                        return `You know what? No.<br><br>You know that face. And that face has opinions about your fashion sense. Your "unfeminine" strength. Your everything, basically.<br><br>You have a rogue plushie to catch. You don't need a lecture right now.<br><br><em>You're going to pretend you didn't see them.</em>`;
+                    }
+                    const responses = [
+                        `<em>"Welcome home, Master~"</em> you say automatically.<br>The customer smiles. Another satisfied regular.<br><br>You hate that you're good at this.`,
+                        `A customer flags you down. <em>"More coffee, please?"</em><br>You nod and smile. Work doesn't stop just because you're chasing a rogue plushie.`,
+                        `The couple at Table 1 flags you down. They want to share a parfait.<br><br><em>"So cute~"</em> you manage. The words taste like sugar and lies.`
+                    ];
+                    return responses[state.commandCount % responses.length];
+                }
+                return `No customers here.`;
+            }
+
+            return `Talk to whom? USUI is at the counter. SATSUKI is in the kitchen.`;
+        }
+
+        function handleTake(target) {
+            if (target.includes('apron')) {
+                if (state.location !== 'COUNTER') {
+                    return `You don't see an apron here.`;
+                }
+                if (!state.apronRevealed) {
+                    return `You don't see an apron. Maybe look around first?`;
+                }
+                if (state.inventory.includes('APRON')) {
+                    return `You already have the apron.`;
+                }
+                state.inventory.push('APRON');
+                updateDisplay();
+                return `You take the apron. Soft white fabric, Satsuki's handiwork. Good for catching things.`;
+            }
+
+            if (target.includes('bowl')) {
+                if (state.location !== 'KITCHEN') {
+                    return `You don't see a bowl here.`;
+                }
+                if (!state.cabinetOpened) {
+                    return `You don't see a bowl. Maybe check the cabinets?`;
+                }
+                if (state.inventory.includes('BOWL')) {
+                    return `You're already holding the bowl.`;
+                }
+                state.inventory.push('BOWL');
+                updateDisplay();
+                return `You take the mixing bowl. Heavy metal, good weight.`;
+            }
+
+            if (target.includes('knife') || target.includes('bread')) {
+                if (state.location !== 'KITCHEN') {
+                    return `You don't see a knife here.`;
+                }
+                if (state.inventory.includes('KNIFE')) {
+                    return `You're already carrying the knife.`;
+                }
+                state.inventory.push('KNIFE');
+                updateDisplay();
+                return `You pick up the bread knife. Sharp.`;
+            }
+
+            if (target.includes('bag') || target.includes('garbage')) {
+                if (state.location !== 'KITCHEN') {
+                    return `You don't see a bag here.`;
+                }
+                if (!state.drawerOpened) {
+                    return `You don't see a bag. Maybe check the drawers?`;
+                }
+                if (state.inventory.includes('BAG')) {
+                    return `You already have a garbage bag.`;
+                }
+                state.inventory.push('BAG');
+                updateDisplay();
+                return `You pull out a garbage bag. Thin plastic.`;
+            }
+
+            if (target.includes('treat') || target.includes('snack') || target.includes('cookie')) {
+                if (state.location !== 'KITCHEN') {
+                    return `You don't have any treats on you.`;
+                }
+                if (!state.cabinetOpened) {
+                    return `You don't see any treats lying around.`;
+                }
+                if (state.inventory.includes('TREATS')) {
+                    return `You already grabbed some treats.`;
+                }
+                state.inventory.push('TREATS');
+                updateDisplay();
+                return `You pocket a handful of snacks. Tiny cookies, mostly.`;
+            }
+
+            if (target.includes('mascot') || target.includes('alien') || target.includes('uchujin')) {
+                return handleCatch(target);
+            }
+
+            return `Take what?`;
+        }
+
+        function handleUse(target) {
+            // BOWL - traps the mascot
+            if (target.includes('bowl')) {
+                if (!state.inventory.includes('BOWL')) {
+                    return `You don't have the bowl.`;
+                }
+                if (!canCatchMascot()) {
+                    return `You're holding a bowl. The plushie isn't here.`;
+                }
+                if (state.mascotTrapped) {
+                    return `The mascot is already trapped under the bowl.`;
+                }
+                // SUCCESS: trap mascot
+                state.mascotTrapped = true;
+                let response = `You bring the bowl down over Uchujin-kun!<br><br><strong>CLANG!</strong><br><br>`;
+                response += `The mascot is trapped! It scrabbles against the metal, tiny face pressed to the rim.<br><br>`;
+                response += `<span style="color:#b8860b">Now you just need something soft to wrap it up and carry it safely.</span>`;
+
+                if (state.location === 'COUNTER') {
+                    response += `<br><br><span class="npc-usui">"Nice reflexes."</span><br>Usui sounds almost impressed.`;
+                }
+                return response;
+            }
+
+            // APRON - catches trapped mascot (WIN) or fails if not trapped
+            if (target.includes('apron')) {
+                if (!state.inventory.includes('APRON')) {
+                    return `You don't have the apron.`;
+                }
+                if (!canCatchMascot()) {
+                    return `The plushie isn't here. It's bouncing around somewhere else.`;
+                }
+                if (state.mascotTrapped) {
+                    // WIN!
+                    return triggerWin();
+                }
+                // Fail: too floppy to catch a free mascot
+                state.attemptedCatch++;
+                moveMascot();
+                updateDisplay();
+                return `You throw the apron!<br><br>It flutters down... and the mascot darts away before it lands.<br><br><em>Too floppy to aim. If only I had something solid to trap it first... then the apron would work.</em>`;
+            }
+
+            // KNIFE - red herring, self-admonishment
+            if (target.includes('knife')) {
+                if (!state.inventory.includes('KNIFE')) {
+                    return `You don't have a knife.`;
+                }
+                if (!canCatchMascot()) {
+                    return `You're waving a knife around for no reason. Stop that.`;
+                }
+                return `You raise the knife and immediately feel horrible.<br><br>What are you DOING? It's a plushie. YOUR plushie.<br><br>You put the knife away, face burning with shame.`;
+            }
+
+            // BAG - red herring, tears through
+            if (target.includes('bag') || target.includes('garbage')) {
+                if (!state.inventory.includes('BAG')) {
+                    return `You don't have a bag.`;
+                }
+                if (!canCatchMascot()) {
+                    return `No point using a bag here. The mascot isn't around.`;
+                }
+                state.attemptedCatch++;
+                moveMascot();
+                updateDisplay();
+                return `You throw the bag over Uchujin-kun!<br><br>For a moment it works... then tiny claws tear through the thin plastic.<br><br>It escapes through the hole.<br><br><em>Need something much thicker. Something it can't tear through.</em>`;
+            }
+
+            // TREATS - red herring, snatches and runs
+            if (target.includes('treat') || target.includes('snack') || target.includes('lure') || target.includes('bait') || target.includes('cookie')) {
+                if (!state.inventory.includes('TREATS')) {
+                    return `You don't have any treats.`;
+                }
+                if (!canCatchMascot()) {
+                    return `You could eat these yourself, but that seems wasteful.`;
+                }
+                state.attemptedCatch++;
+                state.triedTreats = true;
+                moveMascot();
+                updateDisplay();
+                return `You hold out a treat. Uchujin-kun's eyes light up.<br><br>It darts over, snatches the cookie, and bolts before you can react.<br><br>So much for bribery.`;
+            }
+
+            return `Use what on what?`;
+        }
+
+        function handleOpen(target) {
+            if (target.includes('cabinet') || target.includes('cupboard')) {
+                if (state.location !== 'KITCHEN') {
+                    return `You don't see a cabinet here.`;
+                }
+                if (state.cabinetOpened) {
+                    return `It's already open.`;
+                }
+                state.cabinetOpened = true;
+                updateDisplay();
+                return `You open the cabinet.<br><br>Inside: a clean metal mixing bowl, and some snacks for staff breaks.`;
+            }
+
+            if (target.includes('drawer')) {
+                if (state.location !== 'KITCHEN') {
+                    return `You don't see a drawer here.`;
+                }
+                if (state.drawerOpened) {
+                    return `It's already open.`;
+                }
+                state.drawerOpened = true;
+                updateDisplay();
+                return `You slide the drawer open.<br><br>Garbage bags, twist ties, rubber bands. The usual kitchen stuff.`;
+            }
+
+            return `Open what?`;
+        }
+
+        function handleCatch(target) {
+            if (!canCatchMascot()) {
+                if (isMascotInDining() && state.location === 'DINING') {
+                    // Can see but not at right table
                 } else {
-                    passwordInput.type = "password";
-                    toggleIcon.src = imgSrcEyeClosed;
-                    toggleIcon.alt = templateToggleAltShow;
-                    toggleIcon.title = templateToggleAltShow;
+                    return `The plushie isn't here! It must have bounced to another room...`;
                 }
-            });
+            }
 
-            // handle password form submission
-            document.getElementById("staticrypt-form").addEventListener("submit", async function (e) {
-                e.preventDefault();
+            if (state.inventory.includes('APRON') && state.mascotTrapped) {
+                return triggerWin();
+            }
 
-                const password = document.getElementById("staticrypt-password").value,
-                    isRememberChecked = document.getElementById("staticrypt-remember").checked;
+            if (state.inventory.includes('APRON') && !state.mascotTrapped) {
+                state.attemptedCatch++;
+                moveMascot();
+                updateDisplay();
+                return `You throw the apron, but the mascot dodges!<br><br>It's too quick when it has room to run. You need to TRAP it first.<br><br><em>Maybe something in the KITCHEN could help...</em>`;
+            }
 
-                const { isSuccessful } = await staticrypt.handleDecryptionOfPage(password, isRememberChecked);
+            // Bare hands attempt
+            state.attemptedCatch++;
+            moveMascot();
+            updateDisplay();
 
-                if (!isSuccessful) {
-                    alert(templateError);
+            const failMessages = [
+                `You lunge. It bounces away!`,
+                `Almost! It slips through your fingers.`,
+                `The mascot zips past your grabbing hands.`,
+                `Uchujin-kun: ${state.attemptedCatch}, Misaki: 0`,
+                `It's faster than it looks...`,
+                `Your hands close on empty air.`
+            ];
+
+            const msg = failMessages[state.attemptedCatch % failMessages.length];
+
+            if (state.attemptedCatch >= 3 && state.attemptedCatch < 6) {
+                return msg + `<br><br><em>Maybe you need something to catch it with...</em>`;
+            }
+
+            if (state.attemptedCatch >= 6) {
+                return msg + `<br><br><em>Hint: Look around the KITCHEN for something to catch it with...</em>`;
+            }
+
+            return msg;
+        }
+
+        function isMascotInDining() {
+            const spot = HIDING_SPOTS[state.mascotLocation];
+            return spot && spot[0] === 'DINING';
+        }
+
+        function triggerWin() {
+            state.won = true;
+
+            const response = `You sweep the apron over the mascot.<br><br>` +
+                `<span class="success">Got it!</span><br><br>` +
+                `Uchūjin-kun squirms under the fabric, then settles into your arms.<br><br>` +
+                `A familiar presence appears beside you.<br><br>` +
+                `<span class="npc-usui">"Nice catch."</span><br>` +
+                `He's looking at you holding the mascot.<br>` +
+                `<span class="npc-usui">"Green. Alien. Vaguely familiar somehow..."</span><br><br>` +
+                `Your face burns. He KNOWS.<br><br>` +
+                `<span class="npc-usui">"I like it."</span><br>` +
+                `His voice is softer.<br>` +
+                `<span class="npc-usui">"Keep it close, Misa-chan."</span><br><br>` +
+                `Satsuki appears from the kitchen, beaming.<br>` +
+                `<span class="npc-satsuki">"You did it! And just in time for-"</span><br>` +
+                `She stops herself, grinning.<br>` +
+                `<span class="npc-satsuki">"Well. You'll see~"</span><br><br>` +
+                `<a href="prize.html" class="win-link">✨ claim your prize ✨</a>`;
+
+            document.getElementById('inputArea').style.display = 'none';
+            document.getElementById('hints').innerHTML = '';
+
+            return response;
+        }
+
+        // ============================================================
+        // DISPLAY
+        // ============================================================
+
+        function updateDisplay() {
+            const mascotHere = isMascotVisible();
+            const mascotTable = state.mascotLocation;
+
+            // Scene image
+            const sceneImages = {
+                'DINING': 'assets/backgrounds/dining-area.gif',
+                'COUNTER': 'assets/backgrounds/counter.gif',
+                'KITCHEN': 'assets/backgrounds/kitchen.gif'
+            };
+            document.getElementById('sceneImg').src = sceneImages[state.location];
+
+            // Room description
+            document.getElementById('roomDesc').innerHTML = getRoomDesc();
+
+            // Hints
+            updateHints();
+        }
+
+        function updateHints() {
+            let hints = 'try: ';
+
+            // Exploration hint - always available
+            hints += `<span onclick="tryCommand('look around')">look around</span> `;
+
+            if (state.location === 'DINING') {
+                hints += `<span onclick="tryCommand('go counter')">go counter</span> `;
+                if (isMascotVisible()) {
+                    hints += `<span onclick="tryCommand('look mascot')">look mascot</span> `;
+                    if (state.mascotTrapped && state.inventory.includes('APRON')) {
+                        hints += `<span onclick="tryCommand('use apron')">use apron</span> `;
+                    } else if (state.inventory.includes('BOWL') && !state.mascotTrapped) {
+                        hints += `<span onclick="tryCommand('use bowl')">use bowl</span> `;
+                    }
                 }
-            });
-        </script>
-    </body>
+            } else if (state.location === 'COUNTER') {
+                hints += `<span onclick="tryCommand('talk usui')">talk usui</span> `;
+                hints += `<span onclick="tryCommand('go kitchen')">go kitchen</span> `;
+                if (isMascotVisible()) {
+                    if (state.mascotTrapped && state.inventory.includes('APRON')) {
+                        hints += `<span onclick="tryCommand('use apron')">use apron</span> `;
+                    } else if (state.inventory.includes('BOWL') && !state.mascotTrapped) {
+                        hints += `<span onclick="tryCommand('use bowl')">use bowl</span> `;
+                    }
+                }
+            } else {
+                // KITCHEN
+                hints += `<span onclick="tryCommand('talk satsuki')">talk satsuki</span> `;
+                if (!state.cabinetOpened) {
+                    hints += `<span onclick="tryCommand('open cabinet')">open cabinet</span> `;
+                }
+                hints += `<span onclick="tryCommand('go counter')">go counter</span> `;
+                if (isMascotVisible()) {
+                    if (state.mascotTrapped && state.inventory.includes('APRON')) {
+                        hints += `<span onclick="tryCommand('use apron')">use apron</span> `;
+                    } else if (state.inventory.includes('BOWL') && !state.mascotTrapped) {
+                        hints += `<span onclick="tryCommand('use bowl')">use bowl</span> `;
+                    }
+                }
+            }
+
+            document.getElementById('hints').innerHTML = hints;
+        }
+
+        function addOutput(command, response) {
+            const output = document.getElementById('output');
+            if (command) {
+                output.innerHTML += `<div class="command">&gt; ${command}</div>`;
+            }
+            output.innerHTML += `<div class="response">${response}</div>`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // ============================================================
+        // INPUT HANDLING
+        // ============================================================
+
+        function submitCommand() {
+            const input = document.getElementById('command');
+            const cmd = input.value;
+            if (!cmd.trim()) return;
+
+            const response = processCommand(cmd);
+            addOutput(cmd, response);
+            saveGame();
+            input.value = '';
+            input.focus();
+        }
+
+        function tryCommand(cmd) {
+            document.getElementById('command').value = cmd;
+            submitCommand();
+        }
+
+        document.getElementById('command').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') submitCommand();
+        });
+
+        function restartGame() {
+            localStorage.removeItem(SAVE_KEY);
+            location.reload();
+        }
+
+        // ============================================================
+        // INIT
+        // ============================================================
+
+        function init() {
+            const resumed = loadGame();
+            updateDisplay();
+            if (resumed) {
+                // Transcript already restored by loadGame
+                // Handle win state
+                if (state.won) {
+                    document.getElementById('inputArea').style.display = 'none';
+                    document.getElementById('hints').innerHTML = '';
+                }
+            } else {
+                addOutput('', `Welcome to ★ AFTER CLASS ★<br><br>Your shift at Maid Latte was going fine until...<br><br>Your tiny plushie mascot, <strong>Uchūjin-kun</strong>, fell out of your bag. Now it's bouncing from room to room - dining area, counter, kitchen - like it has somewhere to be.<br><br>Catch it before Usui sees it!<br><br>(Type HELP for commands)`);
+            }
+        }
+
+        init();
+
+        // ============================================================
+        // CURSOR TRAIL
+        // ============================================================
+
+        let lastTrail = 0;
+        document.addEventListener('mousemove', (e) => {
+            const now = Date.now();
+            if (now - lastTrail < 50) return; // throttle
+            lastTrail = now;
+
+            const trail = document.createElement('div');
+            trail.className = 'trail';
+            trail.textContent = '♡';
+            trail.style.left = (e.clientX + 5) + 'px';
+            trail.style.top = (e.clientY + 5) + 'px';
+            document.body.appendChild(trail);
+
+            setTimeout(() => trail.remove(), 800);
+        });
+    </script>
+</body>
 </html>
