@@ -38,9 +38,12 @@
 - **Fix:** Add handler: "A bread knife on the cutting board. Sharp but... no. You're not THAT desperate."
 
 ### 4. Trapped mascot still shows old hiding-spot text
-- **Location:** `getRoomDesc()` and mascot hint functions
+- **Location:** `getRoomDesc()`, `handleLook()` mascot section, mascot hint functions
 - **Issue:** After USE BOWL, descriptions still say "wedged behind espresso machine" etc.
 - **Fix:** Add check: if `state.mascotTrapped && isMascotVisible()`, show "trapped under the bowl"
+- **Also:** LOOK MASCOT should return different text when trapped:
+  - Before: "A palm-sized alien plushie... fast little thing"
+  - After: "Uchūjin-kun is trapped under the bowl, tiny face pressed to the rim. It looks at you with betrayed eyes."
 
 ---
 
