@@ -81,6 +81,34 @@
 
 ---
 
+[CHECKPOINT] 2026-03-28 20:40
+
+## Position
+> **READY TO DEPLOY (pending Steam key).** Final polish pass done: visitor counter themed, intro page softened, baby photo added.
+
+## Changes This Session
+- Visitor counter: dark green → dusty rose (#d4a5a5) to match theme
+- Intro text: "something special waits" → "pls be patient and stay until the end"
+- Baby photo added to index.html (compressed to 20KB)
+- Steam key: discovered Steam gifting = direct-to-library (no redeemable key). Options: native gift, or buy key from Humble/Fanatical
+
+## Decisions
+- **Visitor counter themed** →✓ matches dusty rose aesthetic
+- **Baby photo on intro** →✓ personal touch
+
+## Files Modified
+- `src/index.html` — visitor counter style, intro text, baby photo
+- `src/assets/baby.jpg` — compressed baby photo (20KB)
+
+## Next
+- [ ] **Steam key** — buy from authorized retailer (Humble/Fanatical) OR use Steam direct gift
+- [ ] **Deploy** — push to perseidpixels.co/lzmplk/
+
+## Pickup
+Ready to deploy. Only blocker: Steam key method. Either buy key from Humble/Fanatical, or add partner to Steam friends and gift directly.
+
+---
+
 [CHECKPOINT] 2026-03-28 20:15
 
 ## Position
