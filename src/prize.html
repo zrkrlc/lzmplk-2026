@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>★ 🎂 ★</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Silkscreen&display=swap');
 
         * {
             cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath fill='%23c49393' d='M1 1 L1 7 L7 1 Z'/%3E%3Cpath fill='%23d4a5a5' d='M14 23l-1.2-1.1C8.5 17.8 5.5 15 5.5 11.5c0-2.5 2-4.5 4.5-4.5 1.4 0 2.7.65 3.6 1.7.9-1.05 2.2-1.7 3.6-1.7 2.5 0 4.5 2 4.5 4.5 0 3.5-3 6.3-7.3 10.4L14 23z'/%3E%3C/svg%3E") 1 1, auto;
@@ -145,13 +145,14 @@
         }
 
         .visitor-counter {
-            font-family: 'Courier New', monospace;
-            background: #333;
-            color: #0f0;
-            padding: 0.2rem 0.5rem;
+            font-family: 'Silkscreen', cursive;
+            background: #fff;
+            color: #c49393;
+            padding: 0.3rem 0.6rem;
             display: inline-block;
-            font-size: 0.7rem;
-            letter-spacing: 2px;
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            border: 1px dashed #d4a5a5;
         }
 
         .blogroll {
@@ -174,6 +175,51 @@
             font-style: italic;
         }
 
+        .now-playing {
+            background: #fff;
+            color: #6b5b6b;
+            font-family: 'Comic Neue', cursive;
+            font-size: 0.75rem;
+            padding: 0.4rem 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            border: 1px dashed #d4a5a5;
+        }
+
+        .now-playing button {
+            background: #faf8f5;
+            border: 1px solid #d4a5a5;
+            color: #c49393;
+            font-family: 'Comic Neue', cursive;
+            font-size: 0.7rem;
+            cursor: pointer;
+            padding: 0.2rem 0.5rem;
+            border-radius: 2px;
+        }
+
+        .now-playing button:hover {
+            background: #d4a5a5;
+            color: #fff;
+        }
+
+        /* glitter background */
+        .glitter {
+            position: fixed;
+            pointer-events: none;
+            font-size: 8px;
+            color: #d4a5a5;
+            opacity: 0;
+            animation: sparkle 2s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1) rotate(180deg); }
+        }
+
         /* cursor trail */
         .trail {
             position: fixed;
@@ -194,26 +240,9 @@
     <h1>★ HAPPY BIRTHDAY ★</h1>
 
     <div class="content">
-        <div class="celebration">🎂🎉✨🎊🎁</div>
-
-        <p class="message">
-            (birthday message goes here)
-        </p>
-
-        <hr>
-
         <div class="photo-area">
-            <p>(photo goes here)</p>
+            <img src="assets/photo.jpg" alt="us">
         </div>
-
-        <div class="audio-player">
-            <p><em>♪ now playing: With or Without You - U2 ♪</em></p>
-            <!-- <audio controls autoplay loop>
-                <source src="assets/u2.mp3" type="audio/mpeg">
-            </audio> -->
-        </div>
-
-        <hr>
 
         <p><strong>your gift:</strong></p>
         <div class="gift-box">
@@ -221,11 +250,20 @@
             <small>Tiny Glade (Steam Key)</small>
         </div>
 
-        <p><em>i love u <span class="blink">♡</span></em></p>
+        <p><em>labyu po my belam jelam kelam! <span class="blink">♡</span><br>
+        happy 28th to u and (almost) 4th to us!!</em></p>
     </div>
 
     <!-- FOOTER -->
     <div class="blog-footer">
+        <div class="now-playing">
+            <span>♪</span>
+            <span>Victory! (Pokemon)</span>
+            <button onclick="toggleMusic()" id="musicBtn">❚❚</button>
+        </div>
+        <audio id="bgMusic" autoplay loop>
+            <source src="assets/victory-pokemon.mp3" type="audio/mpeg">
+        </audio>
         <div class="divider">─ ･ ｡ﾟ☆: *.☽ .* :☆ﾟ. ─</div>
         <div class="visitor-counter">visitors: 000005</div>
         <div class="blogroll">
@@ -241,6 +279,43 @@
             sessionStorage.clear();
             window.location.href = "./" + "?" + Date.now();
         }
+
+        function toggleMusic() {
+            const audio = document.getElementById('bgMusic');
+            const btn = document.getElementById('musicBtn');
+            if (audio.paused) {
+                audio.play();
+                btn.textContent = '❚❚';
+            } else {
+                audio.pause();
+                btn.textContent = '▶';
+            }
+        }
+
+        // glitter background
+        function createGlitter() {
+            const glitter = document.createElement('div');
+            glitter.className = 'glitter';
+            glitter.textContent = ['✦', '✧', '★', '☆', '✶', '✷', '♡'][Math.floor(Math.random() * 7)];
+            glitter.style.left = Math.random() * 100 + 'vw';
+            glitter.style.top = Math.random() * 100 + 'vh';
+            glitter.style.animationDelay = Math.random() * 2 + 's';
+            glitter.style.fontSize = (6 + Math.random() * 10) + 'px';
+            glitter.style.color = ['#d4a5a5', '#e8b4b4', '#c49393', '#daa5b4', '#f0c0c0'][Math.floor(Math.random() * 5)];
+            document.body.appendChild(glitter);
+        }
+
+        // spawn initial glitter
+        for (let i = 0; i < 30; i++) {
+            createGlitter();
+        }
+
+        // continuously spawn more
+        setInterval(() => {
+            if (document.querySelectorAll('.glitter').length < 50) {
+                createGlitter();
+            }
+        }, 500);
 
         // cursor trail
         let lastTrail = 0;

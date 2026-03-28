@@ -1,16 +1,16 @@
 # lzmplk-2026 — State
 
-[CHECKPOINT] 2026-03-28 13:20
+[CHECKPOINT] 2026-03-28 19:45
 
 ## Intention
 > Birthday gift for girlfriend (2026-03-28). Single polished text adventure (Maid Latte / Maid-Sama! theme) with Tiny Glade Steam key as prize. Text adventure IS the primary vehicle of the surprise.
 
 ## Position
-> **READY TO DEPLOY.** Game renamed to cafe.html, all mechanics complete, exhaustive diagrams generated. Escape mechanic added (CATCH trapped mascot without apron = escapes). Progressive disclosure gates all work. Links updated.
+> **ALMOST READY.** All game mechanics complete. Audio, typewriter animation, NPC item interactions added. Prize page styled with photo, glitter, personal message. Only missing: Steam key.
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| Game engine | **Done** | Renamed puzzle2→cafe.html |
+| Game engine | **Done** | cafe.html with Typed.js typewriter |
 | Visual style | **Done** | Early 2000s Manila blog aesthetic |
 | Progressive disclosure | **Done** | LOOK AROUND → hints unlock |
 | NPC dialogue tiering | **Done** | Satsuki/Usui: no hints at tier 1 |
@@ -18,8 +18,11 @@
 | Win state | **Done** | BOWL trap → APRON catch → prize.html |
 | Escape mechanic | **Done** | CATCH trapped w/o apron = escapes + hint |
 | Main page | **Done** | index.html → cafe.html |
-| Prize page | **Needs content** | Placeholders for Steam key + message |
+| Prize page | **Needs Steam key** | Photo, message, glitter, music all done |
 | Game diagrams | **Done** | 3 area diagrams + combined game-map.html |
+| Audio | **Done** | cafe.mp3 (BGM), victory-pokemon.mp3 (win) |
+| Typewriter | **Done** | Typed.js, auto-scroll, freed on user scroll |
+| NPC item interactions | **Done** | USE X ON Y parsed, funny responses |
 | TRY hints | Needs refactor | Too cluttered (defer post-deploy) |
 
 ## Decisions
@@ -37,6 +40,12 @@
 - **Escape mechanic** →✓ CATCH trapped mascot w/o apron = squirts out + thick fabric hint
 - **Gate knife/cabinet/drawer** →✓ all require kitchenLooked first
 - **Trapped mascot text** →✓ room desc + LOOK MASCOT show betrayed eyes
+- **Typewriter animation** →✓ Typed.js at 10ms, auto-scroll freed on user scroll up
+- **Music on first click** →✓ browser autoplay policy workaround
+- **Now playing footer** →✓ dusty rose theme, mute/pause button
+- **USE X ON Y** →✓ NPC item interactions with physical comedy
+- **Treats consumed** →✓ removed from inventory when used on NPCs
+- **Prize message** →✓ "labyu po my belam jelam kelam!" + anniversary note
 
 ## Dead Ends
 - H2G2 theme: she doesn't know it well, switched to Maid-Sama!
@@ -46,29 +55,28 @@
 - VN-style ASCII backgrounds: dropped for deadline, ASCII maps work fine
 - Dark terminal aesthetic: switched to light early-2000s blog style
 - Emoji in ASCII art: breaks alignment, replaced with ASCII chars
+- Green terminal now-playing: switched to dusty rose theme to match
 
 ## Constraints
 - Deadline: 2026-03-28 (TODAY - birthday)
 - Canon accuracy for Maid-Sama! (Usui = customer, not employee) ✓
 - All paths relative (deploy to perseidpixels.co/lzmplk/) ✓
+- No em dashes in game text ✓
 
 ## Files Modified
-- `src/cafe.html` — renamed from puzzle2.html, escape mechanic, gates, trapped text
-- `src/index.html` — links to cafe.html
-- `src/prize.html` — fixed play again link
-- `src/game-tree.html` — fixed back link
-- `src/command-map.html` — fixed back link
-- `src/game-map.html` — NEW: combined interaction diagrams
-- `src/diagrams/` — NEW: dining/counter/kitchen exhaustive diagrams
+- `src/cafe.html` — Typed.js typewriter, music player, NPC item interactions, trapped mascot variants
+- `src/prize.html` — photo, message, glitter animation, music player
+- `src/assets/cafe.mp3` — Maid Latte BGM (YouTube)
+- `src/assets/victory-pokemon.mp3` — Pokemon victory theme (FLAC converted)
+- `src/assets/photo.jpg` — compressed couple photo
 - `STATE.md` — this file
 
 ## Next
-- [ ] **Fill in prize.html** — Steam key, personal message
+- [ ] **Add Steam key** — replace XXXXX-XXXXX-XXXXX in prize.html
 - [ ] **Deploy** — git push to perseidpixels.co/lzmplk/
 - [ ] (post-deploy) Refactor TRY hints — too cluttered
-- [ ] (post-deploy) Easter egg discoverability — subtle NPC hints or post-win reveal
 
 ## Pickup
-**Ready to deploy.** Game at cafe.html (renamed from puzzle2). All mechanics work: progressive disclosure, escape mechanic (CATCH trapped w/o apron = escapes), gates (knife/cabinet/drawer behind kitchenLooked). Exhaustive diagrams at src/diagrams/ and combined game-map.html. **Remaining:** fill prize.html placeholders (Steam key + message), then git push.
+**Almost ready.** Game complete with typewriter animation, music (cafe BGM + Pokemon victory), NPC item interactions (USE X ON Y with physical comedy, treats consumed). Prize page has photo, glitter, personal message. **Only missing:** Steam key in prize.html, then deploy.
 
 ---

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>★ AFTER CLASS ★</title>
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
     <style>
         /* ═══════════════════════════════════════════════════════════
            EARLY 2000s MANILA BLOG AESTHETIC
@@ -287,6 +288,51 @@
             font-family: 'Comic Neue', cursive;
         }
 
+        .now-playing {
+            background: #fff;
+            color: #6b5b6b;
+            font-family: 'Comic Neue', cursive;
+            font-size: 0.75rem;
+            padding: 0.4rem 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            border: 1px dashed #d4a5a5;
+        }
+
+        .now-playing .marquee {
+            max-width: 150px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .now-playing .marquee span {
+            display: inline-block;
+            animation: scroll-text 8s linear infinite;
+        }
+
+        @keyframes scroll-text {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .now-playing button {
+            background: #faf8f5;
+            border: 1px solid #d4a5a5;
+            color: #c49393;
+            font-family: 'Silkscreen', cursive;
+            font-size: 0.6rem;
+            cursor: pointer;
+            padding: 0.2rem 0.5rem;
+            border-radius: 2px;
+        }
+
+        .now-playing button:hover {
+            background: #d4a5a5;
+            color: #fff;
+        }
+
         .footer a {
             color: #c49393;
             text-decoration: none;
@@ -382,6 +428,15 @@
         </div>
 
         <div class="footer">
+            <div class="now-playing">
+                <span>♪</span>
+                <div class="marquee"><span>Maid Latte BGM</span></div>
+                <button onclick="toggleMusic()" id="musicBtn">❚❚</button>
+            </div>
+            <audio id="bgMusic" loop>
+                <source src="assets/cafe.mp3" type="audio/mpeg">
+            </audio>
+            <br>
             ─ ･ ｡ﾟ☆: *.☽ .* :☆ﾟ. ─<br>
             <a href="index.html">← back</a> |
             <a href="#" onclick="restartGame(); return false;">restart?</a><br>
@@ -1475,6 +1530,17 @@
         }
 
         function handleUse(target) {
+            // Parse "USE X ON Y" pattern for NPC targets
+            const onMatch = target.match(/(.+?)\s+on\s+(.+)/i);
+            if (onMatch) {
+                const item = onMatch[1].trim().toLowerCase();
+                const npcTarget = onMatch[2].trim().toLowerCase();
+                const npcs = ['usui', 'satsuki', 'manager', 'customer', 'man', 'guy'];
+                if (npcs.some(npc => npcTarget.includes(npc))) {
+                    return handleUseOnNpc(item, npcTarget);
+                }
+            }
+
             // BOWL - traps the mascot
             if (target.includes('bowl')) {
                 if (!state.inventory.includes('BOWL')) {
@@ -1526,6 +1592,9 @@
                 if (!canCatchMascot()) {
                     return `You're waving a knife around for no reason. Stop that.`;
                 }
+                if (state.mascotTrapped) {
+                    return `You look at the knife. You look at the bowl with Uchujin-kun trapped underneath.<br><br>The image that flashes through your mind makes you physically recoil.<br><br>It's HELPLESS under there. What is WRONG with you?<br><br>You shove the knife back in the drawer, hands shaking.`;
+                }
                 return `You raise the knife and immediately feel horrible.<br><br>What are you DOING? It's a plushie. YOUR plushie.<br><br>You put the knife away, face burning with shame.`;
             }
 
@@ -1536,6 +1605,9 @@
                 }
                 if (!canCatchMascot()) {
                     return `No point using a bag here. The mascot isn't around.`;
+                }
+                if (state.mascotTrapped) {
+                    return `It's already trapped under a metal bowl. What exactly would a garbage bag add to this situation?<br><br>You feel dumb for even considering it.`;
                 }
                 state.attemptedCatch++;
                 moveMascot();
@@ -1551,6 +1623,9 @@
                 if (!canCatchMascot()) {
                     return `You could eat these yourself, but that seems wasteful.`;
                 }
+                if (state.mascotTrapped) {
+                    return `You wave a cookie near the bowl's edge.<br><br>A tiny paw reaches out from under the rim, scrabbling toward the treat. It can't quite reach. The paw waves desperately, then withdraws.<br><br>You hear a small, betrayed squeak from inside.<br><br>Now you feel like a monster AND you still have the cookie.`;
+                }
                 state.attemptedCatch++;
                 state.triedTreats = true;
                 moveMascot();
@@ -1559,6 +1634,101 @@
             }
 
             return `Use what on what?`;
+        }
+
+        function handleUseOnNpc(item, npcTarget) {
+            // Determine which NPC
+            let npc = 'unknown';
+            if (npcTarget.includes('usui')) npc = 'usui';
+            else if (npcTarget.includes('satsuki') || npcTarget.includes('manager')) npc = 'satsuki';
+            else if (npcTarget.includes('customer') || npcTarget.includes('man') || npcTarget.includes('guy')) npc = 'customer';
+
+            // Check if NPC is in current location
+            if (npc === 'usui' && state.location !== 'COUNTER') {
+                return `Usui isn't here.`;
+            }
+            if (npc === 'satsuki' && state.location !== 'COUNTER' && state.location !== 'KITCHEN') {
+                return `Satsuki isn't here.`;
+            }
+            if (npc === 'customer' && state.location !== 'DINING') {
+                return `There's no customer here.`;
+            }
+
+            // KNIFE on NPC
+            if (item.includes('knife')) {
+                if (!state.inventory.includes('KNIFE')) {
+                    return `You don't have a knife.`;
+                }
+                if (npc === 'usui') {
+                    return `You grip the knife. Your arm tenses.<br><br>Usui glances at you. One eyebrow raised. Not scared. Not even surprised.<br><br>"Interesting."<br><br>The way he says it makes you feel like a bug under a magnifying glass. You put the knife away, face burning.`;
+                }
+                if (npc === 'satsuki') {
+                    return `You look at Satsuki. You look at the knife in your hand.<br><br>This is your BOSS. The woman who gave you this job. Who believed in you.<br><br>What are you even thinking?<br><br>You hide the knife behind your back, ashamed.`;
+                }
+                if (npc === 'customer') {
+                    return `Threatening customers with cutlery is, generally speaking, a fireable offense.<br><br>Also illegal.<br><br>You decide against it.`;
+                }
+            }
+
+            // BOWL on NPC
+            if (item.includes('bowl')) {
+                if (!state.inventory.includes('BOWL')) {
+                    return `You don't have the bowl.`;
+                }
+                if (npc === 'usui') {
+                    return `You try to slam the bowl down on Usui's head.<br><br>He sidesteps without looking up from his coffee. The bowl clangs against the counter.<br><br>"Nice try."<br><br>He takes another sip.`;
+                }
+                if (npc === 'satsuki') {
+                    return `You put the bowl on Satsuki's head.<br><br>She freezes. Then, slowly, a grin spreads across her face.<br><br>"New uniform concept? I LOVE the energy!"<br><br>She poses with it. You take it back, confused.`;
+                }
+                if (npc === 'customer') {
+                    return `You cannot bowl a customer. That's assault.<br><br>Also weird.`;
+                }
+            }
+
+            // APRON on NPC
+            if (item.includes('apron')) {
+                if (!state.inventory.includes('APRON')) {
+                    return `You don't have the apron.`;
+                }
+                if (npc === 'usui') {
+                    return `You throw the apron at Usui.<br><br>He catches it one-handed without spilling his coffee.<br><br>"Are you hiring?"<br><br>He holds it up, considering. For a horrifying moment you imagine him in a maid outfit.<br><br>You snatch it back.`;
+                }
+                if (npc === 'satsuki') {
+                    return `"Oh! A spare!" Satsuki takes the apron happily. Then notices she's already wearing one.<br><br>"...I already have an apron."<br><br>She hands it back, patting your head. "But thank you for thinking of me!"`;
+                }
+                if (npc === 'customer') {
+                    return `You offer the apron to the customer.<br><br>"Is this... part of the service?"<br><br>He looks genuinely unsure if he's supposed to put it on.`;
+                }
+            }
+
+            // BAG on NPC
+            if (item.includes('bag') || item.includes('garbage')) {
+                if (!state.inventory.includes('BAG')) {
+                    return `You don't have a bag.`;
+                }
+                return `A garbage bag over someone's head is kidnapping.<br><br>You are not doing that.<br><br>You put the bag away and question your life choices.`;
+            }
+
+            // TREATS on NPC (positive interaction, consumes treat)
+            if (item.includes('treat') || item.includes('snack') || item.includes('cookie')) {
+                if (!state.inventory.includes('TREATS')) {
+                    return `You don't have any treats.`;
+                }
+                // Remove treats from inventory
+                state.inventory = state.inventory.filter(i => i !== 'TREATS');
+                if (npc === 'usui') {
+                    return `You hold out a cookie to Usui.<br><br>He takes it slowly, maintaining eye contact the entire time.<br><br>"Handmade?"<br><br>You stammer that no, they're from the cabinet.<br><br>He eats it anyway. "Mm."<br><br>Somehow this feels like you lost.`;
+                }
+                if (npc === 'satsuki') {
+                    return `"For ME?!" Satsuki's eyes light up. She takes the cookie with both hands like it's a precious gift.<br><br>"You're so sweet! This is why you're my favorite!"<br><br>She's definitely said that to every employee. Still feels nice though.`;
+                }
+                if (npc === 'customer') {
+                    return `You offer a cookie to the customer.<br><br>"Oh. Um. Thanks?"<br><br>He eats it, still confused. Free food is free food.<br><br>"Is this... complimentary?"`;
+                }
+            }
+
+            return `You can't use that on ${npc}.`;
         }
 
         function handleOpen(target) {
@@ -1781,14 +1951,98 @@
             document.getElementById('hints').innerHTML = hints;
         }
 
-        function addOutput(command, response) {
+        let typewriterQueue = [];
+        let isTyping = false;
+        let userScrolledUp = false;
+
+        // Detect if user scrolls up manually
+        document.getElementById('output').addEventListener('scroll', function() {
+            const output = this;
+            const atBottom = output.scrollHeight - output.scrollTop - output.clientHeight < 10;
+            userScrolledUp = !atBottom;
+        });
+
+        function scrollToBottom() {
+            if (!userScrolledUp) {
+                const output = document.getElementById('output');
+                output.scrollTop = output.scrollHeight;
+            }
+        }
+
+        function addOutput(command, response, skipTypewriter = false) {
             const output = document.getElementById('output');
+
+            // Reset scroll lock when new command entered
             if (command) {
+                userScrolledUp = false;
                 output.innerHTML += `<div class="command">&gt; ${command}</div>`;
             }
-            output.innerHTML += `<div class="response">${response}</div>`;
-            output.scrollTop = output.scrollHeight;
+
+            if (skipTypewriter) {
+                output.innerHTML += `<div class="response">${response}</div>`;
+                scrollToBottom();
+                return;
+            }
+
+            // Queue the typewriter effect
+            typewriterQueue.push(response);
+            processTypewriterQueue();
         }
+
+        function processTypewriterQueue() {
+            if (isTyping || typewriterQueue.length === 0) return;
+            isTyping = true;
+
+            const response = typewriterQueue.shift();
+            const output = document.getElementById('output');
+            const responseDiv = document.createElement('div');
+            responseDiv.className = 'response';
+            output.appendChild(responseDiv);
+            scrollToBottom();
+
+            // Scroll during typing
+            const scrollInterval = setInterval(scrollToBottom, 50);
+
+            new Typed(responseDiv, {
+                strings: [response],
+                typeSpeed: 10,
+                showCursor: false,
+                contentType: 'html',
+                onComplete: () => {
+                    clearInterval(scrollInterval);
+                    isTyping = false;
+                    scrollToBottom();
+                    processTypewriterQueue();
+                }
+            });
+        }
+
+        // ============================================================
+        // MUSIC CONTROL
+        // ============================================================
+
+        let musicStarted = false;
+
+        function toggleMusic() {
+            const audio = document.getElementById('bgMusic');
+            const btn = document.getElementById('musicBtn');
+            if (audio.paused) {
+                audio.play();
+                btn.textContent = '❚❚';
+            } else {
+                audio.pause();
+                btn.textContent = '▶';
+            }
+        }
+
+        // Start music on first click (autoplay policy)
+        document.addEventListener('click', () => {
+            if (!musicStarted) {
+                const audio = document.getElementById('bgMusic');
+                audio.play().catch(() => {});
+                musicStarted = true;
+            }
+        }, { once: true });
 
         // ============================================================
         // INPUT HANDLING
