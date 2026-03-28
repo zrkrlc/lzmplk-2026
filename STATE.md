@@ -1,23 +1,24 @@
 # lzmplk-2026 — State
 
-[CHECKPOINT] 2026-03-28 01:30
+[CHECKPOINT] 2026-03-28 11:45
 
 ## Intention
 > Birthday gift for girlfriend (2026-03-28). Single polished text adventure (Maid Latte / Maid-Sama! theme) with Tiny Glade Steam key as prize. Text adventure IS the primary vehicle of the surprise.
 
 ## Position
-> **PLAYABLE.** Main flow complete: index → game → win → prize. Staticrypt removed (URL is the secret). Prose deslopified (34 fixes). Canon fixed (Usui = customer). Next: ASCII art for room backgrounds.
+> **PLAYABLE + DISCOVERABLE.** Progressive disclosure system complete. LOOK AROUND reveals room contents, hints appear after exploring. NPC dialogue tiered (no spoilers early). All interactables styled distinctly. 185 states, 0 dead ends.
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| Game engine | **Done** | 70 states, 0 dead ends |
+| Game engine | **Done** | 185 states, 0 dead ends |
 | Visual style | **Done** | Early 2000s Manila blog aesthetic |
-| ASCII maps | **Done** | Aligned, emoji-free, box-drawing chars |
-| Flavortext | **Done** | Deslopify (34 fixes) + canon (Usui) complete |
+| Progressive disclosure | **Done** | LOOK AROUND → hints unlock |
+| NPC dialogue tiering | **Done** | Satsuki/Usui: no hints at tier 1 |
+| Interactable styling | **Done** | Cutive Mono, uppercase, gold |
 | Win state | **Done** | Links to prize.html |
 | Main page | **Done** | Simple intro → game link |
 | Prize page | **Done** | Steam key + message placeholders |
-| ASCII backgrounds | Optional | VN art → ASCII conversion if time |
+| TRY hints | Needs refactor | Too cluttered after LOOK AROUND |
 
 ## Decisions
 - Puzzle 2 theme: Maid-Sama! (not H2G2) →✓ she loves the anime
@@ -54,12 +55,15 @@
 ## Next
 - [x] Fix mascot hint system — tier 1 hints now work in all rooms (COUNTER, KITCHEN), not just DINING
 - [x] Add variety to hiding spots — 11 spots across 3 rooms (was 5)
-- [ ] Optional: ASCII art backgrounds (VN assets → asc11 conversion)
+- [x] Progressive disclosure — LOOK AROUND reveals objects, hints unlock after
+- [x] NPC dialogue tiering — no spoilers at tier 1, vague at tier 2, explicit at tier 3
+- [x] Interactable styling — Cutive Mono, uppercase, gold (#8b6914)
+- [ ] **Refactor TRY hints** — too cluttered after LOOK AROUND (7+ hints showing)
 - [ ] Fill in prize.html placeholders (Steam key, personal message, photo?)
 - [ ] Deploy
 
 ## Pickup
-**Game is playable.** Flow: index.html → puzzle2.html → prize.html. Mascot now hides in 11 different spots across all 3 rooms (tables, fern, menu board, espresso machine, display case, tip jar, bowls, apron pile, treat cabinet). Tier 1 hints are now consistently vague ("something rustles...") in all rooms. Fill in prize.html placeholders before gifting.
+**Game is playable + discoverable.** Progressive disclosure: LOOK AROUND reveals room objects (styled in Cutive Mono uppercase gold), then TRY hints unlock. NPC dialogue tiered: Satsuki/Usui give no hints at tier 1, vague at tier 2, explicit at tier 3. Plushie now has blond hair like Usui ("perverted outer-space alien" reference). **Issue:** TRY hints too cluttered after exploring (7+ items). Consider: showing only 3-4 most relevant hints, or collapsible hint categories.
 
 ## Art Sources (for post-compaction)
 - **Itsu cafe pack** — CC-licensed VN maid cafe backgrounds
