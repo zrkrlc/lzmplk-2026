@@ -80,3 +80,31 @@
 **Almost ready.** Game complete with typewriter animation, music (cafe BGM + Pokemon victory), NPC item interactions (USE X ON Y with physical comedy, treats consumed). Prize page has photo, glitter, personal message. **Only missing:** Steam key in prize.html, then deploy.
 
 ---
+
+[CHECKPOINT] 2026-03-28 20:15
+
+## Position
+> **POLISH PASS DONE.** Tables 1-3 styled as interactables. Mascot look variants added. All 8 easter eggs now have organic hints embedded in existing text.
+
+## Decisions
+- Tables as interactables →✓ gold Cutive Mono like other items
+- Mascot look variants →✓ 2nd/3rd+ LOOK returns different text
+- Easter egg hints organic →✓ command words embedded naturally in dialogue/LOOK/descriptions
+
+## Dead Ends
+(none this session)
+
+## Constraints
+(no new constraints)
+
+## Files Modified
+- `src/cafe.html` — tables styled, mascotLookCount state + variant handler, 8 easter egg hints (KISS/HUG/IGNORE/BLUSH/ALIEN/CRY/SING+DANCE/QUIT)
+
+## Next
+- [ ] **Add Steam key** — replace XXXXX-XXXXX-XXXXX in prize.html
+- [ ] **Deploy** — git push to perseidpixels.co/lzmplk/
+
+## Pickup
+**Ready for deploy.** Polish pass complete: tables interactable, mascot variants on repeated looks, all easter eggs hinted organically. Only missing: Steam key.
+
+---

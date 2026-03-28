@@ -471,7 +471,9 @@
             // Room exploration state (for progressive disclosure)
             diningLooked: false,
             counterLooked: false,
-            kitchenLooked: false
+            kitchenLooked: false,
+            // Look counters for variant text
+            mascotLookCount: 0
         };
 
         const SAVE_KEY = 'afterclass-save';
@@ -608,7 +610,7 @@
 
                 // After looking: show discovered objects
                 if (state.diningLooked) {
-                    desc += `<span class="item">Customers</span> at each table: a couple at Table 1, a tired salaryman at Table 2, someone familiar at Table 3...<br>`;
+                    desc += `<span class="item">Customers</span> at <span class="item">Table 1</span>, <span class="item">Table 2</span>, <span class="item">Table 3</span>: a couple sharing a parfait, a tired salaryman, someone familiar...<br>`;
                     desc += `A <span class="item">fern</span> in the corner. The <span class="item">specials board</span> shows today's menu.<br><br>`;
                 }
 
@@ -720,9 +722,9 @@
         // Satsuki dialogue - progressive disclosure based on hint tier
         const SATSUKI_DIALOGUE = {
             tier1: {
-                first: `<span class="npc-satsuki">"Misa-chan! Did you see it?!"</span><br>Her eyes are sparkling.<br><span class="npc-satsuki">"A MASCOT! In MY cafe! It's SO MOE!"</span><br><br>She clasps her hands together.<br><span class="npc-satsuki">"You know, I've always wanted a cafe mascot. Like those cat cafes in Akihabara!"</span><br><span class="npc-satsuki">"But Aoi-chan said it was 'unsanitary' and 'probably illegal'..."</span><br><br><span class="npc-satsuki">"Anyway! You'll figure it out! You always do!"</span>`,
+                first: `<span class="npc-satsuki">"Misa-chan! Did you see it?!"</span><br>Her eyes are sparkling. She looks like she wants to HUG everyone. Constantly.<br><span class="npc-satsuki">"A MASCOT! In MY cafe! It's SO MOE!"</span><br><br>She clasps her hands together.<br><span class="npc-satsuki">"You know, I've always wanted a cafe mascot. Like those cat cafes in Akihabara!"</span><br><span class="npc-satsuki">"But Aoi-chan said it was 'unsanitary' and 'probably illegal'..."</span><br><br><span class="npc-satsuki">"Anyway! You'll figure it out! You always do!"</span>`,
                 repeat: [
-                    `<span class="npc-satsuki">"Did I ever tell you why I opened this cafe?"</span><br>She stirs something.<br><span class="npc-satsuki">"I wanted to create a place where everyone could feel... special. Pampered."</span><br><span class="npc-satsuki">"The maid thing is just the wrapping paper. The gift is the feeling."</span><br>She winks. <span class="npc-satsuki">"Also I really like making costumes."</span>`,
+                    `<span class="npc-satsuki">"Did I ever tell you why I opened this cafe?"</span><br>She stirs something.<br><span class="npc-satsuki">"I wanted to create a place where everyone could feel... special. Pampered."</span><br><span class="npc-satsuki">"The maid thing is just the wrapping paper. The gift is the feeling."</span><br>She winks. <span class="npc-satsuki">"Also I really like making costumes."</span><br><br>You consider telling her you QUIT. But you need the money.`,
                     `<span class="npc-satsuki">"You and Usui-kun, huh~"</span><br>She's grinning.<br><span class="npc-satsuki">"He's been coming here almost every day since he found out you work here."</span><br><span class="npc-satsuki">"Orders one coffee. Stays for hours. Tips extremely well."</span><br>She sighs.<br><span class="npc-satsuki">"That's love, Misa-chan. Or stalking. Same thing, really~"</span>`,
                     `<span class="npc-satsuki">"My nephew Aoi sometimes helps out here, you know."</span><br>She glances toward the dining area.<br><span class="npc-satsuki">"He's... got his own style. Very particular about aesthetics."</span><br><span class="npc-satsuki">"I think he might be here today, actually..."</span>`
                 ]
@@ -870,7 +872,7 @@
                 const sounds = {
                     'DINING': `You listen...<br><br>The clink of cups and saucers. Murmured conversations. A customer laughing at something on their phone.<br><br>Faint J-pop from the speakers, Satsuki's playlist. Currently playing something about "eternal love" or whatever.<br><br>And somewhere, the padding of tiny plushie feet on tile.`,
                     'COUNTER': `You listen...<br><br>The hiss of the espresso machine. Usui humming something, is that a British pop song?<br><br>From the kitchen, Satsuki singing off-key. From the dining area, the buzz of customers who've been here before.<br><br>Somehow this place got to you. You don't dwell on that.`,
-                    'KITCHEN': `You listen...<br><br>Pots bubbling. The whir of a mixer. Satsuki narrating her cooking to herself like it's a TV show.<br><br><span class="npc-satsuki">"And NOW we add the secret ingredient... LOVE~"</span><br><br>You're pretty sure the secret ingredient is actually just extra sugar.`
+                    'KITCHEN': `You listen...<br><br>Pots bubbling. The whir of a mixer. Satsuki is humming. No, full-on SINGing now.<br><br><span class="npc-satsuki">"And NOW we add the secret ingredient... LOVE~"</span><br><br>You refuse to DANCE along. You're pretty sure the secret ingredient is just extra sugar.`
                 };
                 return sounds[state.location];
             }
@@ -889,7 +891,8 @@
                     `Time passes. The cafe hums around you.<br>Uchūjin-kun is still out there. Judging you.`,
                     `You take a breath. Okay. You can do this.<br>You're the Student Council President. You've faced worse than a rogue plushie.`,
                     `A moment of calm. Then Usui catches your eye and winks.<br>The moment is ruined.`,
-                    `You wait. Nothing happens.<br>Well, the mascot probably moved. Great.`
+                    `You wait. Nothing happens.<br>Well, the mascot probably moved. Great.`,
+                    `Usui catches your eye. For a moment you imagine... no. You are NOT going to KISS him at work.`
                 ];
                 return waits[state.commandCount % waits.length];
             }
@@ -899,7 +902,7 @@
                     `Okay, think. It's a plushie. A small, fast plushie.<br>You can't catch it with your bare hands.<br>What would work? Something soft? Something to trap it?`,
                     `Why did you even bring that thing to work?<br>...<br>Because it's comforting. Because it reminds you of someone.<br>You refuse to elaborate.`,
                     `If Usui finds out that plushie looks like him, you'll never hear the end of it.<br>Actually, he probably already knows. He knows everything.<br>You want to PUNCH him sometimes.`,
-                    `Student Council President by day, maid by night.<br>Currently: chasing a toy alien around a cafe while a hot guy watches.<br>Your life is a manga and you're not sure which genre.`,
+                    `Student Council President by day, maid by night.<br>Currently: chasing a toy alien around a cafe while a hot guy watches.<br>Your life is a manga. Shoujo? Workplace comedy? ALIEN invasion?`,
                     `What if you just... CALL MOM and tell her everything?<br>...<br>No. Absolutely not. She can never know.`
                 ];
                 return thoughts[state.commandCount % thoughts.length];
@@ -1037,7 +1040,7 @@
                     state.diningLooked = true;
                     updateHints();
                     let desc = `The main dining area of Maid Latte. Warm light, the smell of coffee and cake.<br><br>`;
-                    desc += `Three tables with <span class="item">customers</span>: a couple at Table 1, a tired salaryman at Table 2, and someone alone at Table 3, half-hidden behind a menu. Something familiar about that one...<br><br>`;
+                    desc += `Three tables with <span class="item">customers</span>: a couple at <span class="item">Table 1</span>, a tired salaryman at <span class="item">Table 2</span>, and someone alone at <span class="item">Table 3</span>, half-hidden behind a menu. Something familiar about that one...<br><br>`;
                     desc += `A decorative <span class="item">fern</span> sits in the corner. The <span class="item">specials board</span> shows today's menu in pastel chalk.<br><br>`;
                     desc += `To the west: COUNTER`;
                     return desc;
@@ -1085,7 +1088,7 @@
             if (target.includes('usui')) {
                 const looks = [
                     `Tall. Annoyingly handsome. Currently smirking at nothing in particular.<br>He catches you looking and winks.<br><br><em>Why does he always look like he knows something you don't?</em>`,
-                    `He's leaning against the counter like he's been there all day.<br>Green eyes tracking your movement. That blond hair that never looks anything other than perfect.<br><br>You hate that you noticed.`,
+                    `He's leaning against the counter like he's been there all day.<br>Green eyes tracking your movement. That blond hair that never looks anything other than perfect.<br><br>You could try to IGNORE him. It never works.`,
                     `Usui Takumi. Transfer student. Inexplicably good at everything.<br>CHESS champion. Martial arts expert. Survived falling off a ROOFTOP.<br>Currently watching your every move.<br><br><span class="npc-usui">"Like what you see, Kaichou?"</span><br>You look away quickly.`
                 ];
                 return looks[state.commandCount % looks.length];
@@ -1096,11 +1099,21 @@
             }
 
             if (target.includes('mascot') || target.includes('alien') || target.includes('uchujin')) {
+                state.mascotLookCount++;
                 if (state.mascotTrapped) {
-                    return `Uchūjin-kun is trapped under the bowl.<br><br>Those big eyes stare up at you through the gap at the rim. Betrayed. Accusatory.<br><br>The tiny cape is crumpled. One antenna is bent.<br><br>You feel like a monster. But also: victorious.`;
+                    if (state.mascotLookCount === 1) {
+                        return `Uchūjin-kun is trapped under the bowl.<br><br>Those big eyes stare up at you through the gap at the rim. Betrayed. Accusatory.<br><br>The tiny cape is crumpled. One antenna is bent.<br><br>You feel like a monster. But also: victorious.`;
+                    }
+                    return `Still trapped. Still staring. The guilt isn't going anywhere.`;
                 }
                 if (isMascotVisible()) {
-                    return `A palm-sized alien plushie with big eyes and a knowing smirk.<br>Green body, silver antennae, and a tuft of golden-blond hair that never looks anything other than perfect.<br>A tiny cape.<br><br>You bought it at a capsule machine three weeks ago.<br>You told yourself it was "just cute" and had nothing to do with anyone.<br>You're a terrible liar.<br><br>...<br>It's looking at you with Usui's exact expression. How does a plushie do that?`;
+                    if (state.mascotLookCount === 1) {
+                        return `A palm-sized alien plushie with big eyes and a knowing smirk.<br>Green body, silver antennae, and a tuft of golden-blond hair that never looks anything other than perfect.<br>A tiny cape.<br><br>You bought it at a capsule machine three weeks ago.<br>You told yourself it was "just cute" and had nothing to do with anyone.<br>You're a terrible liar.<br><br>...<br>It's looking at you with Usui's exact expression. How does a plushie do that?`;
+                    }
+                    if (state.mascotLookCount === 2) {
+                        return `You look again. Still there. Still judging.<br><br>Those button eyes track you. How?`;
+                    }
+                    return `You've looked at this plushie ${state.mascotLookCount} times now.<br><br>It hasn't moved. You have problems.`;
                 }
                 return `The little plushie isn't here. It must have bounced to another room.<br><br>You can still feel its judgmental stare somehow.`;
             }
@@ -1337,7 +1350,7 @@
             }
 
             if (target.includes('self') || target.includes('myself') || target.includes('me')) {
-                return `Ayuzawa Misaki. Student Council President. Secret maid cafe employee.<br><br>Currently: panicked, determined, flustered by a certain blond idiot.<br><br>Your maid uniform is dishevelled from chasing a plushie around. Great.`;
+                return `Ayuzawa Misaki. Student Council President. Secret maid cafe employee.<br><br>Currently: panicked, determined, flustered by a certain blond idiot.<br><br>Your maid uniform is dishevelled from chasing a plushie around. Your face feels warm. Probably starting to BLUSH again. Great.`;
             }
 
             return `You don't see anything special about that.`;
@@ -1804,7 +1817,8 @@
                 `The mascot zips past your grabbing hands.`,
                 `Uchujin-kun: ${state.attemptedCatch}, Misaki: 0`,
                 `It's faster than it looks...`,
-                `Your hands close on empty air.`
+                `Your hands close on empty air.`,
+                `You will NOT CRY over a plushie. You won't.`
             ];
 
             const msg = failMessages[state.attemptedCatch % failMessages.length];
