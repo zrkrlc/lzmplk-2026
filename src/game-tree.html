@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFTER CLASS - Game Tree</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=VT323&family=Silkscreen&display=swap');
+
+        body {
+            font-family: 'VT323', monospace;
+            background: #faf8f5;
+            color: #4a4a4a;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-family: 'Silkscreen', cursive;
+            color: #d4a5a5;
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .tree-container {
+            background: #fff;
+            border: 3px dashed #d4a5a5;
+            border-radius: 12px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        pre {
+            font-family: 'VT323', monospace;
+            font-size: 14px;
+            line-height: 1.1;
+            margin: 0;
+            white-space: pre;
+            color: #4a4a4a;
+        }
+
+        .legend {
+            margin-top: 30px;
+            background: #fffaf8;
+            border: 2px solid #d4a5a5;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .legend h2 {
+            font-family: 'Silkscreen', cursive;
+            color: #d4a5a5;
+            margin-top: 0;
+            font-size: 1.2rem;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-icon {
+            width: 40px;
+            height: 30px;
+            border: 2px solid #4a4a4a;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .legend-icon.gate { background: #ffe4e4; border-color: #d4a5a5; }
+        .legend-icon.action { background: #e4ffe4; border-color: #a5d4a5; }
+        .legend-icon.state { background: #e4e4ff; border-color: #a5a5d4; }
+        .legend-icon.win { background: #ffd700; border-color: #daa520; }
+
+        .stats {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .stats span {
+            background: #d4a5a5;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin: 0 5px;
+        }
+
+        a {
+            color: #d4a5a5;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AFTER CLASS</h1>
+        <p class="subtitle">Game State Tree</p>
+
+        <div class="tree-container">
+<pre>
+                        ┌──────────────────┐
+                        │  START: DINING   │
+                        └────────┬─────────┘
+                                 │
+                                 ▼
+         ┌───────────────────────┴───────────────────────┐
+         │                                               │
+         ▼                                               ▼
+┌─────────────────┐                           ┌─────────────────────┐
+│   GO COUNTER    │                           │   GO KITCHEN        │
+└────────┬────────┘                           │   (via COUNTER)     │
+         │                                    └──────────┬──────────┘
+         ▼                                               │
+┌─────────────────┐                                      ▼
+│  LOOK AROUND    │◄── GATE                   ┌─────────────────────┐
+└────────┬────────┘                           │    LOOK AROUND      │◄── GATE
+         │                                    └──────────┬──────────┘
+         ▼                                               │
+┌─────────────────┐                                      ▼
+│ Apron Revealed  │                           ┌─────────────────────┐
+└────────┬────────┘                           │   Cabinet Visible   │
+         │                                    └──────────┬──────────┘
+         ▼                                               │
+┌─────────────────┐                                      ▼
+│   TAKE APRON    │                           ┌─────────────────────┐
+└────────┬────────┘                           │    OPEN CABINET     │
+         │                                    └──────────┬──────────┘
+         │                                               │
+         │                                               ▼
+         │                                    ┌─────────────────────┐
+         │                                    │     TAKE BOWL       │
+         │                                    └──────────┬──────────┘
+         │                                               │
+         └───────────────────┬───────────────────────────┘
+                             │
+                             ▼
+                   ┌─────────────────┐
+                   │   HAVE BOTH?    │
+                   └────────┬────────┘
+                            │ Yes
+                            ▼
+                   ┌─────────────────┐
+                   │  FIND MASCOT    │◄──────┐
+                   └────────┬────────┘       │
+                            │                │
+                            ▼                │
+                   ┌─────────────────┐       │
+                   │  MASCOT HERE?   │───No──┘
+                   └────────┬────────┘
+                            │ Yes
+                            ▼
+                   ┌─────────────────┐
+                   │    USE BOWL     │
+                   │  (trap mascot)  │
+                   └────────┬────────┘
+                            │
+                            ▼
+                   ┌─────────────────┐
+                   │ MASCOT TRAPPED  │
+                   └────────┬────────┘
+                            │
+                            ▼
+                   ┌─────────────────┐
+                   │   USE APRON     │
+                   │ (catch mascot)  │
+                   └────────┬────────┘
+                            │
+                            ▼
+                   ╔═════════════════╗
+                   ║                 ║
+                   ║   WIN: CAUGHT   ║
+                   ║                 ║
+                   ╚═════════════════╝
+</pre>
+        </div>
+
+        <div class="legend">
+            <h2>Legend</h2>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <div class="legend-icon gate">LOOK</div>
+                    <span>LOOK gates — must look before items appear</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon action">TAKE</div>
+                    <span>Item pickup actions</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon state">STATE</div>
+                    <span>Game state checkpoints</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon win">WIN</div>
+                    <span>Victory condition</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <span>1,110 states</span>
+            <span>30 win paths</span>
+            <span>0 dead ends</span>
+        </div>
+
+        <a class="back-link" href="puzzle2.html">&larr; Back to Game</a>
+    </div>
+</body>
+</html>

@@ -12,6 +12,11 @@ NEW DESIGN (v2):
 - BOWL in cabinet (KITCHEN), revealed by OPEN CABINET
 - Win sequence: USE BOWL (traps) → USE APRON (catches)
 - Red herrings: KNIFE, BAG, TREATS (fail gracefully, no softlock)
+
+v3 ADDITIONS:
+- Three "looked" flags (dining_looked, counter_looked, kitchen_looked) gate
+  room descriptions and hint availability.
+- validate_progressive_disclosure() checks no action/hint appears before its LOOK gate.
 """
 
 from dataclasses import dataclass, field
@@ -33,9 +38,15 @@ class GameState:
     """Immutable game state for hashability."""
     location: Location
     mascot_location: MascotLocation
+    # Progressive-disclosure look flags
+    dining_looked: bool = False
+    counter_looked: bool = False
+    kitchen_looked: bool = False
+    # Item / world state
     apron_revealed: bool = False   # LOOK at counter reveals apron
     has_apron: bool = False
     cabinet_opened: bool = False   # OPEN CABINET reveals bowl
+    drawer_opened: bool = False
     has_bowl: bool = False
     mascot_trapped: bool = False   # BOWL traps mascot
     mascot_caught: bool = False    # WIN state
@@ -44,9 +55,13 @@ class GameState:
         return hash((
             self.location,
             self.mascot_location,
+            self.dining_looked,
+            self.counter_looked,
+            self.kitchen_looked,
             self.apron_revealed,
             self.has_apron,
             self.cabinet_opened,
+            self.drawer_opened,
             self.has_bowl,
             self.mascot_trapped,
             self.mascot_caught,
@@ -68,9 +83,13 @@ def _copy_state(s: GameState, **overrides) -> GameState:
     return GameState(
         location=overrides.get('location', s.location),
         mascot_location=overrides.get('mascot_location', s.mascot_location),
+        dining_looked=overrides.get('dining_looked', s.dining_looked),
+        counter_looked=overrides.get('counter_looked', s.counter_looked),
+        kitchen_looked=overrides.get('kitchen_looked', s.kitchen_looked),
         apron_revealed=overrides.get('apron_revealed', s.apron_revealed),
         has_apron=overrides.get('has_apron', s.has_apron),
         cabinet_opened=overrides.get('cabinet_opened', s.cabinet_opened),
+        drawer_opened=overrides.get('drawer_opened', s.drawer_opened),
         has_bowl=overrides.get('has_bowl', s.has_bowl),
         mascot_trapped=overrides.get('mascot_trapped', s.mascot_trapped),
         mascot_caught=overrides.get('mascot_caught', s.mascot_caught),
@@ -90,6 +109,19 @@ def _mascot_in_room(s: GameState) -> bool:
         return s.location == "DINING"
     return s.location == s.mascot_location
 
+# ---------- helpers used by get_expected_hints ----------
+
+def mascot_in_dining(s: GameState) -> bool:
+    return s.mascot_location in ["TABLE1", "TABLE2", "TABLE3"]
+
+def mascot_at_counter(s: GameState) -> bool:
+    return s.mascot_location == "COUNTER"
+
+def mascot_in_kitchen(s: GameState) -> bool:
+    return s.mascot_location == "KITCHEN"
+
+# ---------- movement ----------
+
 def make_move_action(target: Location) -> Action:
     """Create a movement action."""
     valid_from = {
@@ -106,21 +138,47 @@ def make_move_action(target: Location) -> Action:
 
     return Action(f"GO_{target}", precondition, effect)
 
+# ---------- look actions ----------
+
+def look_dining_action() -> Action:
+    """LOOK around the dining room."""
+    def precondition(s: GameState) -> bool:
+        return s.location == "DINING" and not s.dining_looked and not s.mascot_caught
+
+    def effect(s: GameState) -> GameState:
+        return _copy_state(s, dining_looked=True)
+
+    return Action("LOOK_DINING", precondition, effect)
+
 def look_counter_action() -> Action:
     """LOOK at counter reveals apron hanging by kitchen door."""
     def precondition(s: GameState) -> bool:
-        return s.location == "COUNTER" and not s.apron_revealed and not s.mascot_caught
+        return s.location == "COUNTER" and not s.counter_looked and not s.mascot_caught
 
     def effect(s: GameState) -> GameState:
-        return _copy_state(s, apron_revealed=True)
+        # Sets counter_looked AND reveals the apron in one action.
+        return _copy_state(s, counter_looked=True, apron_revealed=True)
 
     return Action("LOOK_COUNTER", precondition, effect)
+
+def look_kitchen_action() -> Action:
+    """LOOK around the kitchen."""
+    def precondition(s: GameState) -> bool:
+        return s.location == "KITCHEN" and not s.kitchen_looked and not s.mascot_caught
+
+    def effect(s: GameState) -> GameState:
+        return _copy_state(s, kitchen_looked=True)
+
+    return Action("LOOK_KITCHEN", precondition, effect)
+
+# ---------- item actions ----------
 
 def take_apron_action() -> Action:
     """Take apron from counter (must be revealed first)."""
     def precondition(s: GameState) -> bool:
         return (s.location == "COUNTER" and
                 s.apron_revealed and
+                s.counter_looked and
                 not s.has_apron and
                 not s.mascot_caught)
 
@@ -138,6 +196,19 @@ def open_cabinet_action() -> Action:
         return _copy_state(s, cabinet_opened=True)
 
     return Action("OPEN_CABINET", precondition, effect)
+
+def open_drawer_action() -> Action:
+    """Open drawer in kitchen."""
+    def precondition(s: GameState) -> bool:
+        return (s.location == "KITCHEN" and
+                s.kitchen_looked and
+                not s.drawer_opened and
+                not s.mascot_caught)
+
+    def effect(s: GameState) -> GameState:
+        return _copy_state(s, drawer_opened=True)
+
+    return Action("OPEN_DRAWER", precondition, effect)
 
 def take_bowl_action() -> Action:
     """Take bowl from cabinet (must be opened first)."""
@@ -222,9 +293,12 @@ ALL_ACTIONS = [
     make_move_action("DINING"),
     make_move_action("COUNTER"),
     make_move_action("KITCHEN"),
+    look_dining_action(),
     look_counter_action(),
+    look_kitchen_action(),
     take_apron_action(),
     open_cabinet_action(),
+    open_drawer_action(),
     take_bowl_action(),
     use_bowl_action(),
     use_apron_action(),
@@ -368,6 +442,112 @@ def validate_no_dead_ends():
     return True
 
 # ============================================================================
+# PROGRESSIVE DISCLOSURE VALIDATION
+# ============================================================================
+
+def get_expected_hints(state: GameState) -> set[str]:
+    """Return the set of hint strings that SHOULD appear for this state."""
+    hints = {"look around"}
+
+    if state.location == "DINING":
+        hints.add("go counter")
+        if mascot_in_dining(state):
+            hints.add("look mascot")
+            # solution hints at tier 2+ omitted for simplicity
+
+    elif state.location == "COUNTER":
+        hints.add("go dining")
+        hints.add("go kitchen")
+        if state.counter_looked:
+            hints.add("talk usui")
+            if state.apron_revealed and not state.has_apron:
+                hints.add("take apron")
+        if mascot_at_counter(state):
+            hints.add("look mascot")
+
+    elif state.location == "KITCHEN":
+        hints.add("go counter")
+        hints.add("go alley")  # ALLEY not modeled in state but hint should appear
+        if state.kitchen_looked:
+            hints.add("talk satsuki")
+            if not state.cabinet_opened:
+                hints.add("open cabinet")
+            if not state.drawer_opened:
+                hints.add("open drawer")
+        if mascot_in_kitchen(state):
+            hints.add("look mascot")
+
+    return hints
+
+def validate_progressive_disclosure() -> bool:
+    """Verify no actions are available before their LOOK gate."""
+    print("[N] Validating progressive disclosure...")
+
+    violations = []
+    all_states = enumerate_all_reachable_states(INITIAL_STATE)
+
+    for state in all_states:
+        if is_win(state):
+            continue
+
+        available = {a.name for a in get_available_actions(state)}
+
+        # TAKE_APRON must require LOOK_COUNTER to have happened.
+        # (look_counter_action sets both counter_looked and apron_revealed,
+        #  so apron_revealed implies counter_looked in practice — but check
+        #  the gate explicitly to catch any future divergence.)
+        if "TAKE_APRON" in available and not state.counter_looked:
+            violations.append(
+                f"TAKE_APRON available without LOOK_COUNTER: "
+                f"loc={state.location} counter_looked={state.counter_looked} "
+                f"apron_revealed={state.apron_revealed}"
+            )
+
+        # OPEN_DRAWER is gated on kitchen_looked.
+        if "OPEN_DRAWER" in available and not state.kitchen_looked:
+            violations.append(
+                f"OPEN_DRAWER available without LOOK_KITCHEN: "
+                f"loc={state.location} kitchen_looked={state.kitchen_looked}"
+            )
+
+        # Hint-level checks: infer what the game WOULD show from get_expected_hints
+        # and verify those hints don't imply an ungated capability.
+        hints = get_expected_hints(state)
+
+        if "talk usui" in hints and not state.counter_looked:
+            violations.append(
+                f"hint 'talk usui' would appear without LOOK_COUNTER: "
+                f"loc={state.location} counter_looked={state.counter_looked}"
+            )
+
+        if "talk satsuki" in hints and not state.kitchen_looked:
+            violations.append(
+                f"hint 'talk satsuki' would appear without LOOK_KITCHEN: "
+                f"loc={state.location} kitchen_looked={state.kitchen_looked}"
+            )
+
+        if "open cabinet" in hints and state.location == "KITCHEN" and not state.kitchen_looked:
+            violations.append(
+                f"hint 'open cabinet' would appear without LOOK_KITCHEN: "
+                f"loc={state.location} kitchen_looked={state.kitchen_looked}"
+            )
+
+        if "open drawer" in hints and state.location == "KITCHEN" and not state.kitchen_looked:
+            violations.append(
+                f"hint 'open drawer' would appear without LOOK_KITCHEN: "
+                f"loc={state.location} kitchen_looked={state.kitchen_looked}"
+            )
+
+    if violations:
+        print(f"    FAILURE: {len(violations)} disclosure violation(s)!")
+        for v in violations[:5]:
+            print(f"      - {v}")
+        return False
+
+    print(f"    SUCCESS: No disclosure violations ({len(all_states)} states checked).")
+    return True
+
+# ============================================================================
 # OPTIMAL PATH VERIFICATION
 # ============================================================================
 
@@ -375,9 +555,9 @@ def verify_optimal_path():
     """
     Verify the intended optimal path works.
 
-    Optimal sequence (8 commands):
+    Optimal sequence:
     1. GO COUNTER
-    2. LOOK (reveals apron)
+    2. LOOK (reveals apron, sets counter_looked)
     3. TAKE APRON
     4. GO KITCHEN
     5. OPEN CABINET
@@ -434,6 +614,7 @@ def verify_optimal_path():
 
 if __name__ == "__main__":
     success = validate_no_dead_ends()
+    success = validate_progressive_disclosure() and success
     success = verify_optimal_path() and success
 
     if success:

@@ -176,7 +176,7 @@
             /* Stacked backgrounds: white overlay on top, image below, white base */
             background:
                 linear-gradient(rgba(255,255,255,0.88), rgba(255,255,255,0.88)),
-                url('assets/backgrounds/maid-sama-bg.png') center/70% no-repeat,
+                url('assets/backgrounds/maid-sama-bg.png') right center/70% no-repeat,
                 #fff;
             font-family: 'Comic Neue', cursive;
         }
@@ -347,15 +347,15 @@
         .trail {
             position: fixed;
             pointer-events: none;
-            font-size: 10px;
+            font-size: 16px;
             color: #d4a5a5;
-            opacity: 0.6;
-            animation: trail-fade 0.8s ease-out forwards;
+            animation: trail-fade 1s ease-out forwards;
             z-index: 9999;
+            text-shadow: 0 0 3px rgba(212, 165, 165, 0.5);
         }
         @keyframes trail-fade {
-            0% { opacity: 0.5; transform: scale(1); }
-            100% { opacity: 0; transform: scale(0.3); }
+            0% { opacity: 0.9; transform: scale(1) translateY(0); }
+            100% { opacity: 0; transform: scale(0.5) translateY(-10px); }
         }
     </style>
 </head>
@@ -546,6 +546,13 @@
             if (state.location === 'DINING') {
                 let desc = `<strong>Maid Latte - Dining Area</strong><br><br>`;
                 desc += `Three tables. Parfaits, coffee, the low murmur of people ignoring each other politely.<br><br>`;
+
+                // After looking: show discovered objects
+                if (state.diningLooked) {
+                    desc += `<span class="item">Customers</span> at each table: a couple at Table 1, a tired salaryman at Table 2, someone familiar at Table 3...<br>`;
+                    desc += `A <span class="item">fern</span> in the corner. The <span class="item">specials board</span> shows today's menu.<br><br>`;
+                }
+
                 desc += `To the WEST: <strong>COUNTER</strong>`;
 
                 if (mascotVisible) {
@@ -558,6 +565,11 @@
                 let desc = `<strong>Maid Latte - Counter</strong><br><br>`;
                 desc += `Usui is leaning against the counter, watching you.<br>`;
                 desc += `The smirk is already deployed.<br>`;
+
+                // After looking: show discovered objects
+                if (state.counterLooked) {
+                    desc += `<br>The <span class="item">espresso machine</span> hisses. A <span class="item">display case</span> of cakes. <span class="item">Tip jar</span> by the <span class="item">register</span>. Usui's <span class="item">coffee</span> untouched.<br>`;
+                }
 
                 if (state.apronRevealed && !state.inventory.includes('APRON')) {
                     desc += `<br>An <span class="item">apron</span> hangs on a hook by the kitchen door.`;
@@ -575,6 +587,11 @@
                 let desc = `<strong>Maid Latte - Kitchen</strong><br><br>`;
                 desc += `Satsuki is here, barely contained.<br>`;
                 desc += `Pots, pans, cabinets along the wall. A drawer by the counter.<br>`;
+
+                // After looking: show discovered objects
+                if (state.kitchenLooked) {
+                    desc += `<br><span class="item">Cabinets</span>, <span class="item">mixing bowls</span>, the <span class="item">sink</span>, the <span class="item">oven</span>. <span class="item">Costumes</span> everywhere. A <span class="item">treat cabinet</span>, <span class="item">recipe book</span>, small <span class="item">shrine</span>, <span class="item">spice rack</span>.<br>`;
+                }
 
                 if (!state.inventory.includes('KNIFE')) {
                     desc += `A <span class="item">bread knife</span> sits on the cutting board.<br>`;
@@ -699,10 +716,21 @@
 
         function processCommand(cmd) {
             cmd = cmd.toLowerCase().trim();
-            state.commandCount++;
 
-            // Move mascot every N commands
-            if (state.commandCount % MOVE_INTERVAL === 0 && !state.won) {
+            // Only count action commands toward mascot movement (not LOOK)
+            const words = cmd.split(/\s+/);
+            const verb = words[0];
+            const isLookCommand = (verb === 'look' || verb === 'l' || verb === 'examine' || verb === 'x' ||
+                                   verb === 'listen' || verb === 'hear' || verb === 'smell' || verb === 'sniff' ||
+                                   verb === 'think' || verb === 'ponder' || verb === 'wait' || verb === 'z' ||
+                                   verb === 'inventory' || verb === 'i' || verb === 'inv' || verb === 'help' || verb === '?');
+
+            if (!isLookCommand) {
+                state.commandCount++;
+            }
+
+            // Move mascot every N action commands
+            if (state.commandCount % MOVE_INTERVAL === 0 && !state.won && !isLookCommand) {
                 moveMascot();
             }
 
@@ -711,9 +739,7 @@
                 return `You've already caught Uchūjin-kun! Click the link to continue.`;
             }
 
-            // Parse command
-            const words = cmd.split(/\s+/);
-            const verb = words[0];
+            // Parse command (words/verb already declared above)
             const rest = words.slice(1).join(' ');
 
             // MOVEMENT
@@ -947,6 +973,10 @@
 
                 // Full room descriptions with progressive disclosure
                 if (state.location === 'DINING') {
+                    // Already looked? Brief response
+                    if (state.diningLooked) {
+                        return `You scan the dining area again. Nothing's changed.`;
+                    }
                     state.diningLooked = true;
                     updateHints();
                     let desc = `The main dining area of Maid Latte. Warm light, the smell of coffee and cake.<br><br>`;
@@ -957,6 +987,10 @@
                 }
 
                 if (state.location === 'COUNTER') {
+                    // Already looked? Brief response
+                    if (state.counterLooked) {
+                        return `You glance around the counter area. Same as before.`;
+                    }
                     state.counterLooked = true;
                     // Reveal apron on first look
                     if (!state.apronRevealed && !state.inventory.includes('APRON')) {
@@ -973,6 +1007,10 @@
                 }
 
                 if (state.location === 'KITCHEN') {
+                    // Already looked? Brief response
+                    if (state.kitchenLooked) {
+                        return `You survey the kitchen. Everything's where you left it.`;
+                    }
                     state.kitchenLooked = true;
                     updateHints();
                     let desc = `<span class="item">Satsuki</span>'s domain. She's here, practically vibrating with excitement.<br><br>`;
@@ -1643,14 +1681,10 @@
 
             if (state.location === 'DINING') {
                 hints += `<span onclick="tryCommand('go counter')">go counter</span> `;
-                // Only show after looking around
-                if (state.diningLooked) {
-                    hints += `<span onclick="tryCommand('look customer')">look customer</span> `;
-                    hints += `<span onclick="tryCommand('look fern')">look fern</span> `;
-                    hints += `<span onclick="tryCommand('look menu')">look menu</span> `;
-                }
+                // Mascot-specific hints
                 if (isMascotVisible()) {
                     hints += `<span onclick="tryCommand('look mascot')">look mascot</span> `;
+                    hints += `<span onclick="tryCommand('catch mascot')">catch mascot</span> `;
                     // Solution hints only at tier 2+
                     if (tier >= 2) {
                         if (state.mascotTrapped && state.inventory.includes('APRON')) {
@@ -1663,16 +1697,17 @@
             } else if (state.location === 'COUNTER') {
                 hints += `<span onclick="tryCommand('go dining')">go dining</span> `;
                 hints += `<span onclick="tryCommand('go kitchen')">go kitchen</span> `;
-                // Only show after looking around
+                // Action hints after looking
                 if (state.counterLooked) {
                     hints += `<span onclick="tryCommand('talk usui')">talk usui</span> `;
-                    hints += `<span onclick="tryCommand('look display')">look display</span> `;
-                    hints += `<span onclick="tryCommand('look register')">look register</span> `;
                     if (state.apronRevealed && !state.inventory.includes('APRON')) {
                         hints += `<span onclick="tryCommand('take apron')">take apron</span> `;
                     }
                 }
+                // Mascot-specific hints
                 if (isMascotVisible()) {
+                    hints += `<span onclick="tryCommand('look mascot')">look mascot</span> `;
+                    hints += `<span onclick="tryCommand('catch mascot')">catch mascot</span> `;
                     // Solution hints only at tier 2+
                     if (tier >= 2) {
                         if (state.mascotTrapped && state.inventory.includes('APRON')) {
@@ -1686,11 +1721,9 @@
                 // KITCHEN
                 hints += `<span onclick="tryCommand('go counter')">go counter</span> `;
                 hints += `<span onclick="tryCommand('go alley')">go alley</span> `;
-                // Only show after looking around
+                // Action hints after looking
                 if (state.kitchenLooked) {
                     hints += `<span onclick="tryCommand('talk satsuki')">talk satsuki</span> `;
-                    hints += `<span onclick="tryCommand('look bowls')">look bowls</span> `;
-                    hints += `<span onclick="tryCommand('look costumes')">look costumes</span> `;
                     if (!state.cabinetOpened) {
                         hints += `<span onclick="tryCommand('open cabinet')">open cabinet</span> `;
                     }
@@ -1698,7 +1731,10 @@
                         hints += `<span onclick="tryCommand('open drawer')">open drawer</span> `;
                     }
                 }
+                // Mascot-specific hints
                 if (isMascotVisible()) {
+                    hints += `<span onclick="tryCommand('look mascot')">look mascot</span> `;
+                    hints += `<span onclick="tryCommand('catch mascot')">catch mascot</span> `;
                     // Solution hints only at tier 2+
                     if (tier >= 2) {
                         if (state.mascotTrapped && state.inventory.includes('APRON')) {

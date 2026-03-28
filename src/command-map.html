@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFTER CLASS - Command Map</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&family=Silkscreen&display=swap');
+
+        body {
+            font-family: 'VT323', monospace;
+            background: #1a1a2e;
+            color: #eee;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.4;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-family: 'Silkscreen', cursive;
+            color: #d4a5a5;
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        .room {
+            background: #16213e;
+            border: 2px solid #d4a5a5;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .room h2 {
+            font-family: 'Silkscreen', cursive;
+            color: #ffd700;
+            margin-top: 0;
+            border-bottom: 1px dashed #d4a5a5;
+            padding-bottom: 10px;
+        }
+
+        pre {
+            font-size: 13px;
+            line-height: 1.2;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #0f0f23;
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .core { background: #4ade80; }
+        .look { background: #60a5fa; }
+        .easter { background: #f472b6; }
+        .item { background: #fbbf24; }
+        .nav { background: #a78bfa; }
+        .win { background: #ef4444; }
+
+        .section { margin: 15px 0; }
+        .section-title { color: #d4a5a5; font-weight: bold; margin-bottom: 5px; }
+
+        a { color: #d4a5a5; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AFTER CLASS - Full Command Map</h1>
+
+        <div class="legend">
+            <div class="legend-item"><div class="legend-color core"></div> Core commands</div>
+            <div class="legend-item"><div class="legend-color look"></div> Look targets</div>
+            <div class="legend-item"><div class="legend-color easter"></div> Easter eggs</div>
+            <div class="legend-item"><div class="legend-color item"></div> Item interactions</div>
+            <div class="legend-item"><div class="legend-color nav"></div> Navigation</div>
+            <div class="legend-item"><div class="legend-color win"></div> Win condition</div>
+        </div>
+
+        <!-- DINING -->
+        <div class="room">
+            <h2>DINING AREA</h2>
+            <div class="section">
+                <div class="section-title">CORE COMMANDS</div>
+<pre>
+LOOK AROUND ─────────► Sets diningLooked=true
+                       Reveals: customers, fern, specials board
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">LOOK TARGETS (after LOOK AROUND)</div>
+<pre>
+LOOK CUSTOMER ───────► Table descriptions
+                       └─► Table 3: Aoi Hyoudou cameo (blonde pigtails, judgy)
+
+LOOK FERN ───────────► "Decorative. Plastic. Eternal."
+
+LOOK SPECIALS ───────► Daily specials board
+LOOK MENU            └─► If mascot here: "something is peeking out!" (GOLD)
+
+LOOK TABLE 1/2/3 ────► Individual table descriptions
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">MASCOT INTERACTIONS (when visible)</div>
+<pre>
+LOOK MASCOT ─────────► Detailed mascot description
+                       "Fast little thing..."
+
+USE BOWL ────────────► (requires: has_bowl, mascot_here)
+(trap mascot)          Sets mascot_trapped=true
+
+USE APRON ───────────► (requires: has_apron, mascot_trapped, mascot_here)
+(catch mascot)         ★ WIN CONDITION ★
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">EASTER EGGS</div>
+<pre>
+LISTEN ──────────────► J-pop, clinking cups, "tiny plushie feet"
+SMELL ───────────────► Coffee, vanilla, floral perfume
+THINK ───────────────► Puzzle hints, internal monologue
+WAIT ────────────────► Time passes, existential dread
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">NAVIGATION</div>
+<pre>
+GO COUNTER ──────────► Move to COUNTER
+GO WEST ─────────────► Move to COUNTER
+</pre>
+            </div>
+        </div>
+
+        <!-- COUNTER -->
+        <div class="room">
+            <h2>COUNTER</h2>
+            <div class="section">
+                <div class="section-title">CORE COMMANDS</div>
+<pre>
+LOOK AROUND ─────────► Sets counterLooked=true, apronRevealed=true
+                       Reveals: Usui, espresso machine, display case,
+                                tip jar, register, coffee, APRON
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">LOOK TARGETS (after LOOK AROUND)</div>
+<pre>
+LOOK USUI ───────────► Rotating descriptions of his annoyingness
+                       "Tall. Annoyingly handsome."
+
+LOOK DISPLAY ────────► Cake display case
+
+LOOK REGISTER ───────► Register + staff photo easter egg
+
+LOOK ESPRESSO ───────► Espresso machine description
+LOOK MACHINE
+
+LOOK TIP JAR ────────► Tip jar description
+
+LOOK COFFEE ─────────► Usui's untouched coffee
+
+LOOK APRON ──────────► (after apronRevealed)
+                       "Soft white fabric with lace trim"
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">ITEM INTERACTIONS</div>
+<pre>
+TAKE APRON ──────────► (requires: apronRevealed, at COUNTER)
+                       Adds APRON to inventory
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">NPC INTERACTIONS</div>
+<pre>
+TALK USUI ───────────► Tier-based dialogue
+                       Tier 1: Teasing, flirting
+                       Tier 2: Hints about "soft things" and "trapping"
+                       Tier 3: Direct puzzle hint
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">USUI EASTER EGGS</div>
+<pre>
+KISS USUI ───────────► Brain short-circuit, nuclear blush
+HUG USUI ────────────► Survival instincts kick in
+PUNCH USUI ──────────► He catches your wrist
+HIT/SLAP/KICK USUI
+
+IGNORE USUI ─────────► "I'll wait, Ayuzawa."
+BLUSH ───────────────► "You're already blushing."
+YELL / SCREAM ───────► "USUI, YOU PERVERTED OUTER-SPACE ALIEN!"
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">MASCOT INTERACTIONS (when visible)</div>
+<pre>
+Mascot hiding spots: ESPRESSO_MACHINE, TIP_JAR
+
+LOOK MASCOT ─────────► Detailed description
+USE BOWL ────────────► Trap mascot
+USE APRON ───────────► (if trapped) WIN
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">NAVIGATION</div>
+<pre>
+GO DINING ───────────► Move to DINING
+GO EAST ─────────────► Move to DINING
+GO KITCHEN ──────────► Move to KITCHEN
+GO NORTH ────────────► Move to KITCHEN
+</pre>
+            </div>
+        </div>
+
+        <!-- KITCHEN -->
+        <div class="room">
+            <h2>KITCHEN</h2>
+            <div class="section">
+                <div class="section-title">CORE COMMANDS</div>
+<pre>
+LOOK AROUND ─────────► Sets kitchenLooked=true
+                       Reveals: Satsuki, cabinets, drawer, mixing bowls,
+                                sink, oven, costumes, treat cabinet,
+                                recipe book, shrine, spice rack
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">LOOK TARGETS (after LOOK AROUND)</div>
+<pre>
+LOOK SATSUKI ────────► Manager description, "MOE IS JUSTICE" pin
+
+LOOK CABINETS ───────► Cabinet description
+
+LOOK DRAWER ─────────► Drawer description
+
+LOOK BOWLS ──────────► Mixing bowls description
+
+LOOK SINK ───────────► Spotless sink
+
+LOOK OVEN ───────────► Humming oven
+
+LOOK COSTUMES ───────► "Cat ears, gothic dresses, things you'd rather not think about"
+
+LOOK TREAT CABINET ──► Satsuki's secret chocolate stash
+                       └─► If mascot here: "tiny munching sounds" (GOLD)
+
+LOOK RECIPE ─────────► Recipe book
+
+LOOK SHRINE ─────────► Figurines and photos
+
+LOOK SPICE RACK ─────► Organized by color
+
+LOOK KNIFE ──────────► Bread knife on cutting board
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">CONTAINER INTERACTIONS</div>
+<pre>
+OPEN CABINET ────────► Sets cabinetOpened=true
+                       Reveals: BOWL, TREATS
+
+OPEN DRAWER ─────────► Sets drawerOpened=true
+                       Reveals: garbage bags
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">ITEM INTERACTIONS</div>
+<pre>
+TAKE BOWL ───────────► (requires: cabinetOpened)
+                       Adds BOWL to inventory
+
+TAKE TREATS ─────────► (requires: cabinetOpened)
+                       Adds TREATS to inventory (red herring)
+
+TAKE KNIFE ──────────► Adds KNIFE to inventory (red herring)
+
+TAKE BAG ────────────► (requires: drawerOpened)
+                       Adds BAG to inventory (red herring)
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">NPC INTERACTIONS</div>
+<pre>
+TALK SATSUKI ────────► Tier-based dialogue
+                       Tier 1: Excited about mascot
+                       Tier 2: Hints about "soft things" for catching
+                       Tier 3: Aoi mention easter egg
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">SATSUKI EASTER EGGS</div>
+<pre>
+MOE / SAY MOE ───────► Summons Satsuki with magical flowers
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">MASCOT INTERACTIONS (when visible)</div>
+<pre>
+Mascot hiding spots: TREAT_CABINET, SINK
+
+LOOK MASCOT ─────────► Detailed description
+USE BOWL ────────────► Trap mascot
+USE APRON ───────────► (if trapped) WIN
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">NAVIGATION</div>
+<pre>
+GO COUNTER ──────────► Move to COUNTER
+GO SOUTH ────────────► Move to COUNTER
+GO ALLEY ────────────► BLOCKED - "The alley can wait"
+</pre>
+            </div>
+        </div>
+
+        <!-- GLOBAL -->
+        <div class="room">
+            <h2>GLOBAL COMMANDS (any room)</h2>
+            <div class="section">
+                <div class="section-title">AMBIENT / EASTER EGGS</div>
+<pre>
+LISTEN ──────────────► Room-specific sounds
+SMELL ───────────────► Room-specific scents
+THINK ───────────────► Internal monologue + hints
+WAIT / Z ────────────► Time passes
+
+INVENTORY / I ───────► Show inventory
+HELP / ? ────────────► Command reference
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">EMOTIONAL OUTBURSTS</div>
+<pre>
+CRY / SOB ───────────► "You are NOT going to cry."
+QUIT / GIVE UP ──────► "Misaki Ayuzawa does not quit."
+DANCE / SING ────────► "This is a workplace."
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">CANON REFERENCES</div>
+<pre>
+CHESS ───────────────► Usui beat a national champion
+ROOFTOP / FALL ──────► He fell off a building and walked it off
+CALL MOM ────────────► "She can NEVER know about this job."
+</pre>
+            </div>
+
+            <div class="section">
+                <div class="section-title">SELF-REFERENCE</div>
+<pre>
+LOOK ME / LOOK SELF ─► Misaki's current state
+LOOK MISAKI
+</pre>
+            </div>
+        </div>
+
+        <!-- CRITICAL PATH -->
+        <div class="room">
+            <h2>CRITICAL PATH (Optimal Solution)</h2>
+<pre style="color: #4ade80; font-size: 14px;">
+  START (DINING)
+      │
+      ▼
+  GO COUNTER ─────────────────────────────────────────┐
+      │                                               │
+      ▼                                               │
+  LOOK AROUND ──► apronRevealed=true                  │
+      │              counterLooked=true               │
+      ▼                                               │
+  TAKE APRON ──► has_apron=true                       │
+      │                                               │
+      ▼                                               │
+  GO KITCHEN                                          │
+      │                                               │
+      ▼                                               │
+  LOOK AROUND ──► kitchenLooked=true                  │
+      │                                               │
+      ▼                                               │
+  OPEN CABINET ──► cabinetOpened=true                 │
+      │                                               │
+      ▼                                               │
+  TAKE BOWL ──► has_bowl=true                         │
+      │                                               │
+      ▼                                               │
+  [Find mascot - may require GO commands]             │
+      │                                               │
+      ▼                                               │
+  USE BOWL ──► mascot_trapped=true                    │
+      │                                               │
+      ▼                                               │
+  USE APRON ──► mascot_caught=true                    │
+      │                                               │
+      ▼                                               │
+  ╔═══════════════════════════════════════════════════╧═══╗
+  ║                      ★ WIN ★                          ║
+  ╚═══════════════════════════════════════════════════════╝
+</pre>
+        </div>
+
+        <p style="text-align: center; margin-top: 30px;">
+            <a href="puzzle2.html">&larr; Back to Game</a> |
+            <a href="game-tree.html">View State Tree</a>
+        </p>
+    </div>
+</body>
+</html>
