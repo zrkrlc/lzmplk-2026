@@ -530,6 +530,10 @@
         // ============================================================
 
         function getMascotHint() {
+            // Trapped mascot shows bowl text, not hiding spot
+            if (state.mascotTrapped) {
+                return `<br><span style="color:#b8860b">Uchūjin-kun is trapped under the bowl, staring up at you with betrayed eyes.</span>`;
+            }
             const tier = getHintTier();
             const spot = HIDING_SPOTS[state.mascotLocation];
             if (!spot) return '';
@@ -593,7 +597,7 @@
                     desc += `<br><span class="item">Cabinets</span>, <span class="item">mixing bowls</span>, the <span class="item">sink</span>, the <span class="item">oven</span>. <span class="item">Costumes</span> everywhere. A <span class="item">treat cabinet</span>, <span class="item">recipe book</span>, small <span class="item">shrine</span>, <span class="item">spice rack</span>.<br>`;
                 }
 
-                if (!state.inventory.includes('KNIFE')) {
+                if (state.kitchenLooked && !state.inventory.includes('KNIFE')) {
                     desc += `A <span class="item">bread knife</span> sits on the cutting board.<br>`;
                 }
 
@@ -1037,6 +1041,9 @@
             }
 
             if (target.includes('mascot') || target.includes('alien') || target.includes('uchujin')) {
+                if (state.mascotTrapped) {
+                    return `Uchūjin-kun is trapped under the bowl.<br><br>Those big eyes stare up at you through the gap at the rim. Betrayed. Accusatory.<br><br>The tiny cape is crumpled. One antenna is bent.<br><br>You feel like a monster. But also: victorious.`;
+                }
                 if (isMascotVisible()) {
                     return `A palm-sized alien plushie with big eyes and a knowing smirk.<br>Green body, silver antennae, and a tuft of golden-blond hair that never looks anything other than perfect.<br>A tiny cape.<br><br>You bought it at a capsule machine three weeks ago.<br>You told yourself it was "just cute" and had nothing to do with anyone.<br>You're a terrible liar.<br><br>...<br>It's looking at you with Usui's exact expression. How does a plushie do that?`;
                 }
@@ -1054,6 +1061,16 @@
                     return `A white apron hanging on a hook.<br>Satsuki made it herself. You can tell by the stitching.<br><br>Perfect for... catching things?`;
                 }
                 return `You don't see an apron here.`;
+            }
+
+            if (target.includes('knife') || target.includes('bread knife')) {
+                if (state.inventory.includes('KNIFE')) {
+                    return `A bread knife. Serrated edge. Why did you even pick this up?<br><br>It's not like you're going to... no. Absolutely not.`;
+                }
+                if (state.location === 'KITCHEN' && state.kitchenLooked) {
+                    return `A bread knife on the cutting board. Sharp, serrated edge.<br><br>For bread. Obviously. What else would you use it for?`;
+                }
+                return `You don't see a knife here.`;
             }
 
 
@@ -1409,6 +1426,9 @@
                 if (state.location !== 'KITCHEN') {
                     return `You don't see a knife here.`;
                 }
+                if (!state.kitchenLooked) {
+                    return `You don't see a knife. Maybe LOOK around first?`;
+                }
                 if (state.inventory.includes('KNIFE')) {
                     return `You're already carrying the knife.`;
                 }
@@ -1546,6 +1566,9 @@
                 if (state.location !== 'KITCHEN') {
                     return `You don't see a cabinet here.`;
                 }
+                if (!state.kitchenLooked) {
+                    return `You haven't really looked around here yet. Try LOOK first.`;
+                }
                 if (state.cabinetOpened) {
                     return `It's already open.`;
                 }
@@ -1557,6 +1580,9 @@
             if (target.includes('drawer')) {
                 if (state.location !== 'KITCHEN') {
                     return `You don't see a drawer here.`;
+                }
+                if (!state.kitchenLooked) {
+                    return `You haven't really looked around here yet. Try LOOK first.`;
                 }
                 if (state.drawerOpened) {
                     return `It's already open.`;
@@ -1580,6 +1606,14 @@
 
             if (state.inventory.includes('APRON') && state.mascotTrapped) {
                 return triggerWin();
+            }
+
+            // Trapped but no apron = ESCAPE! Need thick fabric
+            if (state.mascotTrapped && !state.inventory.includes('APRON')) {
+                state.mascotTrapped = false;
+                moveMascot();
+                updateDisplay();
+                return `You reach under the bowl to grab it...<br><br>Uchūjin-kun squirts out between your fingers!<br><br>It bounces away before you can react.<br><br><em>Need something thick to cover the bowl first... so it can't slip out when you lift it.</em>`;
             }
 
             if (state.inventory.includes('APRON') && !state.mascotTrapped) {

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>★ game map ★</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #c0c0c0;
+            margin: 0;
+            padding: 1rem;
+            line-height: 1.5;
+        }
+
+        h1 {
+            font-family: 'Comic Neue', cursive;
+            color: #d4a5a5;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab {
+            padding: 0.5rem 1.5rem;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #888;
+            cursor: pointer;
+            font-family: 'Comic Neue', cursive;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            background: #333;
+            color: #d4a5a5;
+        }
+
+        .tab.active {
+            background: #d4a5a5;
+            color: #1a1a1a;
+            border-color: #d4a5a5;
+        }
+
+        .content {
+            display: none;
+            background: #0a0a0a;
+            border: 2px solid #333;
+            padding: 1.5rem;
+            overflow-x: auto;
+            white-space: pre;
+            font-size: 0.85rem;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        .legend {
+            background: #1a1a1a;
+            border: 1px dashed #444;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .legend span {
+            margin: 0 1rem;
+        }
+
+        .mascot { color: #b8860b; }
+        .win { color: #0f0; }
+        .blocked { color: #f44; }
+        .easter { color: #d4a5a5; }
+
+        .room-map {
+            text-align: center;
+            padding: 1rem;
+            background: #0a0a0a;
+            border: 2px solid #333;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .nav {
+            text-align: center;
+            margin-top: 1rem;
+            font-family: 'Comic Neue', cursive;
+        }
+
+        .nav a {
+            color: #d4a5a5;
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+
+        .nav a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .content {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>★ game map ★</h1>
+
+    <div class="room-map">
+<pre>
+   KITCHEN
+      ↑ N
+      │
+   COUNTER  ←── W ──  DINING (start)
+      │
+   ALLEY (blocked)
+</pre>
+    </div>
+
+    <div class="legend">
+        <span class="mascot">★ mascot spot</span>
+        <span class="win">✓ win condition</span>
+        <span class="blocked">✗ blocked</span>
+        <span class="easter">♥ easter egg</span>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('dining')">DINING</button>
+        <button class="tab" onclick="showTab('counter')">COUNTER</button>
+        <button class="tab" onclick="showTab('kitchen')">KITCHEN</button>
+        <button class="tab" onclick="showTab('win')">WIN PATH</button>
+        <button class="tab" onclick="showTab('easter')">EASTER EGGS</button>
+    </div>
+
+    <div id="dining" class="content active">
+DINING AREA — Starting Location
+═══════════════════════════════════════════════════════════════════
+
+MOVEMENT
+├── GO COUNTER / W / WEST      → [COUNTER]
+├── GO KITCHEN / N / NORTH     ✗ BLOCKED "Go through COUNTER first"
+└── GO OUTSIDE / EXIT          ✗ REFUSED "You're on shift"
+
+LOOK TARGETS (after LOOK AROUND)
+├── LOOK CUSTOMERS             → overview all 3 tables
+├── LOOK TABLE 1               → couple + parfait
+├── LOOK TABLE 2               → salaryman + newspaper
+├── LOOK TABLE 3 / MYSTERIOUS  → blonde pigtails, red dress (Aoi Hyōdō)
+│                                [customerLookCount++, response changes]
+├── LOOK FERN / PLANT          → fake fern ★ MASCOT SPOT
+├── LOOK MENU / SPECIALS       → pastel chalk ★ MASCOT SPOT
+├── LOOK MASCOT                → plushie desc (if visible)
+├── LOOK WINDOW                → Seika High visible
+└── LOOK SELF                  → Misaki description
+
+MASCOT HIDING SPOTS (5)
+┌─────────┐  ┌─────────┐  ┌─────────┐
+│ TABLE1  │  │ TABLE2  │  │ TABLE3  │
+│ under   │  │ under   │  │ under   │
+└─────────┘  └─────────┘  └─────────┘
+┌─────────────────┐  ┌─────────────────┐
+│   MENU_BOARD    │  │     PLANT       │
+│ behind specials │  │  inside fern    │
+└─────────────────┘  └─────────────────┘
+
+NPC INTERACTIONS
+├── TALK CUSTOMER       → maid greeting rotation (3)
+├── TALK CUSTOMER 3     → Misaki refuses "I know that face. No."
+├── TALK MASCOT         → 4 non-responses, plushie ignores you
+├── TALK USUI           → "Usui is at the COUNTER"
+└── TALK SATSUKI        → "Satsuki is in the KITCHEN"
+
+AMBIENT (don't move mascot)
+├── LISTEN    → cups, J-pop, "tiny plushie feet on tile"
+├── SMELL     → coffee, vanilla parfaits, floral perfume
+├── WAIT      → 4 rotating (Usui winks in #3)
+└── THINK     → 5 rotating thoughts
+    </div>
+
+    <div id="counter" class="content">
+COUNTER — Usui's Territory
+═══════════════════════════════════════════════════════════════════
+
+MOVEMENT
+├── GO DINING / E / EAST       → [DINING]
+└── GO KITCHEN / N / NORTH     → [KITCHEN]
+
+LOOK (first time)
+└── Sets: counterLooked=true, apronRevealed=true
+    Reveals: espresso, display case, tip jar, register, coffee, APRON
+
+LOOK TARGETS
+├── LOOK USUI          → 3 rotating (smirk, green eyes, chess champ)
+├── LOOK ESPRESSO      → ★ MASCOT SPOT if mascot=ESPRESSO
+├── LOOK DISPLAY       → ★ MASCOT SPOT if mascot=DISPLAY (eyeing tart)
+├── LOOK TIP JAR       → ★ MASCOT SPOT if mascot=TIP_JAR (Usui: "Pu.")
+├── LOOK REGISTER      → staff photo, you're smiling
+├── LOOK COFFEE        → "Black, no sugar. Of course."
+├── LOOK APRON         → "Perfect for catching things?"
+└── LOOK MASCOT        → trapped/visible/absent states
+
+MASCOT HIDING SPOTS (3)
+┌─────────────┐  ┌─────────────┐  ┌─────────────┐
+│  ESPRESSO   │  │   DISPLAY   │  │   TIP_JAR   │
+│ behind mach │  │ under case  │  │ behind jar  │
+└─────────────┘  └─────────────┘  └─────────────┘
+
+ITEMS
+└── TAKE APRON (requires apronRevealed)
+    → "Soft white fabric. Good for catching things."
+
+TALK USUI (hint tiers based on attemptedCatch)
+├── Tier 1 [0-2]  → teasing, idle lines, no hints
+│   "Good at finding things people try to hide."
+├── Tier 2 [3-5]  → vague hints
+│   "Soft things are good for catching soft things."
+└── Tier 3 [6+]   → explicit
+    "Corner it first. Use something soft."
+
+WIN SEQUENCE (if BOWL + APRON + mascot here)
+1. USE BOWL     → mascotTrapped=true "CLANG!"
+2. USE APRON    → ✓ WIN → prize.html
+
+AMBIENT
+├── LISTEN    → espresso hiss, Usui humming British pop
+├── SMELL     → coffee, Usui's cologne (step back for professional reasons)
+├── WAIT      → 4 rotating
+└── THINK     → 5 rotating
+    </div>
+
+    <div id="kitchen" class="content">
+KITCHEN — Satsuki's Domain + Win Items
+═══════════════════════════════════════════════════════════════════
+
+MOVEMENT
+├── GO COUNTER / S / SOUTH     → [COUNTER]
+├── GO ALLEY / EXIT            ✗ REFUSED "middle of shift"
+└── GO DINING / E / EAST       ✗ REFUSED "go through COUNTER"
+
+STATE GATE: kitchenLooked
+└── First LOOK sets kitchenLooked=true
+    All OPEN/TAKE commands require this
+
+LOOK TARGETS
+├── LOOK SATSUKI       → manager, MOE IS JUSTICE pin
+├── LOOK SINK          → spotless
+├── LOOK OVEN          → "not allowed after The Incident"
+├── LOOK RECIPE BOOK   → MOE Presentation Tips
+├── LOOK SHRINE        → candid photo of you + Usui. SATSUKI.
+├── LOOK SPICE RACK    → organized by color
+├── LOOK CABINETS      → closed/open/empty states
+├── LOOK DRAWER        → closed/open states
+├── LOOK KNIFE         → (requires kitchenLooked)
+├── LOOK BOWLS         → ★ MASCOT SPOT
+├── LOOK COSTUMES      → ★ MASCOT SPOT (APRON_PILE)
+└── LOOK TREAT CABINET → ★ MASCOT SPOT
+
+MASCOT HIDING SPOTS (3)
+┌─────────────┐  ┌─────────────┐  ┌───────────────┐
+│    BOWLS    │  │ APRON_PILE  │  │ TREAT_CABINET │
+│  rocking    │  │  burrowed   │  │   munching    │
+└─────────────┘  └─────────────┘  └───────────────┘
+
+OPEN COMMANDS (require kitchenLooked)
+├── OPEN CABINET → reveals BOWL + TREATS
+└── OPEN DRAWER  → reveals BAG
+
+ITEMS (all require location=KITCHEN)
+├── TAKE BOWL   (req: cabinetOpened)  ✓ WIN ITEM
+├── TAKE KNIFE  (req: kitchenLooked)  ✗ RED HERRING
+├── TAKE BAG    (req: drawerOpened)   ✗ RED HERRING
+└── TAKE TREATS (req: cabinetOpened)  ✗ RED HERRING
+
+USE ITEMS
+├── USE BOWL   + mascot → mascotTrapped=true "CLANG!"
+├── USE APRON  + trapped → ✓ WIN
+├── USE KNIFE  + mascot → SHAME "What are you DOING?"
+├── USE BAG    + mascot → tears through plastic, escapes
+└── USE TREATS + mascot → snatches cookie, bolts
+
+TALK SATSUKI (hint tiers)
+├── Tier 1 [0-2]  → cafe origin, ships Usui/Misaki, Aoi hints
+├── Tier 2 [3-5]  → "something soft to catch stray threads..."
+└── Tier 3 [6+]   → "The apron! Triple-stitched!"
+
+AMBIENT
+├── LISTEN    → pots, Satsuki: "secret ingredient... LOVE~"
+├── SMELL     → cookies, caramelizing sugar, lemon cleaner
+├── WAIT      → 4 rotating
+└── THINK     → 5 rotating
+    </div>
+
+    <div id="win" class="content">
+WIN PATH — Optimal 8-Step Solution
+═══════════════════════════════════════════════════════════════════
+
+START: DINING
+
+1. GO COUNTER           → enter counter area
+2. LOOK                  → counterLooked=true, apronRevealed=true
+3. TAKE APRON            → APRON in inventory
+4. GO KITCHEN            → enter kitchen
+5. LOOK                  → kitchenLooked=true
+6. OPEN CABINET          → reveals bowl
+7. TAKE BOWL             → BOWL in inventory
+8. [wait for mascot OR go to mascot's room]
+9. USE BOWL              → mascotTrapped=true "CLANG!"
+10. USE APRON            → ✓ WIN
+
+═══════════════════════════════════════════════════════════════════
+
+MASCOT CYCLE (moves every 3 non-LOOK commands)
+
+  TABLE2 → ESPRESSO → TABLE1 → BOWLS → MENU_BOARD → TIP_JAR
+     ↑                                                    │
+     └─── TREAT_CABINET ← DISPLAY ← PLANT ← APRON_PILE ──┘
+
+ROOM ASSIGNMENTS
+├── DINING:  TABLE1, TABLE2, TABLE3, MENU_BOARD, PLANT
+├── COUNTER: ESPRESSO, DISPLAY, TIP_JAR
+└── KITCHEN: BOWLS, APRON_PILE, TREAT_CABINET
+
+═══════════════════════════════════════════════════════════════════
+
+CATCH MECHANICS
+
+CATCH bare hands     → always fails, mascot moves
+CATCH + APRON (free) → fails "too floppy", mascot moves
+CATCH + trapped      → escapes "squirts through fingers"
+USE BOWL + mascot    → TRAP SUCCESS
+USE APRON + trapped  → ✓ WIN
+
+RED HERRINGS (never win)
+├── KNIFE  → shame response
+├── BAG    → tears through plastic
+└── TREATS → snatches and bolts
+
+═══════════════════════════════════════════════════════════════════
+
+HINT TIERS (based on attemptedCatch count)
+
+Tier 1 [0-2]   NPCs tease, no hints
+Tier 2 [3-5]   Vague hints about soft things, trapping
+Tier 3 [6+]    Explicit: "Use the apron! Corner it with the bowl!"
+    </div>
+
+    <div id="easter" class="content">
+EASTER EGGS — Full Command List
+═══════════════════════════════════════════════════════════════════
+
+USUI INTERACTIONS (work from any room)
+─────────────────────────────────────────────────────────────────
+
+KISS USUI
+  → Brain short-circuits. Face goes nuclear.
+  → Usui: "...Not here, Misa-chan. The customers are watching."
+  → NOT HERE?! IMPLYING THERE'S A PLACE WHERE—
+
+HUG USUI
+  → 0.3 seconds of consideration. Survival instincts kick in.
+  → Usui: "Something on your mind?"
+
+PUNCH USUI / HIT USUI / SLAP USUI / KICK USUI
+  → He catches your wrist without looking up.
+  → "Violent today, Kaichou."
+
+IGNORE USUI
+  → You look away. Feel his gaze anyway.
+  → "I'll wait, Ayuzawa." — somehow worse than being teased
+
+BLUSH
+  → Already blushing. He looks at you like you're
+    the most interesting thing in the room.
+
+═══════════════════════════════════════════════════════════════════
+
+SHOUT COMMANDS
+─────────────────────────────────────────────────────────────────
+
+YELL / SCREAM / SHOUT
+  → "USUI, YOU PERVERTED OUTER-SPACE ALIEN!"
+  → Customers alarmed. "Is this part of the show?"
+  → Usui: "There she is."
+
+ALIEN / ALIENS
+  → You say it out loud. Again.
+  → Usui delighted. Customers concerned.
+
+MOE / SAY MOE
+  → Satsuki materializes from nowhere with flower effects.
+  → "MOE IS JUSTICE."
+
+═══════════════════════════════════════════════════════════════════
+
+LORE REFERENCES
+─────────────────────────────────────────────────────────────────
+
+CHESS / PLAY CHESS
+  → He beat a national champion once.
+  → Hence: ALIEN.
+
+ROOFTOP / ROOF / FALL
+  → He fell off a building and walked it off.
+  → Hence: ALIEN.
+
+═══════════════════════════════════════════════════════════════════
+
+EMOTIONAL COMMANDS
+─────────────────────────────────────────────────────────────────
+
+CRY / SOB
+  → "You are NOT going to cry."
+  → "Student Council President. Handled delinquents,
+     budget crises, the Idiot Trio."
+  → "You can handle one plushie and one pretty boy."
+
+CALL MOM
+  → "ABSOLUTELY NOT. She can NEVER know."
+  → "I'd rather fight Miyabigaoka again."
+
+DANCE / SING
+  → "This is a workplace. Some dignity."
+  → "Satsuki is literally singing in the kitchen. No."
+
+QUIT / GIVE UP / SURRENDER
+  → "Misaki Ayuzawa does not quit."
+  → "Catch mascot. Finish shift. Scream about boys into pillow."
+  → "In that order."
+
+═══════════════════════════════════════════════════════════════════
+
+AMBIENT COMMANDS (per-room flavor, don't move mascot)
+─────────────────────────────────────────────────────────────────
+
+LISTEN
+  DINING:  cups clinking, J-pop, tiny plushie feet on tile
+  COUNTER: espresso hiss, Usui humming British pop
+  KITCHEN: pots bubbling, Satsuki: "secret ingredient... LOVE~"
+
+SMELL
+  DINING:  coffee, vanilla parfaits, floral perfume
+  COUNTER: coffee, Usui's expensive cologne (step back)
+  KITCHEN: cookies, caramelizing sugar, lemon cleaner
+
+THINK (5 rotating, any room)
+  1. Strategy: can't catch bare-handed
+  2. Why bring plushie to work? ...comforting
+  3. If Usui finds out it looks like him...
+  4. Genre awareness: "which genre manga is this?"
+  5. Call mom? ABSOLUTELY NOT.
+
+WAIT (4 rotating, any room)
+  1. Cafe hums. Mascot out there. Judging you.
+  2. SC President pep-talk
+  3. Usui winks. Moment ruined.
+  4. Nothing happens. Mascot probably moved.
+
+═══════════════════════════════════════════════════════════════════
+
+TALK MASCOT (4 rotating, any room)
+─────────────────────────────────────────────────────────────────
+
+1. "It doesn't respond. Unlike some perverted outer-space aliens."
+2. "Hey." ... stares. You're talking to a plushie at work.
+3. "Please just let me catch you." Expression: "No."
+4. It blinks? Can plushies blink? You're losing it.
+    </div>
+
+    <div class="nav">
+        <a href="index.html">← back to game</a> |
+        <a href="cafe.html">play</a>
+    </div>
+
+    <script>
+        function showTab(id) {
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

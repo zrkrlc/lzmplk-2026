@@ -1,0 +1,259 @@
+╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║                              KITCHEN — INTERACTION TREE                                              ║
+║                              cafe.html · Maid Latte text adventure                                   ║
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+  ENTRY
+  ─────
+  From COUNTER: GO NORTH / GO KITCHEN / type "kitchen"
+  → "You slip into the kitchen. Satsuki waves."
+
+  EXITS
+  ─────
+  GO SOUTH / GO COUNTER  ──→  [COUNTER]
+  GO ALLEY / EXIT        ──→  REFUSED: "No. You're in the middle of your shift."
+  GO EAST / GO DINING    ──→  REFUSED: "Go through the COUNTER first."
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+  LOOK (bare)
+  ───────────
+      ┌── first time ──→  sets kitchenLooked=true  ──→  reveals all objects (see LOOK TARGETS below)
+      │                                                  + "South: COUNTER  |  Back door: ALLEY"
+      └── repeat      ──→  "You survey the kitchen. Everything's where you left it."
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+  STATE GATE: kitchenLooked = true  [set by first LOOK bare]
+  ─────────────────────────────────────────────────────────────────────────────────────────────────
+  │  All OPEN and TAKE commands below this line require kitchenLooked = true.
+  │  Without it: "You haven't really looked around yet. Try LOOK first."
+  └─────────────────────────────────────────────────────────────────────────────────────────────────
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+  LOOK TARGETS  (all require: location = KITCHEN)
+  ────────────────────────────────────────────────
+
+  LOOK SATSUKI         ──→  "Satsuki Hyōdō, manager. MOE IS JUSTICE pin."
+
+  LOOK SINK            ──→  "Clean. Satsuki runs a tight ship."
+  LOOK OVEN/STOVE      ──→  "Industrial grade. Not allowed to touch after The Incident."
+  LOOK RECIPE BOOK     ──→  "Handwritten recipes. MOE Presentation Tips."
+  LOOK SHRINE          ──→  "Figurines, photos, candid shot of you and Usui? SATSUKI."
+  LOOK SPICE RACK      ──→  "Organized by color. Because of course it is."
+  LOOK APRON           ──→  "A white apron on a hook. Perfect for... catching things?"
+
+  LOOK KNIFE  [req: kitchenLooked]
+      ┌── in inventory  ──→  "A bread knife. Why did you even pick this up?"
+      └── on board      ──→  "Bread knife on the cutting board. For bread. Obviously."
+
+  LOOK CABINETS
+      ┌── closed        ──→  "Cabinets along the wall. Who knows what's inside?"
+      ├── open, items   ──→  shows: mixing bowl, snacks (whatever remains)
+      └── open, empty   ──→  "Mostly empty now."
+
+  LOOK DRAWER
+      ┌── closed           ──→  "A drawer by the counter. Probably kitchen supplies."
+      ├── open, has BAG    ──→  "Open. Garbage bags, twist ties, rubber bands."
+      └── open, took BAG   ──→  "Open. Twist ties, rubber bands."
+
+  LOOK MASCOT
+      ┌── trapped     ──→  "Trapped under bowl. Big eyes. Betrayed. You feel like a monster."
+      ├── visible     ──→  "Palm-sized alien plushie. Green. Blond tuft. Usui's exact expression."
+      └── absent      ──→  "The little plushie isn't here."
+
+  ── MASCOT HIDING SPOTS IN KITCHEN (3 of 11 in cycle) ──────────────────────────────────────────
+
+  LOOK BOWLS
+      ┌── mascot here (BOWLS)       ──→  "One of them is rocking slightly..." [tier1 vague]
+      │                                  "Uchūjin-kun is hiding behind the mixing bowls!" [tier2+]
+      └── mascot elsewhere          ──→  "A big one might trap something small..."
+
+  LOOK COSTUMES / APRON PILE
+      ┌── mascot here (APRON_PILE)  ──→  "Something stirs in the costume pile..." [tier1 vague]
+      │                                  "Uchūjin-kun has burrowed into the apron pile!" [tier2+]
+      └── mascot elsewhere          ──→  [standard costume description]
+
+  LOOK TREAT CABINET
+      ┌── mascot here (TREAT_CAB)   ──→  "The treat cabinet door is ajar. Tiny munching..." [tier1]
+      │                                  "Uchūjin-kun has found the treat cabinet!" [tier2+]
+      └── mascot elsewhere          ──→  [standard treat cabinet description]
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+  OPEN COMMANDS  [req: kitchenLooked]
+  ────────────────────────────────────
+
+  OPEN CABINET  ──→  sets cabinetOpened=true
+                     "Inside: a clean metal mixing bowl, and some snacks."
+                         │
+                         ├──→  TAKE BOWL   now available
+                         └──→  TAKE TREATS now available
+
+  OPEN DRAWER   ──→  sets drawerOpened=true
+                     "Garbage bags, twist ties, rubber bands."
+                         │
+                         └──→  TAKE BAG    now available
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+  TAKE ITEMS  [all req: location = KITCHEN]
+  ──────────────────────────────────────────
+
+  TAKE BOWL    [req: cabinetOpened]  ──→  BOWL added to inventory.  "Heavy metal, good weight."
+  TAKE KNIFE   [req: kitchenLooked]  ──→  KNIFE added to inventory. "You pick up the bread knife. Sharp."
+  TAKE BAG     [req: drawerOpened]   ──→  BAG added to inventory.   "You pull out a garbage bag. Thin plastic."
+  TAKE TREATS  [req: cabinetOpened]  ──→  TREATS added to inventory."You pocket a handful of snacks."
+
+  TAKE APRON  ─ NOTE: apron is visible in KITCHEN but ONLY takeable from COUNTER ─────────────────
+               → from KITCHEN: "You don't see an apron here."  [redirects player to COUNTER]
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+  USE ITEMS  (work anywhere mascot is present)
+  ─────────────────────────────────────────────
+
+  ┌─ USE BOWL  [req: have BOWL]
+  │   ├── mascot present, not trapped  ──→  mascotTrapped=true
+  │   │                                     "CLANG! Trapped under the bowl."
+  │   │                                     ★ unlocks WIN step 2 ★
+  │   ├── mascot already trapped       ──→  "The mascot is already trapped under the bowl."
+  │   └── mascot absent                ──→  "The plushie isn't here."
+
+  ┌─ USE APRON  [req: have APRON]
+  │   ├── mascotTrapped = true         ──→  ★★★ WIN → triggerWin() ★★★
+  │   ├── mascot present, free         ──→  FAIL + mascot moves
+  │   │                                     "Too floppy to aim. Need something solid first."
+  │   └── mascot absent                ──→  "The plushie isn't here."
+
+  ── RED HERRINGS (never win) ──────────────────────────────────────────────────────────────────
+
+  ┌─ USE KNIFE  [req: have KNIFE]
+  │   ├── mascot present               ──→  SHAME: "What are you DOING? You put the knife away."
+  │   └── mascot absent                ──→  "You're waving a knife around for no reason. Stop that."
+
+  ┌─ USE BAG  [req: have BAG]
+  │   ├── mascot present               ──→  FAIL + mascot moves
+  │   │                                     "Tiny claws tear through the plastic. It escapes."
+  │   └── mascot absent                ──→  "No point using a bag here."
+
+  ┌─ USE TREATS  [req: have TREATS]
+      ├── mascot present               ──→  FAIL + mascot moves
+      │                                     "Darts over, snatches cookie, bolts."
+      └── mascot absent                ──→  "You could eat these yourself..."
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+  WIN CONDITION  (2-step sequence)
+  ─────────────────────────────────
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │                                                                                                │
+  │  Step 1:  USE BOWL on mascot         → mascotTrapped = true   "CLANG!"                        │
+  │                │                                                                               │
+  │                ▼                                                                               │
+  │  Step 2:  USE APRON on trapped mascot → triggerWin()          "Got it!"                       │
+  │        OR CATCH MASCOT (have APRON, mascotTrapped=true)                                       │
+  │                │                                                                               │
+  │                ▼                                                                               │
+  │  WIN: Usui "Nice catch." / "Green. Alien. Vaguely familiar."                                  │
+  │       Satsuki appears: "You did it! And just in time for—"                                    │
+  │       → link: prize.html                                                                      │
+  │                                                                                               │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+  CATCH MASCOT edge cases:
+  ├── trapped + have APRON    ──→  WIN (same as USE APRON)
+  ├── trapped + no APRON      ──→  mascot ESCAPES: "squirts out between fingers, bounces away"
+  ├── have APRON + free       ──→  FAIL + mascot moves: "too quick, need to TRAP it first"
+  └── bare hands (no items)   ──→  FAIL rotating: "You lunge. It bounces away!" / "Almost!" / etc.
+                                   attempts 3-5: "+ Maybe you need something to catch it with..."
+                                   attempts 6+:  "+ Hint: Look around the KITCHEN..."
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+  TALK SATSUKI  [req: location = KITCHEN]
+  ─────────────────────────────────────────
+  Progressive disclosure via getHintTier() [based on attemptedCatch count]:
+
+  Tier 1  (attempts 0–2)
+      ├── first talk   ──→  character intro + moe excitement
+      └── repeats      ──→  rotating:
+                              "Did I ever tell you why I opened this cafe?" (cafe origin)
+                              "You and Usui-kun, huh~" (shipping Usui/Misaki)
+                              "My nephew Aoi sometimes helps out here..." (Aoi Hyōdō hint)
+
+  Tier 2  (attempts 3–5)
+      └── vague hint   ──→  "When I catch stray threads, I use something soft..."
+                             [trails off, distracted by oven]
+
+  Tier 3  (attempts 6+)
+      └── explicit     ──→  "The apron! Use the apron! Triple-stitched. It won't hurt the little darling!"
+                             [points at hook by door]
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+  EASTER EGGS / AMBIENT  (available in KITCHEN, do NOT advance commandCount)
+  ──────────────────────────────────────────────────────────────────────────
+
+  LISTEN   ──→  "Pots bubbling. Satsuki narrating her cooking like a TV show.
+                 'And NOW we add the secret ingredient... LOVE~'
+                 You're pretty sure it's just extra sugar."
+
+  SMELL    ──→  "Heaven. Fresh-baked cookies. Caramelizing sugar.
+                 The sharp clean smell of lemon cleaner."
+
+  THINK    ──→  rotating (5 entries):
+                  1. "It's a plushie. What would work? Something soft? Something to trap it?"
+                  2. "Why did you bring it to work? ...Because it's comforting."
+                  3. "If Usui finds out this plushie looks like him, you'll never hear the end."
+                  4. "Student Council President by day, maid by night. Your life is a manga."
+                  5. "What if you just CALL MOM? ...No. Absolutely not."
+
+  WAIT / Z ──→  rotating (4 entries):
+                  1. "Time passes. Uchūjin-kun is still out there. Judging you."
+                  2. "You're the Student Council President. You've faced worse."
+                  3. "A moment of calm. Usui winks. The moment is ruined."
+                  4. "You wait. Nothing happens. The mascot probably moved."
+
+  YELL     ──→  "USUI, YOU PERVERTED OUTER-SPACE ALIEN!" [fires from any location]
+                 Customers alarmed. Usui: "There she is."
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+  HINT SYSTEM  (clickable prompts, shown below output text)
+  ──────────────────────────────────────────────────────────
+  Always shown in KITCHEN:
+    [look around]   [go counter]   [go alley]
+
+  After kitchenLooked = true:
+    [talk satsuki]
+    [open cabinet]   (until cabinetOpened)
+    [open drawer]    (until drawerOpened)
+
+  When mascot is visible:
+    [look mascot]   [catch mascot]
+
+  When mascot visible + tier >= 2:
+    [use bowl]   (if have BOWL, mascot not trapped)
+    [use apron]  (if mascotTrapped AND have APRON)
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════
+
+  FULL OPTIMAL PATH  (minimum commands to WIN from KITCHEN entry)
+  ────────────────────────────────────────────────────────────────
+  1. LOOK                          → kitchenLooked=true, reveals all objects
+  2. OPEN CABINET                  → reveals BOWL + TREATS
+  3. TAKE BOWL                     → BOWL in inventory
+  4.  [go to COUNTER]              → TAKE APRON (apron only takeable there)
+  5.  [return to KITCHEN]          → bring BOWL + APRON
+  6.  [wait for mascot in KITCHEN] → mascot cycles through spots
+  7. USE BOWL                      → mascotTrapped=true  "CLANG!"
+  8. USE APRON                     → ★ WIN ★
+
+  Notes:
+  - KNIFE, BAG, TREATS are collectable but all red herrings
+  - OPEN DRAWER leads only to BAG (red herring); skip if playing optimally
+  - Apron is acquired at COUNTER (revealed on first LOOK there), not in KITCHEN
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════

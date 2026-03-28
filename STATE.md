@@ -1,24 +1,26 @@
 # lzmplk-2026 — State
 
-[CHECKPOINT] 2026-03-28 11:45
+[CHECKPOINT] 2026-03-28 13:20
 
 ## Intention
 > Birthday gift for girlfriend (2026-03-28). Single polished text adventure (Maid Latte / Maid-Sama! theme) with Tiny Glade Steam key as prize. Text adventure IS the primary vehicle of the surprise.
 
 ## Position
-> **PLAYABLE + DISCOVERABLE.** Progressive disclosure system complete. LOOK AROUND reveals room contents, hints appear after exploring. NPC dialogue tiered (no spoilers early). All interactables styled distinctly. 185 states, 0 dead ends.
+> **READY TO DEPLOY.** Game renamed to cafe.html, all mechanics complete, exhaustive diagrams generated. Escape mechanic added (CATCH trapped mascot without apron = escapes). Progressive disclosure gates all work. Links updated.
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| Game engine | **Done** | 185 states, 0 dead ends |
+| Game engine | **Done** | Renamed puzzle2→cafe.html |
 | Visual style | **Done** | Early 2000s Manila blog aesthetic |
 | Progressive disclosure | **Done** | LOOK AROUND → hints unlock |
 | NPC dialogue tiering | **Done** | Satsuki/Usui: no hints at tier 1 |
 | Interactable styling | **Done** | Cutive Mono, uppercase, gold |
-| Win state | **Done** | Links to prize.html |
-| Main page | **Done** | Simple intro → game link |
-| Prize page | **Done** | Steam key + message placeholders |
-| TRY hints | Needs refactor | Too cluttered after LOOK AROUND |
+| Win state | **Done** | BOWL trap → APRON catch → prize.html |
+| Escape mechanic | **Done** | CATCH trapped w/o apron = escapes + hint |
+| Main page | **Done** | index.html → cafe.html |
+| Prize page | **Needs content** | Placeholders for Steam key + message |
+| Game diagrams | **Done** | 3 area diagrams + combined game-map.html |
+| TRY hints | Needs refactor | Too cluttered (defer post-deploy) |
 
 ## Decisions
 - Puzzle 2 theme: Maid-Sama! (not H2G2) →✓ she loves the anime
@@ -31,7 +33,10 @@
 - **Fonts: Pacifico + Silkscreen + Comic Neue** →✓ adventurous, era-appropriate
 - **Usui is customer, not employee** →✓ canon-conformance agent fixed
 - **Staticrypt: REMOVED** →✓ URL is the secret, no password gate
-- **Flow: index → puzzle2 → prize** →✓ text adventure is primary vehicle
+- **Flow: index → cafe → prize** →✓ renamed from puzzle2
+- **Escape mechanic** →✓ CATCH trapped mascot w/o apron = squirts out + thick fabric hint
+- **Gate knife/cabinet/drawer** →✓ all require kitchenLooked first
+- **Trapped mascot text** →✓ room desc + LOOK MASCOT show betrayed eyes
 
 ## Dead Ends
 - H2G2 theme: she doesn't know it well, switched to Maid-Sama!
@@ -45,29 +50,25 @@
 ## Constraints
 - Deadline: 2026-03-28 (TODAY - birthday)
 - Canon accuracy for Maid-Sama! (Usui = customer, not employee) ✓
+- All paths relative (deploy to perseidpixels.co/lzmplk/) ✓
 
 ## Files Modified
-- `src/index.html` — simplified intro, links to puzzle2
-- `src/puzzle2.html` — text adventure (restyled, deslopified, canon-fixed, win→prize)
-- `src/prize.html` — Steam key + message placeholders
+- `src/cafe.html` — renamed from puzzle2.html, escape mechanic, gates, trapped text
+- `src/index.html` — links to cafe.html
+- `src/prize.html` — fixed play again link
+- `src/game-tree.html` — fixed back link
+- `src/command-map.html` — fixed back link
+- `src/game-map.html` — NEW: combined interaction diagrams
+- `src/diagrams/` — NEW: dining/counter/kitchen exhaustive diagrams
 - `STATE.md` — this file
 
 ## Next
-- [x] Fix mascot hint system — tier 1 hints now work in all rooms (COUNTER, KITCHEN), not just DINING
-- [x] Add variety to hiding spots — 11 spots across 3 rooms (was 5)
-- [x] Progressive disclosure — LOOK AROUND reveals objects, hints unlock after
-- [x] NPC dialogue tiering — no spoilers at tier 1, vague at tier 2, explicit at tier 3
-- [x] Interactable styling — Cutive Mono, uppercase, gold (#8b6914)
-- [ ] **Refactor TRY hints** — too cluttered after LOOK AROUND (7+ hints showing)
-- [ ] Fill in prize.html placeholders (Steam key, personal message, photo?)
-- [ ] Deploy
+- [ ] **Fill in prize.html** — Steam key, personal message
+- [ ] **Deploy** — git push to perseidpixels.co/lzmplk/
+- [ ] (post-deploy) Refactor TRY hints — too cluttered
+- [ ] (post-deploy) Easter egg discoverability — subtle NPC hints or post-win reveal
 
 ## Pickup
-**Game is playable + discoverable.** Progressive disclosure: LOOK AROUND reveals room objects (styled in Cutive Mono uppercase gold), then TRY hints unlock. NPC dialogue tiered: Satsuki/Usui give no hints at tier 1, vague at tier 2, explicit at tier 3. Plushie now has blond hair like Usui ("perverted outer-space alien" reference). **Issue:** TRY hints too cluttered after exploring (7+ items). Consider: showing only 3-4 most relevant hints, or collapsible hint categories.
-
-## Art Sources (for post-compaction)
-- **Itsu cafe pack** — CC-licensed VN maid cafe backgrounds
-- **Spiral Atlas house backgrounds** — CC-licensed VN interiors
-- Convert via **asc11** or similar ASCII art tool
+**Ready to deploy.** Game at cafe.html (renamed from puzzle2). All mechanics work: progressive disclosure, escape mechanic (CATCH trapped w/o apron = escapes), gates (knife/cabinet/drawer behind kitchenLooked). Exhaustive diagrams at src/diagrams/ and combined game-map.html. **Remaining:** fill prize.html placeholders (Steam key + message), then git push.
 
 ---

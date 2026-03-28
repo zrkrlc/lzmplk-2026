@@ -1,0 +1,223 @@
+COUNTER — Interaction Tree
+cafe.html · lzmplk-2026
+═══════════════════════════════════════════════════════════════════════════════
+
+COUNTER
+│
+├── MOVEMENT
+│   ├── GO DINING / E / EAST ──→ [DINING area]
+│   └── GO KITCHEN / N / NORTH ──→ [KITCHEN area]
+│
+├── LOOK (room) ─── first time only ────────────────────────────────────────┐
+│   Sets: counterLooked = true, apronRevealed = true                        │
+│   Reveals: espresso machine, display case, tip jar, register,             │
+│            Usui's coffee, APRON on hook by kitchen door                   │
+│   [subsequent LOOK] → "Same as before."                                   │
+│                                                                           │
+│   └── APRON now visible in room desc + takeable                           │
+└───────────────────────────────────────────────────────────────────────────┘
+│
+├── LOOK USUI  (cycles on commandCount % 3)
+│   ├── [0] Tall, smirking, catches you looking, winks
+│   ├── [1] Green eyes tracking you, perfect blond hair, you hate noticing
+│   └── [2] Chess champ, martial arts, rooftop survivor — "Like what you see?"
+│
+├── LOOK ESPRESSO MACHINE
+│   ├── [no mascot] hisses & gurgles, Italian brand, Satsuki's pride & joy
+│   └── [mascot=ESPRESSO] "Something green is wedged behind it!"
+│
+├── LOOK DISPLAY CASE
+│   ├── [no mascot] strawberry shortcake almost sold out, lonely Mont Blanc
+│   └── [mascot=DISPLAY] "tiny eyes peer out, fixed on the strawberry tart"
+│
+├── LOOK TIP JAR
+│   ├── [no mascot] coins + note "Misa-chan is cute!" (probably Usui)
+│   └── [mascot=TIP_JAR] jar wobbles, Usui pokes it. "Pu."
+│
+├── LOOK REGISTER  (requires counterLooked)
+│   └── "Old but reliable. Staff photo taped to side — you're in it, smiling."
+│
+├── LOOK COFFEE / CUP  (requires counterLooked)
+│   └── "Usui's cup. Black coffee, no sugar. Of course."
+│
+├── LOOK APRON  (requires apronRevealed, not yet in inventory)
+│   └── "White apron on hook. Satsuki's stitching. Perfect for catching things?"
+│
+├── LOOK MASCOT / ALIEN / UCHUJIN
+│   ├── [mascotTrapped] "betrayed eyes through rim, tiny cape crumpled, victorious"
+│   ├── [mascot visible here] "palm-sized alien, golden-blond tuft of hair...
+│   │                          You bought it at a capsule machine. For no reason."
+│   └── [mascot elsewhere] "isn't here. You feel its judgmental stare somehow."
+│
+├── LOOK SELF / ME / MYSELF
+│   └── "Ayuzawa Misaki. Pres + maid + panicked. Uniform dishevelled."
+│
+├── LOOK WINDOW
+│   └── "Normal day for everyone except you. Seika High visible in distance."
+│
+├── LISTEN / HEAR
+│   └── "Espresso hiss. Usui humming — British pop?
+│        Satsuki off-key from kitchen. This place got to you. You don't dwell."
+│
+├── SMELL / SNIFF
+│   └── "Coffee, strongly. Usui's cologne — expensive, definitely not memorised.
+│        You take a step back. For professional reasons."
+│
+├── THINK / PONDER / CONSIDER  (cycles on commandCount % 5)
+│   ├── [0] Need something soft? Something to trap it?
+│   ├── [1] Why did you bring it to work? ...comforting. Refuse to elaborate.
+│   ├── [2] If Usui finds out it looks like him — NEVER HEAR THE END OF IT
+│   ├── [3] Student Council Pres by day, maid by night, chasing toy alien...
+│   └── [4] What if you called mom? → ABSOLUTELY NOT.
+│
+├── WAIT / Z  (cycles on commandCount % 4)
+│   ├── [0] Cafe hums. Uchujin-kun still out there. Judging you.
+│   ├── [1] You're the SC President. You've faced worse than a rogue plushie.
+│   ├── [2] Usui catches your eye and winks. Moment ruined.
+│   └── [3] Nothing happens. Mascot probably moved.
+│
+├── ── TALK ──────────────────────────────────────────────────────────────────
+│
+├── TALK USUI  (must be at COUNTER)
+│   ├── Tier 1  [0–2 catch attempts]
+│   │   ├── first ever talk → "You seem busy. / Very loyal customer."
+│   │   ├── mascot visible → "Floor inspection? I'd tip extra."
+│   │   ├── mascot hidden → "Good at finding things people try to hide."
+│   │   ├── every 3rd talk → idle lines (cycling):
+│   │   │   ├── staring out window, rain, England
+│   │   │   ├── spinning cup to annoy maids back home
+│   │   │   └── "I could be anywhere right now." (doesn't look away)
+│   │   └── every 2nd talk → tease lines (cycling):
+│   │       ├── "Your face is red. The running around, or...?"
+│   │       ├── "I could help. But watching is more fun~"
+│   │       └── "Misa-chan looks cute when she's flustered."
+│   ├── Tier 2  [3–5 catch attempts]
+│   │   ├── [no apron] cat + soft blankets hint → "direct approach isn't working"
+│   │   └── [has apron] "Soft things are good for catching soft things.
+│   │                    I'll come to save you... but looks like you've got this."
+│   └── Tier 3  [6+ catch attempts]
+│       └── "Corner it first. Use something soft.
+│            I don't like seeing you struggle. ...Much."
+│
+├── TALK MASCOT  (cycles on commandCount % 4)
+│   ├── [0] doesn't respond. Unlike some perverted outer-space aliens.
+│   ├── [1] "Hey." ... it stares. You're talking to a plushie at work.
+│   ├── [2] "Please just let me catch you." expression: "No."
+│   └── [3] It blinks? Can plushies blink? You're losing it.
+│
+├── ── ITEMS ─────────────────────────────────────────────────────────────────
+│
+├── TAKE APRON  (requires apronRevealed=true, not already in inventory)
+│   └── "Soft white fabric, Satsuki's handiwork. Good for catching things."
+│       → APRON added to inventory
+│
+├── ── CATCH MECHANICS ───────────────────────────────────────────────────────
+│
+├── CATCH  (bare hands, mascot must be in COUNTER)
+│   ├── [mascot not here] "It must have bounced to another room."
+│   ├── [0–2 attempts] "You lunge. It bounces away!" / "Almost!"
+│   ├── [3–5 attempts] same + "Maybe you need something to catch it with..."
+│   └── [6+ attempts] same + "Hint: Look around the KITCHEN..."
+│       → attemptedCatch++ / moveMascot()
+│
+├── USE BOWL  (bowl in inventory + mascot in COUNTER)
+│   └── CLANG! mascot trapped under bowl
+│       → mascotTrapped = true
+│       → Usui: "Nice reflexes."
+│
+├── USE APRON  (apron in inventory + mascot in COUNTER)
+│   ├── [mascot NOT trapped] flutters down, mascot darts away
+│   │   → "Need something solid to trap it first."
+│   │   → attemptedCatch++ / moveMascot()
+│   └── [mascot IS trapped] ─────────────────────────────── WIN ───────────┐
+│                                                                           │
+│   ┌───────────────────────── WIN SEQUENCE ────────────────────────────┐  │
+│   │  "Got it!" Uchujin-kun settles into your arms.                    │  │
+│   │  Usui: "Nice catch. Green. Alien. Vaguely familiar somehow..."    │  │
+│   │  "I like it. Keep it close, Misa-chan."                           │  │
+│   │  Satsuki bursts in: "You did it! You'll see~"                     │  │
+│   │  → prize.html link appears, input disabled                        │  │
+│   └───────────────────────────────────────────────────────────────────┘  │
+└───────────────────────────────────────────────────────────────────────────┘
+│
+└── ── EASTER EGGS ──────────────────────────────────────────────────────────
+
+    ┌──────────────────────────────────────────────────────────────────────┐
+    │  EASTER EGGS — COUNTER (most work from any room)                    │
+    ├──────────────────────────────────────────────────────────────────────┤
+    │  KISS USUI   → "NOT HERE implying there's a place where—"           │
+    │               Usui: actually surprised, then soft expression         │
+    │               YOU NEED TO LEAVE IMMEDIATELY                         │
+    │                                                                      │
+    │  HUG USUI    → 0.3-second consideration. Work mode kicks in.        │
+    │               Usui: "Something on your mind?"                        │
+    │                                                                      │
+    │  PUNCH / HIT / SLAP / KICK USUI                                     │
+    │              → he catches your wrist without looking up              │
+    │               "Violent today, Kaichou." face burns                  │
+    │                                                                      │
+    │  YELL / SCREAM / SHOUT                                               │
+    │              → "USUI, YOU PERVERTED OUTER-SPACE ALIEN!" (aloud)     │
+    │               customers alarmed. "Is this a bit?"                   │
+    │               Usui: "There she is."                                  │
+    │                                                                      │
+    │  ALIEN       → "PERVERTED OUTER-SPACE ALIEN!" (aloud again)         │
+    │               Usui delighted. Customers concerned.                  │
+    │                                                                      │
+    │  IGNORE USUI → look away. Feel his gaze anyway.                     │
+    │               "I'll wait, Ayuzawa." — worse than being teased       │
+    │                                                                      │
+    │  BLUSH       → "already blushing. he looks at you like you're       │
+    │               the most interesting thing in the room."              │
+    │                                                                      │
+    │  SAY MOE     → Satsuki materialises with flowers. "MOE IS JUSTICE." │
+    │                                                                      │
+    │  CHESS / PLAY CHESS  → "He beat a national champion. Hence: ALIEN." │
+    │                                                                      │
+    │  ROOFTOP / ROOF / FALL                                               │
+    │              → "fell off building and walked it off. Hence: ALIEN." │
+    │                                                                      │
+    │  CALL MOM    → "ABSOLUTELY NOT. She can NEVER know."                │
+    │               "Rather fight Miyabigaoka again."                     │
+    │                                                                      │
+    │  CRY / SOB   → "You are NOT going to cry. SC Pres. Faced delinquents│
+    │               You can handle one plushie and one pretty boy."       │
+    │                                                                      │
+    │  DANCE / SING → "Satsuki is literally singing in the kitchen. No."  │
+    │                                                                      │
+    │  QUIT / GIVE UP / SURRENDER                                          │
+    │              → "Ayuzawa does not quit. Catch mascot. Scream about   │
+    │               boys into pillow. In that order."                     │
+    └──────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+
+MASCOT CYCLE (global, all rooms)
+
+  TABLE2 → ESPRESSO → TABLE1 → BOWLS → MENU_BOARD → TIP_JAR
+     ↑                                                    │
+     └─── TREAT_CABINET ← DISPLAY ← PLANT ← APRON_PILE ──┘
+
+  COUNTER spots: ESPRESSO, DISPLAY, TIP_JAR
+  Mascot moves every 3 non-look commands (MOVE_INTERVAL=3)
+  Spooked mascot (wrong-catch): moves TWICE next turn
+
+HINT TIERS (based on attemptedCatch count)
+
+  Tier 1  [0–2]   vague hint color (#8b7355), mascot partially visible
+  Tier 2  [3–5]   clear hint color (#b8860b), Usui/Satsuki give tool hints
+  Tier 3  [6+]    Usui/Satsuki give explicit apron+bowl instructions
+
+APRON DISCOVERY PATH (COUNTER-specific)
+
+  GO COUNTER → LOOK (room) → apronRevealed=true → TAKE APRON → inventory
+  [Required for win. Bowl (trap) is in KITCHEN cabinet.]
+
+WIN CONDITION
+
+  1. Obtain BOWL  (KITCHEN: LOOK → OPEN CABINET → TAKE BOWL)
+  2. Obtain APRON (COUNTER: LOOK → TAKE APRON)
+  3. Be in same room as mascot with BOWL in hand → USE BOWL → mascotTrapped
+  4. USE APRON on trapped mascot → WIN → prize.html
+
+═══════════════════════════════════════════════════════════════════════════════

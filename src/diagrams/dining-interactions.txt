@@ -1,0 +1,252 @@
+DINING AREA — INTERACTION TREE
+cafe.html text adventure (lzmplk-2026)
+========================================
+
+╔══════════════════════════════════════════════════════════════════════╗
+║                         DINING AREA                                  ║
+║                  (default starting location)                         ║
+╚══════════════════════════════════════════════════════════════════════╝
+                               │
+         ┌─────────────────────┼─────────────────────────────┐
+         │                     │                             │
+         ▼                     ▼                             ▼
+  ┌─────────────┐      ┌──────────────┐             ┌───────────────┐
+  │  MOVEMENT   │      │   LOOK / L   │             │   AMBIENT     │
+  └──────┬──────┘      └──────┬───────┘             └───────┬───────┘
+         │                    │                             │
+         │             ┌──────┴──────────────────────┐      │
+         │             ▼                             ▼      │
+         │    ┌──────────────────┐         ┌───────────────┐│
+         │    │  LOOK (bare)     │         │  LOOK [obj]   ││
+         │    │  progressive     │         └───────┬───────┘│
+         │    │  disclosure      │                 │        │
+         │    │  (1st time only) │        ┌────────┴──────┐ │
+         │    └──────────────────┘        │               │ │
+         │                               ▼               ▼ │
+         │                      ┌───────────────┐ ┌──────────────┐
+         │                      │ LOOK CUSTOMERS│ │ LOOK TABLE 1 │
+         │                      │ All 3 tables  │ │ Couple +     │
+         │                      │ overview      │ │ parfait      │
+         │                      └───────────────┘ └──────────────┘
+         │
+         │                               ┌──────────────────┐
+         │                               │ LOOK TABLE 2     │
+         │                               │ Salaryman +      │
+         │                               │ newspaper        │
+         │                               └──────────────────┘
+         │
+         │                               ┌──────────────────────────────┐
+         │                               │ LOOK TABLE 3 /               │
+         │                               │ LOOK CUSTOMER 3 /            │
+         │                               │ LOOK MYSTERIOUS              │
+         │                               │ ● blonde pigtails, red dress │
+         │                               │ ● customerLookCount++        │
+         │                               │ ● response 1 vs 2+ differs   │
+         │                               └──────────────────────────────┘
+         │
+         │                               ┌──────────────────────────────┐
+         │                               │ LOOK FERN / PLANT            │
+         │                               │ Fake fern, "ambiance"        │
+         │                               │ [★ MASCOT SPOT: PLANT]       │
+         │                               └──────────────────────────────┘
+         │
+         │                               ┌──────────────────────────────┐
+         │                               │ LOOK MENU / SPECIALS / BOARD │
+         │                               │ Pastel chalk, Satsuki script │
+         │                               │ "Moe Moe Parfait ♥"          │
+         │                               │ [★ MASCOT SPOT: MENU_BOARD]  │
+         │                               └──────────────────────────────┘
+         │
+         │                               ┌──────────────────────────────┐
+         │                               │ LOOK MASCOT / ALIEN          │
+         │                               │ (if mascot visible)          │
+         │                               │ Plushie desc + Usui metaphor │
+         │                               └──────────────────────────────┘
+         │
+         │                               ┌──────────────────────────────┐
+         │                               │ LOOK WINDOW                  │
+         │                               │ (works any room)             │
+         │                               │ Street, Seika High visible   │
+         │                               └──────────────────────────────┘
+         │
+         │                               ┌──────────────────────────────┐
+         │                               │ LOOK SELF / ME               │
+         │                               │ Ayuzawa Misaki description   │
+         │                               └──────────────────────────────┘
+         │
+         ▼
+╔══════════════════════════════╗
+║         MOVEMENT             ║
+╠══════════════════════════════╣
+║  GO COUNTER / W / WEST       ║
+║  → travels to COUNTER        ║
+╠══════════════════════════════╣
+║  GO KITCHEN / N / NORTH      ║
+║  ✗ BLOCKED                   ║
+║    "Go through COUNTER first"║
+╠══════════════════════════════╣
+║  GO OUTSIDE / ALLEY / EXIT   ║
+║  ✗ REFUSED (3 rotating msgs) ║
+║    "You're on shift"         ║
+╚══════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════════════════════╗
+║                     AMBIENT / EASTER EGG VERBS                       ║
+║              (non-destructive, don't trigger mascot move)            ║
+╠════════════════════╦═════════════════════════════════════════════════╣
+║  LISTEN / HEAR     ║ Cups clinking, J-pop, "tiny plushie feet        ║
+║                    ║ on tile"                                         ║
+╠════════════════════╬═════════════════════════════════════════════════╣
+║  SMELL / SNIFF     ║ Coffee, vanilla parfaits, floral perfume        ║
+╠════════════════════╬═════════════════════════════════════════════════╣
+║  WAIT / Z          ║ 4 rotating responses (cycles on commandCount)   ║
+║                    ║ — cafe hums                                      ║
+║                    ║ — Student Council President pep-talk            ║
+║                    ║ — Usui winks, moment ruined                     ║
+║                    ║ — nothing happens, mascot probably moved        ║
+╠════════════════════╬═════════════════════════════════════════════════╣
+║  THINK / PONDER    ║ 5 rotating thoughts (cycles on commandCount)    ║
+║                    ║ — strategy: can't catch bare-handed             ║
+║                    ║ — why bring plushie to work?                    ║
+║                    ║ — if Usui finds out it looks like him...        ║
+║                    ║ — genre-awareness: "which genre manga?"         ║
+║                    ║ — call mom? no. absolutely not.                 ║
+╚════════════════════╩═════════════════════════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════════════════════╗
+║                          NPC INTERACTIONS                            ║
+╠════════════════════╦═════════════════════════════════════════════════╣
+║  TALK CUSTOMER     ║ Generic maid greeting rotation (3 responses)    ║
+║  (non-specific)    ║ — "Welcome home, Master~"                       ║
+║                    ║ — coffee refill request                         ║
+║                    ║ — couple at Table 1 want shared parfait         ║
+╠════════════════════╬═════════════════════════════════════════════════╣
+║  TALK CUSTOMER 3   ║ Misaki refuses engagement                       ║
+║  (mysterious /     ║ "I know that face. No."                         ║
+║   alone / Table 3) ║ Sets talkedCustomer flag                        ║
+╠════════════════════╬═════════════════════════════════════════════════╣
+║  TALK MASCOT       ║ 4 responses — plushie doesn't answer            ║
+║  (any location)    ║ — "It doesn't respond"                          ║
+║                    ║ — "Great, talking to a plushie at work"         ║
+║                    ║ — "Please let me catch you. No."                ║
+║                    ║ — "Can plushies blink? Losing my mind."         ║
+╠════════════════════╬═════════════════════════════════════════════════╣
+║  TALK USUI         ║ ✗ Redirected: "Usui is at the COUNTER"         ║
+╠════════════════════╬═════════════════════════════════════════════════╣
+║  TALK SATSUKI      ║ ✗ Redirected: "Satsuki is in the KITCHEN"      ║
+╚════════════════════╩═════════════════════════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════════════════════╗
+║                     MASCOT MECHANICS (IN DINING)                     ║
+╠══════════════════════════════════════════════════════════════════════╣
+║                                                                      ║
+║  5 hiding spots in DINING:                                           ║
+║                                                                      ║
+║   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 ║
+║   │   TABLE1    │  │   TABLE2    │  │   TABLE3    │                 ║
+║   │ Under tbl 1 │  │ Under tbl 2 │  │ Under tbl 3 │                 ║
+║   │ tier1 hint: │  │ tier1 hint: │  │ tier1 hint: │                 ║
+║   │ "green dart"│  │ "green dart"│  │ "green dart"│                 ║
+║   └─────────────┘  └─────────────┘  └─────────────┘                 ║
+║                                                                      ║
+║   ┌─────────────────────────┐   ┌──────────────────────────┐        ║
+║   │       MENU_BOARD        │   │          PLANT           │        ║
+║   │ Behind the specials brd │   │ Inside the fern          │        ║
+║   │ tier1: "Something       │   │ tier1: "FERN twitches"   │        ║
+║   │  rustles behind board"  │   │ tier2: antennae visible  │        ║
+║   └─────────────────────────┘   └──────────────────────────┘        ║
+║                                                                      ║
+╠══════════════════════════════════════════════════════════════════════╣
+║                         CATCH ATTEMPTS                               ║
+╠══════════════════════════════════════════════════════════════════════╣
+║                                                                      ║
+║  CATCH MASCOT (bare hands)                                           ║
+║      │                                                               ║
+║      ├── always fails → moveMascot()                                 ║
+║      ├── 6 rotating fail messages                                    ║
+║      ├── attempt 3–5: "need something to catch with"                ║
+║      └── attempt 6+:  "look in the KITCHEN for something"           ║
+║                                                                      ║
+║  CATCH (with APRON, no trap) → mascot dodges, moveMascot()           ║
+║  CATCH (with BOWL, mascot present) → TRAP SUCCESS → mascotTrapped    ║
+║  CATCH (trapped + APRON) → triggerWin()                              ║
+║  CATCH (trapped, no APRON) → escapes through fingers, moveMascot()  ║
+║                                                                      ║
+║  USE TREATS (if held, mascot present)                                ║
+║      → mascot snatches cookie and bolts → moveMascot()              ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════════════════════╗
+║                            EASTER EGGS                               ║
+╠══════════════════╦═══════════════════════════════════════════════════╣
+║  YELL/SCREAM/    ║ Misaki yells at Usui; customers alarmed;          ║
+║  SHOUT           ║ Usui: "There she is."                             ║
+╠══════════════════╬═══════════════════════════════════════════════════╣
+║  KISS USUI       ║ Brain short-circuits; Usui: "Not here, Misa-chan  ║
+║                  ║ the customers are watching." Nuclear face.        ║
+╠══════════════════╬═══════════════════════════════════════════════════╣
+║  HUG USUI        ║ 0.3s consideration; survival instincts; Usui:    ║
+║                  ║ "Something on your mind?"                        ║
+╠══════════════════╬═══════════════════════════════════════════════════╣
+║  PUNCH/HIT/      ║ Usui catches wrist without looking; "Violent      ║
+║  SLAP/KICK USUI  ║ today, Kaichou."                                  ║
+╠══════════════════╬═══════════════════════════════════════════════════╣
+║  ALIEN / ALIENS  ║ Said out loud; Usui delighted; customers alarmed  ║
+╠══════════════════╬═══════════════════════════════════════════════════╣
+║  MOE / SAY MOE   ║ Satsuki materializes with flower effects          ║
+╠══════════════════╬═══════════════════════════════════════════════════╣
+║  IGNORE USUI     ║ He feels his gaze anyway; "I'll wait, Ayuzawa."  ║
+╠══════════════════╬═══════════════════════════════════════════════════╣
+║  BLUSH /         ║ Already blushing; Usui stares; "somehow worse     ║
+║  EMBARRASS       ║ than being teased"                                ║
+╠══════════════════╬═══════════════════════════════════════════════════╣
+║  CRY / SOB       ║ Refuses: "Student Council President. Handled      ║
+║                  ║ delinquents, budget crises, Idiot Trio."          ║
+╠══════════════════╬═══════════════════════════════════════════════════╣
+║  DANCE / SING    ║ "This is a workplace. Some dignity."              ║
+╠══════════════════╬═══════════════════════════════════════════════════╣
+║  QUIT / GIVE UP  ║ Refuses: "Misaki Ayuzawa does not quit."          ║
+╠══════════════════╬═══════════════════════════════════════════════════╣
+║  CALL MOM        ║ "Absolutely not. She can NEVER know."             ║
+╠══════════════════╬═══════════════════════════════════════════════════╣
+║  CHESS           ║ No time. Usui won against a national champion.    ║
+╠══════════════════╬═══════════════════════════════════════════════════╣
+║  ROOFTOP / FALL  ║ Alien theory confirmation. He walked it off.      ║
+╚══════════════════╩═══════════════════════════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════════════════════╗
+║                       UTILITY COMMANDS                               ║
+╠═══════════════╦══════════════════════════════════════════════════════╣
+║  INVENTORY/I  ║ List held items (or "empty")                        ║
+╠═══════════════╬══════════════════════════════════════════════════════╣
+║  HELP / ?     ║ Command reference list                              ║
+╚═══════════════╩══════════════════════════════════════════════════════╝
+
+
+╔══════════════════════════════════════════════════════════════════════╗
+║                     ROOM ADJACENCY MAP                               ║
+╠══════════════════════════════════════════════════════════════════════╣
+║                                                                      ║
+║   KITCHEN                                                            ║
+║      ↑ N (from COUNTER only)                                         ║
+║      │                                                               ║
+║   COUNTER  ←──── W ────   DINING                                     ║
+║                           (start)                                    ║
+║                                                                      ║
+║  DINING → COUNTER: GO W / GO COUNTER                                 ║
+║  DINING → KITCHEN: BLOCKED (must go via COUNTER)                     ║
+║  DINING → ALLEY:   REFUSED ("still on shift")                        ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+Legend:
+  ★  = active mascot hiding spot
+  ✗  = blocked or refused action
+  →  = direction of travel
+  ↑  = direction of travel
